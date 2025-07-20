@@ -1,0 +1,31 @@
+{
+  "search_placeholder_1": "Search for food, groceries, beauty, hotels...",
+  "rewards": "Rewards",
+  "wishlist": "Wishlist",
+  "cart": "Cart",
+  "profile": "Profile",
+  "tap_to_set_location": "Tap to set location",
+   "placeholder": {
+    "search": "Search for food, groceries, beauty, hotels...",
+    "hungry": "Hungry? Find yummy food or your favorite spot",
+    "ride": "Need a ride? Try car rentals nearby",
+    "essentials": "Shop essentials from our E-Store",
+    "hotels": "Book hotels or apartments for your stay",
+    "groceries": "Find daily needs & fresh groceries"
+  },
+    "whishlist_category_labels": {
+    "food": "Food",
+    "grocery": "Grocery",
+    "hotel": "Hotel & Apartments",
+    "health": "Health & Beauty",
+    "eshop": "E-Shop",
+    "rent": "Rent a Car"
+  },
+  "busy":"Busy",
+  "km":"km",
+  "mins":"mins",
+  "Wishlist":"Wishlist",
+  "order_now": "اطلب الآن",
+ "BEST FOOD FOREVER":"BEST FOOD FOREVER"
+
+}
