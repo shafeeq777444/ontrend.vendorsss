@@ -27,6 +27,7 @@ export const app = getApps().find(app => app.name === "[DEFAULT]") || initialize
 
 // exports------------------------------
 export const auth = getAuth(app);
+
 // ── CORRECTED: embed cacheSizeBytes inside persistentLocalCache ──
 export const db = initializeFirestore(app, {
   localCache: persistentLocalCache({

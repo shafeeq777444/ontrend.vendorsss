@@ -19,7 +19,7 @@ const fbProvider = new FacebookAuthProvider();
 
 //----------------------- Fetch current user Data ---------------------------
 export const fetchCurrentUserData = async () => {
-  const currentUser = auth.currentUser;
+  const currentUser = auth.currentUser; //firebase auth side
   console.log(currentUser)
   if (!currentUser) throw new Error("User not signed in");
 
@@ -27,7 +27,7 @@ export const fetchCurrentUserData = async () => {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    return docSnap.data();
+    return docSnap.data();  //we extra stored data its we also add more data also
   } else {
     throw new Error("No user data found in Firestore");
   }
