@@ -2,7 +2,16 @@
 
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getVendorFoodCategories, getVendorFoodDetails, getVendorFoodsPaginated } from "../../utils/firebase/firestore/foodVendorsFireStore";
+import { getAllFoodCategories ,getVendorFoodCategories, getVendorFoodDetails, getVendorFoodsPaginated} from "../firebase/firestore/foodVendorsFireStore";
+
+// get all categories
+
+export function useGetAllCategories() {
+  return useQuery({
+    queryKey: ["allCategories"],
+    queryFn: () => getAllFoodCategories(),
+  });
+}
 
 // vender included categories
 export function useVendorFoodCategories(vendorId) {

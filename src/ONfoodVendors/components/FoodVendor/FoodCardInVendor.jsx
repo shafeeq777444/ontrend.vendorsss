@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { MdOutlineShoppingBag } from "react-icons/md";
 import { FaEdit, FaEye } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LazyImg from '../common/LazyImg';
@@ -7,7 +6,6 @@ import LazyImg from '../common/LazyImg';
 const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
-  console.log(item,"item")
 
   const description = useMemo(() =>
     item.description ||
@@ -30,10 +28,8 @@ const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
   , [isArabic]);
 
   return (
-    <div
-
-      className="relative cursor-pointer rounded-2xl overflow-hidden bg-white shadow-md group hover:shadow-lg transition duration-200"
-    >
+    <div className="relative rounded-2xl overflow-hidden bg-white shadow hover:shadow-lg transition-all duration-300 group cursor-pointer">
+      
       {/* Image Section */}
       <div className="relative">
         <LazyImg
@@ -41,68 +37,66 @@ const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
           alt={item.name}
           placeholder={venderLogo}
           loading="lazy"
-          className="w-full h-44 sm:h-52 object-cover rounded-t-2xl"
+          className="w-full h-44 sm:h-52 object-cover"
         />
 
         {/* Discount Badge */}
         {hasDiscount && (
-          <div className={`absolute top-3 ${isArabic ? 'left-3' : 'right-3'} z-20`}>
-            <div className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
+          <div className={`absolute top-3 ${isArabic ? 'left-3' : 'right-3'}`}>
+            <div className="bg-red-600 text-white text-xs px-2 py-1 rounded-full shadow font-semibold">
               {isArabic ? `% خصم ${item.discountPercentage}` : `${item.discountPercentage}% OFF`}
             </div>
           </div>
         )}
 
-        {/* Gradient with Local Name & Tag */}
+        {/* Overlay Info */}
         <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-black/70 to-transparent">
-          <p className="text-white text-xs sm:text-sm font-semibold truncate">{item?.localName}</p>
-          <p className="text-white text-xs sm:text-sm font-medium truncate">{item?.localTag}</p>
+          <p className="text-white text-sm font-semibold truncate">{item.localName}</p>
+          <p className="text-white text-xs truncate">{item.localTag}</p>
         </div>
       </div>
 
-      {/* Content Section */}
-      <div className={`p-3 pb-16 ${isArabic ? 'text-right' : 'text-left'}`}>
-        <h3 className="text-sm font-semibold truncate">{item.name}</h3>
-        <p className="text-xs text-gray-500 mt-1 truncate">{shortDesc}</p>
+      {/* Content */}
+      <div className={`p-4 pb-20 ${isArabic ? 'text-right' : 'text-left'}`}>
+        <h3 className="text-base font-semibold truncate">{item.name}</h3>
+        <p className="text-sm text-gray-500 mt-1 truncate">{shortDesc}</p>
       </div>
 
-      {/* Price Display */}
-      <div className={`absolute bottom-12 ${isArabic ? 'right-3' : 'left-3'}`}>
+      {/* Price */}
+      <div className={`absolute bottom-14 ${isArabic ? 'right-4' : 'left-4'}`}>
         {hasDiscount ? (
           <div className={`${isArabic ? 'text-right' : 'text-left'}`}>
             <span className="text-sm font-bold text-red-600">
-              {isArabic
-                ? `ريال ${formatPrice(item.price)}`
-                : `OMR ${formatPrice(item.price)}`}
+              {isArabic ? `ريال ${formatPrice(item.price)}` : `OMR ${formatPrice(item.price)}`}
             </span>
             <span className="text-xs text-gray-400 line-through ml-2">
-              {isArabic
-                ? `ريال ${formatPrice(item.itemPrice)}`
-                : `OMR ${formatPrice(item.itemPrice)}`}
+              {isArabic ? `ريال ${formatPrice(item.itemPrice)}` : `OMR ${formatPrice(item.itemPrice)}`}
             </span>
           </div>
         ) : (
-          <span className="text-sm font-bold text-gray-800">
-            {isArabic
-              ? `ريال ${formatPrice(item.itemPrice)}`
-              : `OMR ${formatPrice(item.itemPrice)}`}
+          <span className="text-sm font-bold text-gray-900">
+            {isArabic ? `ريال ${formatPrice(item.itemPrice)}` : `OMR ${formatPrice(item.itemPrice)}`}
           </span>
         )}
       </div>
 
-      {/* Action Buttons */}
-      <div className="absolute bottom-0 w-full flex justify-between px-3 pb-3 gap-2">
+      {/* Minimal Action Buttons */}
+      <div className="absolute bottom-0 w-full px-4 pb-4 flex gap-2">
         <button
-          className="flex items-center justify-center gap-1 flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1.5 rounded-xl transition"
-          // onClick={e => { e.stopPropagation(); onClick?.('view', item); }}
+          className="flex-1 flex items-center justify-center gap-1 border border-gray-300 text-gray-700 hover:bg-gray-100 text-xs py-1.5 rounded-lg transition"
         >
-          <FaEye size={14} /> {isArabic ? 'عرض' : 'View'}
+          <FaEye size={13} className="opacity-70" />
+          {isArabic ? 'عرض' : 'View'}
         </button>
         <button
-          className="flex items-center justify-center gap-1 flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold py-1.5 rounded-xl transition"
-          onClick={e => { e.stopPropagation(); onClick?.(); }}
+          className="flex-1 flex items-center justify-center gap-1 border border-gray-300 text-gray-700 hover:bg-gray-100 text-xs py-1.5 rounded-lg transition"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick?.();
+          }}
         >
-          <FaEdit size={14} /> {isArabic ? 'تعديل' : 'Edit'}
+          <FaEdit size={13} className="opacity-70" />
+          {isArabic ? 'تعديل' : 'Edit'}
         </button>
       </div>
     </div>

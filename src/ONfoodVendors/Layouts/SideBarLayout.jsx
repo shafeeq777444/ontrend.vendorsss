@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { Menu, X, ChevronDown, Zap, Search, Clock, Eye, Users, DollarSign } from "lucide-react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
-const SideBarLayout = ({ children }) => {
+const SideBarLayout = () => {
+    const navigate=useNavigate()
     const [menuOpen, setMenuOpen] = useState(false);
 
     const menuItems = [
-        { name: "Dashboard", icon: <Zap size={16} /> },
-        { name: "Food Menus", icon: <Zap size={16} /> },
-        { name: "Orders", icon: null },
-        { name: "Earnings", icon: null },
-        { name: "Profile", icon: null },
+        { name: "Dashboard", icon: <Zap size={16} /> ,route:""},
+        { name: "Food Menus", icon: <Zap size={16} /> ,route:"/menu"},
+        { name: "Orders", icon: null ,route:"/orders"},
+        { name: "Earnings", icon: null ,route:"/earnings"},
+        { name: "Profile", icon: null ,route:"/profile" },
     ];
 
     return (
@@ -45,6 +46,7 @@ const SideBarLayout = ({ children }) => {
                     <div className="hidden lg:flex items-center gap-6 mt-4">
                         {menuItems.map((item, index) => (
                             <button
+                            onClick={()=>navigate(item?.route)}
                                 key={index}
                                 className={`flex items-center gap-2 px-3 py-2 rounded-full text-md transition ${
                                     item.active ? "bg-red-700/80 text-white" : "hover:text-gray-200"

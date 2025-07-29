@@ -118,3 +118,10 @@
     @apply bg-background text-foreground;
   }
 }
+.react-time-picker {
+  /* @apply border border-gray-300/80  p-1; 50% opacity */
+}
+
+.react-time-picker__wrapper {
+  @apply border-none rounded-sm p-1;
+}

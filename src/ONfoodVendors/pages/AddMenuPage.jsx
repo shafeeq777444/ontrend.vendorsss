@@ -5,14 +5,25 @@ import AddEditFoodForm from "../components/AddEditFoodForm/AddEditFoodForm";
 
 
 const AddMenuPage = () => {
-    const {id,category}=useParams()
-    console.log(id,category,"id")
-    const {data:foodDetails,isLoading:isFoodDetailsLoading}=useVendorFoodDetails(category,id)
-    console.log(foodDetails,"foodDetails")
-            return (
-        <div>
-            <AddEditFoodForm existingData={foodDetails} onFinish={()=>{}} />
-        </div>
-    );
+  const { id, category } = useParams();
+
+  // If "new", skip fetch and render blank form
+  const isNew = id === "new";
+
+  // Fetch only if not new
+  const { data: foodDetails, isLoading } = useVendorFoodDetails(category, id, {
+    enabled: !isNew, // prevents query if id === "new"
+  });
+
+  if (!isNew && isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <AddEditFoodForm existingData={isNew ? {} : foodDetails } />
+    </div>
+  );
 };
+
 export default AddMenuPage;

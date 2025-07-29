@@ -1,49 +1,47 @@
 import React from "react";
 
-const ItemPriceCard = ({ priceInfo, onChange }) => {
-  const inputStyle =
-    "mt-1 w-full text-sm px-3 py-2 bg-gray-100 rounded-md focus:outline-none focus:ring-0";
-
+const ItemPriceCard = ({
+  offerPrice,
+  itemPrice,
+  discountPercentage,
+  handleOriginalPrice,
+  handleDiscountPercentage,
+}) => {
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 border w-full max-w-md space-y-4">
-      <h2 className="text-base font-semibold text-gray-900"> Item Pricing</h2>
-
-      {/* Price */}
-      <div>
-        <label className="text-sm font-medium text-gray-700">Base Price (₹)</label>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Item Price */}
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium text-gray-700">Item Price</label>
         <input
           type="number"
-          name="price"
-          value={priceInfo.price}
-          onChange={onChange}
-          className={inputStyle}
-          placeholder="Enter base price"
+          placeholder="0"
+          value={itemPrice}
+          onChange={handleOriginalPrice}
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
-      {/* Discount */}
-      <div>
-        <label className="text-sm font-medium text-gray-700">Discount (₹ or %)</label>
+      {/* Discount Percentage */}
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium text-gray-700">Discount %</label>
         <input
           type="number"
-          name="discount"
-          value={priceInfo.discount}
-          onChange={onChange}
-          className={inputStyle}
-          placeholder="Enter discount"
+          placeholder="0"
+          value={discountPercentage}
+          onChange={handleDiscountPercentage}
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
       {/* Offer Price */}
-      <div>
-        <label className="text-sm font-medium text-gray-700">Final Offer Price (₹)</label>
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium text-gray-700">Offer Price</label>
         <input
           type="number"
-          name="offerPrice"
-          value={priceInfo.offerPrice}
-          onChange={onChange}
-          className={inputStyle}
-          placeholder="Calculated or entered manually"
+          placeholder="0"
+          value={offerPrice}
+          readOnly
+          className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 cursor-not-allowed"
         />
       </div>
     </div>

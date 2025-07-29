@@ -1,99 +1,106 @@
-"use client"
+import React, { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
-import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react"
+import LazyImg from '../common/LazyImg';
+import ImageCropModal from '../common/ImageCropModal';
 
-import { useFileUpload } from "@/hooks/use-file-upload"
+const MAX_SIZE_MB = 5;
+const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
-export default function Component() {
-  const maxSizeMB = 5
-  const maxSize = maxSizeMB * 1024 * 1024 // 5MB default
+const ImageUploading = ({ imageUrl, handleImageUpload }) => {
+  const fileInputRef = useRef();
+  const [isDragActive, setIsDragActive] = useState(false);
+  const [tempImage, setTempImage] = useState(null);
 
-  const [
-    { files, isDragging, errors },
-    {
-      handleDragEnter,
-      handleDragLeave,
-      handleDragOver,
-      handleDrop,
-      openFileDialog,
-      removeFile,
-      getInputProps,
-    },
-  ] = useFileUpload({
-    accept: "image/*",
-    maxSize,
-  })
+  const processFile = (file) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error('Image must be an image');
+      return;
+    }
 
-  const previewUrl = files[0]?.preview || null
+    if (file.size > MAX_SIZE_BYTES) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setTempImage(reader.result);
+    reader.readAsDataURL(file);
+  };
+
+  const onCropDone = (croppedFile) => {
+    setTempImage(null);
+    handleImageUpload(croppedFile);
+  };
+
+  const onAreaClick = () => fileInputRef.current.click();
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    setIsDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      processFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault();
+    setIsDragActive(true);
+  };
+
+  const onDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragActive(false);
+  };
+
+  const onInputChange = (e) => {
+    if (e.target.files[0]) {
+      processFile(e.target.files[0]);
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-2 w-60 rounded-lg">
-      <div className="relative">
-        {/* Drop area */}
-        <div
-          role="button"
-          onClick={openFileDialog}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          data-dragging={isDragging || undefined}
-          className="border-input hover:bg-accent/50 data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed p-4 transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none has-[input:focus]:ring-[3px]"
-        >
-          <input
-            {...getInputProps()}
-            className="sr-only"
-            aria-label="Upload file"
-          />
-          {previewUrl ? (
-            <div className="absolute inset-0">
-              <img
-                src={previewUrl}
-                alt={files[0]?.file?.name || "Uploaded image"}
-                className="size-full object-cover"
-              />
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
-              <div
-                className="bg-background mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border"
-                aria-hidden="true"
-              >
-                <ImageUpIcon className="size-4 opacity-60" />
-              </div>
-              <p className="mb-1.5 text-sm font-medium">
-                Drop your image here or click to browse
-              </p>
-              <p className="text-muted-foreground text-xs">
-                Max size: {maxSizeMB}MB
-              </p>
-            </div>
-          )}
-        </div>
-        {previewUrl && (
-          <div className="absolute top-4 right-4">
-            <button
-              type="button"
-              className="focus-visible:border-ring focus-visible:ring-ring/50 z-50 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:ring-[3px]"
-              onClick={() => removeFile(files[0]?.id)}
-              aria-label="Remove image"
-            >
-              <XIcon className="size-4" aria-hidden="true" />
-            </button>
-          </div>
+    <div className="mb-4">
+
+      <div
+        className={`flex flex-col items-center justify-center w-90 h-70 border-2 border-dashed rounded-lg cursor-pointer transition bg-gray-50 relative ${isDragActive ? 'border-blue-500 bg-blue-50' : 'hover:border-blue-400'} ${imageUrl ? '' : 'hover:bg-blue-50'}`}
+        onClick={onAreaClick}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png, image/jpeg, image/jpg"
+          className="hidden"
+          onChange={onInputChange}
+        />
+        {imageUrl ? (
+          <LazyImg src={imageUrl} alt="Food" className="w-full h-full object-cover rounded-lg" />
+        ) : (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11l4 4 4-4m-4 4V7" />
+            </svg>
+            <span className="text-gray-500 text-sm text-center">Click or drag image here<br/>PNG, JPG, JPEG (max 5MB)</span>
+          </>
+        )}
+        {isDragActive && (
+          <div className="absolute inset-0 bg-blue-100 bg-opacity-40 rounded-lg pointer-events-none border-2 border-blue-400 border-dashed"></div>
         )}
       </div>
 
-      {errors.length > 0 && (
-        <div
-          className="text-destructive flex items-center gap-1 text-xs"
-          role="alert"
-        >
-          <AlertCircleIcon className="size-3 shrink-0" />
-          <span>{errors[0]}</span>
-        </div>
+      {tempImage && (
+        <ImageCropModal
+          imageSrc={tempImage}
+          onClose={() => setTempImage(null)}
+          onCropDone={onCropDone}
+        />
       )}
-
     </div>
-  )
-}
+  );
+};
+
+export default ImageUploading;

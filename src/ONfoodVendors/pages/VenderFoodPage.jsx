@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import FoodVendorProducts from "../containers/FoodVendor/FoodVendorProducts";
 import PaginationButtons from "../components/FoodVendor/PaginationButtons";
 import { useGetVendorFoodsAndCategories, useVendorFoodCategories } from "../../services/queries/foodVendor.query";
+import useCurrentUser from "../../services/queries/user.query";
 
 const getLocalizedField = (item, field, isArabic) =>
   isArabic ? item?.[`${field}Arabic`] || item?.[field] : item?.[field];
@@ -16,10 +17,10 @@ const VenderFoodPage = () => {
   const { selectedVendorMealCategory, searchTerm, sortOption } = useSelector((state) => state.food);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const productsRef = useRef(null);
-  // const {data:currentVendor} = useCurrentUser()
-  // console.log(currentUser,"current user")
-  const currentVendor = {id:"0F7jaOrjQ8QE18jKYyCfa1cU5b32"};
-
+  const {data:currentVendor,isLoading:isCurrentVendorLoading} = useCurrentUser()
+  // const currentVendor={id:"7nPgH0pAzrSmWoK0kkZTztcHmsr1"}
+  console.log(currentVendor,"current vendor")
+ 
   const {
     data,
     fetchNextPage,
@@ -82,10 +83,13 @@ const VenderFoodPage = () => {
   }, [data?.pages, currentPageIndex, selectedVendorMealCategory, searchTerm, sortOption, isArabic]);
 
   const limitedFoods = useMemo(() => filteredFoods.slice(0, 12), [filteredFoods]);
-
+ 
   // Removed redundant memoization for logo and isOnline
   const venderLogo = currentVendor?.image;
   const isOnline = currentVendor?.isOnline;
+  if (isCurrentVendorLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, isOnline }) => {
   const navigate=useNavigate()
+  console.log(foodItems,"food items")
   if (isLoading) return <SkeltonFoodCard />;
 
   return (

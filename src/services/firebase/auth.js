@@ -19,19 +19,22 @@ const fbProvider = new FacebookAuthProvider();
 
 //----------------------- Fetch current user Data ---------------------------
 export const fetchCurrentUserData = async () => {
-  const currentUser = auth.currentUser; //firebase auth side
-  console.log(currentUser)
-  if (!currentUser) throw new Error("User not signed in");
-
-  const docRef = doc(db, "users", currentUser.uid);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return docSnap.data();  //we extra stored data its we also add more data also
-  } else {
-    throw new Error("No user data found in Firestore");
-  }
-};
+    const currentUser = auth.currentUser;
+  
+    if (!currentUser) throw new Error("User not signed in");
+  
+    const docRef = doc(db, "users", currentUser.uid);
+    const docSnap = await getDoc(docRef);
+  
+    if (docSnap.exists()) {
+      return {
+        id: currentUser.uid,       // 🔹 include user ID
+        ...docSnap.data(),          // 🔹 include user document data
+      };
+    } else {
+      throw new Error("No user data found in Firestore");
+    }
+  };
 
 // --------------- sign with google ------------------------------------------
 export const handleGoogleLogin = async ({toast,navigate}) => {
@@ -212,4 +215,21 @@ export function signInWithFacebook() {
         .catch((error) => {
             console.error("Facebook Error:", error);
         });
+}
+
+import { useEffect, useState } from "react";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+
+export  function useFirebaseAuthReady() {
+  const [authReady, setAuthReady] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(getAuth(), () => {
+      setAuthReady(true);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return authReady;
 }
