@@ -7,19 +7,19 @@ import SideBarLayout from "./ONfoodVendors/Layouts/SideBarLayout";
 import LoginScreen from "./auth/pages/Login";
 import AuthLayout from "./auth/layouts/AuthLayout";
 import VendorProfileInfo from "./ONfoodVendors/pages/VendorProfileInfo";
-import OrdersPage from "./ONfoodVendors/pages/OrdersPage";
+
 import AddMenuPage from "./ONfoodVendors/pages/AddMenuPage";
 import VenderFoodPage from "./ONfoodVendors/pages/VenderFoodPage";
 import TransliterateInput from "./ONfoodVendors/Test";
+import OrderPage from "./ONfoodVendors/pages/orderPage";
 
 export default function App() {
     return (
         <Routes>
             <Route path="/" element={<SideBarLayout />}>
-                <Route index element={<OrdersPage />} />
+                <Route index element={<OrderPage />} />
                 <Route path="/menu" element={<VenderFoodPage />} />
-                <Route path="/menu/:category/:id" element={<AddMenuPage />} />
-                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/menu/:vendorType/:category/:id" element={<AddMenuPage />} />
                 <Route path="/profile" element={<VendorProfileInfo />} />
                 <Route path="/testing" element={<TransliterateInput />} />
 

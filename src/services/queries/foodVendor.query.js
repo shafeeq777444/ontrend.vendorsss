@@ -33,19 +33,19 @@ export function useGetVendorFoodsAndCategories(vendorId, selectedCategory = "All
       getVendorFoodsPaginated(vendorId, 12, pageParam, selectedCategory),
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.lastVisible : undefined,
-    enabled: !!vendorId,
+    enabled: !!vendorId ,
     staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 }
 
-export const useVendorFoodDetails = (category, foodId) => {
+// individual product detail
+export const useVendorFoodDetails = (category, foodId, options = {}) => {
   return useQuery({
     queryKey: ["vendorFood", category, foodId],
     queryFn: () => getVendorFoodDetails(category, foodId),
-    enabled: !!category && !!foodId, // only run if both are defined
-    staleTime: 5 * 60 * 1000, // optional: cache for 5 minutes
+    enabled: !!category && !!foodId && (options.enabled ?? true),
+    staleTime: 5 * 60 * 1000,
   });
 };
-

@@ -15,49 +15,7 @@ import {
 import { db } from "../../../config/firebase";
 import toast from "react-hot-toast";
 
-// each vendors foods(parallel version---------------------------------------------------
-// export const getVendorFoodsAndCategories = async (vendorId) => {
-//   try {
-//     const categoriesRef = collection(db, "Food/items/categories");
-//     const approvedQuery = query(categoriesRef, where("isApproved", "==", true));
-//     const approvedSnapshots = await getDocs(approvedQuery);
 
-//     const fetchVendorFoodsByCategory = approvedSnapshots.docs.map(async (categoryDoc) => {
-//       const categoryId = categoryDoc.id;
-//       const foodsRef = collection(db, `Food/items/categories/${categoryId}/details`);
-//       const approvedFoodsQuery = query(
-//         foodsRef,
-//         where("isApproved", "==", true),
-//         where("addedBy", "==", vendorId) // ✅ filter at query-level
-//       );
-
-//       const foodDocs = await getDocs(approvedFoodsQuery);
-
-//       return foodDocs.docs.map((doc) => ({
-//         ...doc.data(),
-//         id: doc.id,
-//         category: categoryId,
-//       }));
-//     });
-
-//     const nestedFoods = await Promise.all(fetchVendorFoodsByCategory);
-//     const allFoods = nestedFoods.flat();
-
-//     const uniqueCategories = ["All", ...new Set(allFoods.map((food) => food.category))];
-
-//     return {
-//       foods: allFoods,
-//       categories: uniqueCategories,
-//     };
-//   } catch (error) {
-//     console.error("Error fetching vendor foods and categories:", error);
-//     return {
-//       foods: [],
-//       categories: [],
-//     };
-//   }
-// };
-// get all categories
 
 export const getAllFoodCategories = async () => {
     try {
@@ -153,49 +111,6 @@ export const getVendorFoodDetails = async (category, foodId) => {
     }
 };
 
-// each vendors foods (serial version)
-// export const getVendorFoodsAndCategories = async (vendorId) => {
-//     try {
-//         console.log(vendorId, "jjj");
-
-//         const categoriesRef = collection(db, "Food/items/categories");
-//         const approvedQuery = query(categoriesRef, where("isApproved", "==", true));
-//         const approvedSnapshots = await getDocs(approvedQuery);
-
-//         const allFoods = [];
-
-//         for (const categoryDoc of approvedSnapshots.docs) {
-//             const categoryId = categoryDoc.id;
-//             const foodsRef = collection(db, `Food/items/categories/${categoryId}/details`);
-//             const approvedFoodsQuery = query(foodsRef, where("isApproved", "==", true));
-//             const foodDocs = await getDocs(approvedFoodsQuery);
-
-//             for (const doc of foodDocs.docs) {
-//                 const data = doc.data();
-//                 if (data.addedBy === vendorId) {
-//                     allFoods.push({
-//                         ...data,
-//                         id: doc.id,
-//                         category: categoryId,
-//                     });
-//                 }
-//             }
-//         }
-
-//         const uniqueCategories = ["All", ...new Set(allFoods.map((food) => food.category))];
-
-//         return {
-//             foods: allFoods,
-//             categories: uniqueCategories,
-//         };
-//     } catch (err) {
-//         console.error(err);
-//         return {
-//             foods: [],
-//             categories: [],
-//         };
-//     }
-// };
 
 // add and update food item
 export const addFoodItem = async (category, foodObj) => {

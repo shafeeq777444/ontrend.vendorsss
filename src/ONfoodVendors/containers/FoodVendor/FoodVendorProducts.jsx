@@ -6,11 +6,11 @@ import FoodCardInVendor from "../../components/FoodVendor/FoodCardInVendor";
 import SkeltonFoodCard from "../../components/menus/SkeltonFoodCard";
 import { useNavigate } from "react-router-dom";
 
-const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, isOnline }) => {
+const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, isOnline ,currentVendor}) => {
   const navigate=useNavigate()
   console.log(foodItems,"food items")
   if (isLoading) return <SkeltonFoodCard />;
-
+  const vendorType=currentVendor?.vendorType?.split("/")[0]
   return (
     <div className="py-2 px-2 scrollbar-hide">
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 bg-white">
@@ -20,7 +20,7 @@ const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, is
             item={item}
             isOnline={isOnline}
             venderLogo={venderLogo}
-            onClick={()=>{navigate(`/menu/${item.category}/${item.id}`)}}
+            onClick={()=>{navigate(`/menu/${vendorType}/${item.category}/${item.id}`)}}
           />
         ))}
       </div>

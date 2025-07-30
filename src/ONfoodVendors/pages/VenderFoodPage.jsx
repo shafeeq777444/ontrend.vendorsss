@@ -92,7 +92,7 @@ const VenderFoodPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="min-h-screen    bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>
       <div className="overflow-y-hidden bg-white rounded-t-2xl z-30 -mt-4 scrollbar-hide">
         <div ref={productsRef} className="bg-white shadow-xl p-4">
           <FoodVendorMealCategory
@@ -109,6 +109,7 @@ const VenderFoodPage = () => {
             foodItems={limitedFoods}
             isArabic={isArabic}
             venderLogo={venderLogo}
+            currentVendor={currentVendor}
           />
 
           {!isFoodsLoading && (

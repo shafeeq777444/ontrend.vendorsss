@@ -11,7 +11,7 @@ const VendorProfileHeader = ({ vendorType, restaurantName,vendorLogo,isTop }) =>
       <div className="relative group">
         <Avatar className="w-40 h-40 rounded-full border-2 border-white">
           <AvatarImage src={vendorLogo} alt="Vendor Logo" />
-          <AvatarFallback>VL</AvatarFallback>
+          <AvatarFallback></AvatarFallback>
         </Avatar>
 
         {/* Edit icon overlay */}

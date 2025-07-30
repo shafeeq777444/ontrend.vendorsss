@@ -12,8 +12,12 @@ import VariantListCard from "../AddMenu/VariantListCard.jsx";
 import AddOnListCard from "../AddMenu/AddOnListCard.jsx";
 import { useGetAllCategories } from "../../../services/queries/foodVendor.query.js";
 import useFoodForm from "../../hooks/useFoodForm.js";
+import useCurrentUser from "../../../services/queries/user.query.js";
+import { useGetAllCategoriesFromEshop } from "../../../services/queries/Eproduct.query.js";
 
 const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
+
+  
   const {
     formData,
     setFormData,
@@ -26,12 +30,18 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
     handleDiscountPercentage,
     handleAvilableStartTime,
     handleAvilableEndTime,
+    handleStock,
     handlePrepearationTime,
     handleSubmit,
   } = useFoodForm({ existingData, onFinish });
   console.log(existingData,"existingDta")
 
+  
+
   const { data: allCategories } = useGetAllCategories();
+  const {data:allCategoriesFromEShop}=useGetAllCategoriesFromEshop()
+  const {data:currentUSer}=useCurrentUser()
+
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 space-y-10 max-w-7xl mx-auto">
@@ -43,13 +53,29 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
             name={formData.name}
             arabicName={formData.localName}
             category={formData.tag}
+
             handleNameChange={handleNameChange}
             handleDescription={handleDescription}
-            allCategories={allCategories}
+            allCategories={currentUSer?.vendorType == "E-Shopping" ? allCategoriesFromEShop : allCategories}
             categoryOnchange={handleCategoryChange}
           />
         </div>
       </div>
+
+      {currentUSer?.vendorType == "E-Shopping" && (
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="stocks" className="font-medium text-gray-700">Stocks</label>
+          <input
+            id="stocks"
+            type="number"
+            min="0"
+            className="border rounded px-3 py-2 w-32"
+            value={formData.stock || ""}
+            onChange={handleStock}
+            placeholder="Enter stock quantity"
+          />
+        </div>
+      )}
 
       <AvailableTimeCard
         availableTime={formData.availableTime}
@@ -65,6 +91,7 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
         handleOriginalPrice={handleOriginalPrice}
         handleDiscountPercentage={handleDiscountPercentage}
       />
+
 
       <VariantListCard
         initialvariants={formData.variants}

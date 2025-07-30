@@ -11,10 +11,16 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../config/firebase";
 import { v4 as uuid } from "uuid";
 import { useAddFoodMutation, useUpdateFoodMutation } from "../../services/queries/foodAdd.mutation";
+import { useAddEproductMutation, useUpdateEproducMutation } from "../../services/queries/Eproduct.query";
 
 const useFoodForm = ({ existingData = {}, onFinish }) => {
+    // food-----------------------
     const { mutate: addFoodMutate } = useAddFoodMutation();
     const { mutate: updateFoodMutate } = useUpdateFoodMutation();
+    // eproduct-------------------------
+    const { mutate: addEProductMutate } = useAddEproductMutation();
+    const { mutate: updateEProductMutate } = useUpdateEproducMutation();
+
     const { id } = useParams();
     const navigate = useNavigate();
     const { data: currentVendor } = useCurrentUser();
@@ -23,7 +29,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
     const [formData, setFormData] = useState({
         name: "",
         lowerCaseName: "",
-        category: "Burger",
+        tag: "",
         description: "",
         variants: [],
         addOn: {},
@@ -39,16 +45,14 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         imageUrl: "",
         isDisabled: false,
         isApproved: false,
-        stock: null,
         vID: null,
         id: null,
         reference: null,
         timeStamp: serverTimestamp(),
-
+        stock:0,
         restaurantName: "",
         arabicRestaurantName: "",
         lowerCaseRestaurantName: "",
-        tag: "",
         localTag: "",
         localName: "",
         ...existingData,
@@ -89,7 +93,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
 
     const handleToggleDisabled = () => setFormData((prev) => ({ ...prev, isDisabled: !prev.isDisabled }));
     const handleCategoryChange = (selectedOption) =>
-        setFormData((prev) => ({ ...prev, category: selectedOption?.value || "" }));
+        setFormData((prev) => ({ ...prev, tag: selectedOption?.value || "" }));
 
     const handleOriginalPrice = (e) => {
         const itemPrice = parseFloat(e.target.value);
@@ -162,16 +166,37 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             isApproved: formData?.isApproved || false,
         };
 
-        if (id === "new") {
-            addFoodMutate({category:formData?.category, foodObj:finalPayload});
+        // Update both Food and E-Shop depending on vendorType
+        if (currentVendor?.vendorType === "E-Shopping") {
+            // E-Shop logic (add/update)
+            if (id === "new") {
+                addEProductMutate({ category: formData?.tag, productObj: finalPayload });
+            } else {
+                updateEProductMutate({ category: formData?.tag, docId: finalPayload?.id, updatedData: finalPayload });
+            }
         } else {
-            updateFoodMutate({category:formData?.category, docId:finalPayload?.id, updatedData:finalPayload});
+            // Food logic (add/update)
+            if (id === "new") {
+                addFoodMutate({ category: formData?.tag, foodObj: finalPayload });
+            } else {
+                updateFoodMutate({ category: formData?.tag, docId: finalPayload?.id, updatedData: finalPayload });
+            }
         }
 
-        toast.success("Menu hooke Added Successfully");
-        navigate("/menu");
+        
         if (onFinish) onFinish();
     };
+
+    const handleStock = (e) => {
+        const value = parseInt(e.target.value, 10);
+        setFormData((prev) => ({
+            ...prev,
+            stock: isNaN(value) ? 0 : value,
+        }));
+    };
+
+
+    
 
     return {
         formData,
@@ -187,6 +212,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         handleAvilableEndTime,
         handlePrepearationTime,
         handleSubmit,
+        handleStock
     };
 };
 

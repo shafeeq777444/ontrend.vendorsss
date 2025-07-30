@@ -53,6 +53,7 @@ const LoginScreen = () => {
     } catch (error) {
       console.error("Login failed:", error.message);
       toast.error((isArabic ? "فشل تسجيل الدخول: " : "Login failed: ") + error.message);
+
     }
   };
 

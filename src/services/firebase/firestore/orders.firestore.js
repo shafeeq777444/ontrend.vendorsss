@@ -1,4 +1,15 @@
-import { collection, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  serverTimestamp,
+  startAfter,
+  updateDoc,
+  where
+} from "firebase/firestore";
 import { db } from "../../../config/firebase";
 
 export const getVendorAllOrders = async ({
@@ -55,3 +66,16 @@ console.log(orders,"orders")
     };
   }
 };
+
+//update order
+export const updateOrder = async ({ orderId, updatedData }) => {
+  const vendorRef = doc(db, "orders", orderId);
+
+  await updateDoc(vendorRef, {
+    ...updatedData,
+    // updatedAt:serverTimestamp()
+  });
+
+  return true; // or return a custom message/object if needed
+};
+

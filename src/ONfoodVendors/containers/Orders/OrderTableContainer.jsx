@@ -1,57 +1,71 @@
 import React, { useState } from "react";
 import OrderTable from "../../components/Orders/OrderTable";
-
 import InvoiceModal from "../../components/Orders/InvoiceModal";
 import OrderCardList from "../../components/Orders/OrderCardList";
+import { useDispatch, useSelector } from "react-redux";
+import { setInvoice } from "../../../slices/order/orderSlice";
+import { useUpdateOrder } from "../../../services/queries/orders.query";
 
-const dummyOrders = [
-  {
-    orderId: "ORD12345",
-    customer: "John Doe",
-    status: "Preparing",
-    orderAmount: "$24.99",
-    orderTime: "2025-07-21 10:30 AM",
-    lastUpdateTime: "2025-07-21 11:00 AM",
-    paymentMethod: "COD",
-    discount: 2.5,
-    sellerEarnings: 20.5,
-    items: [
-      {
-        itemName: "Fresh Banana Jam",
-        localName: "عصيرس كريم",
-        itemPrice: 0.7,
-        itemQuantity: 1,
-        total: 0.7,
-        addOns: [],
-        addedBy: "LpU7mIF2",
-      },
-    ],
-  },
-  // Add more if needed
-];
+const OrderTableContainer = ({
+  orders,
+  onNext,
+  onPrevious,
+  pageIndex,
+  isFetchingNextPage,
+  hasNextPage,
+  maxPage,
+}) => {
+  const { mutate: updateOrder } = useUpdateOrder();
+ const invoice = useSelector((state) => state.order.invoice);
+  console.log(invoice,"invoice")
+  const dispatch = useDispatch(); 
+  const onInvoiceClick = (order) => {
+  dispatch(setInvoice(order)); // ✅ Use dispatch correctly
+};
 
-const OrderTableContainer = () => {
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const closeModal = () => setSelectedOrder(null);
+const handleCloseModal = () => {
+  dispatch(setInvoice(null)); // ✅ Close modal
+};
 
-  const handleInvoiceClick = (orderId) => {
-    const foundOrder = dummyOrders.find((order) => order.orderId === orderId);
-    if (foundOrder) setSelectedOrder(foundOrder);
-  };
+const handleSelector = (orderId, status) => {
+  updateOrder({ orderId: orderId, updatedData: { status } });
+};
 
   return (
     <>
       {/* Desktop Table */}
       <div className="hidden lg:block">
-        <OrderTable orders={dummyOrders} onInvoiceClick={handleInvoiceClick} />
+        <OrderTable orders={orders} onInvoiceClick={onInvoiceClick} handleSelector={handleSelector}/>
       </div>
 
-      {/* Mobile/Tablet Card View */}
+      {/* Mobile Cards */}
       <div className="block lg:hidden">
-        <OrderCardList orders={dummyOrders} onInvoiceClick={handleInvoiceClick} />
+        <OrderCardList orders={orders}   onInvoiceClick={onInvoiceClick} handleSelector={handleSelector}/>
       </div>
 
-      <InvoiceModal order={selectedOrder} onClose={closeModal} />
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <button
+          onClick={onPrevious}
+          disabled={pageIndex === 0}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span className="text-sm">
+          Page {pageIndex + 1} of {maxPage + 1}
+        </span>
+
+        <button
+          onClick={onNext}
+          disabled={!hasNextPage && pageIndex === maxPage}
+          className="px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
+        >
+          {isFetchingNextPage ? "Loading..." : "Next"}
+        </button>
+      </div>
+       {invoice && <InvoiceModal onClose={handleCloseModal} order={invoice} />}
     </>
   );
 };

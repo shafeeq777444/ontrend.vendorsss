@@ -1,14 +1,24 @@
+
 import React, { useState, useRef, useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import TabButton from "../../components/Orders/TabButton";
+import {  useDispatch, useSelector } from "react-redux";
+import { setActiveTab } from "../../../slices/order/orderSlice";
 
-const TABS = ["Request's", "All Orders", "Preparing", "Ready", "Pickup", "Completed"];
+// const TABS = ["Request's", "all", "Preparing", "Ready", "Pickup", "Delivered","Cancelled"];
+const TABS = ['Pending',"all", 'Processing', 'Ready', 'Picked Up', 'Delivered',"Cancelled"];
 
 const OrderTabBar = () => {
-  const [activeTab, setActiveTab] = useState("Request's");
+  const dispatch=useDispatch()
+  const activeTab = useSelector((state) => state.order.activeTab);
   const tabRefs = useRef({});
 
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+
+  const handleTabClick = (label) => {
+    dispatch(setActiveTab(label));
+  };
 
   useEffect(() => {
     const currentTab = tabRefs.current[activeTab];
@@ -26,7 +36,7 @@ const OrderTabBar = () => {
         {TABS.map((label) => (
          <TabButton
          key={label}
-         setActiveTab={setActiveTab}
+         handleTabClick={handleTabClick}
          tabRefs={tabRefs}
          activeTab={activeTab}
          label={label}

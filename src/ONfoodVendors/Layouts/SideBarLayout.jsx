@@ -7,9 +7,8 @@ const SideBarLayout = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const menuItems = [
-        { name: "Dashboard", icon: <Zap size={16} /> ,route:""},
         { name: "Food Menus", icon: <Zap size={16} /> ,route:"/menu"},
-        { name: "Orders", icon: null ,route:"/orders"},
+        { name: "Orders", icon: null ,route:"/"},
         { name: "Earnings", icon: null ,route:"/earnings"},
         { name: "Profile", icon: null ,route:"/profile" },
     ];
