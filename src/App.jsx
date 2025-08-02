@@ -12,6 +12,8 @@ import AddMenuPage from "./ONfoodVendors/pages/AddMenuPage";
 import VenderFoodPage from "./ONfoodVendors/pages/VenderFoodPage";
 import TransliterateInput from "./ONfoodVendors/Test";
 import OrderPage from "./ONfoodVendors/pages/orderPage";
+import EarningsPage from "./ONfoodVendors/pages/EarningsPage";
+import TestingPage from "./ONfoodVendors/pages/TestingPage";
 
 export default function App() {
     return (
@@ -21,7 +23,8 @@ export default function App() {
                 <Route path="/menu" element={<VenderFoodPage />} />
                 <Route path="/menu/:vendorType/:category/:id" element={<AddMenuPage />} />
                 <Route path="/profile" element={<VendorProfileInfo />} />
-                <Route path="/testing" element={<TransliterateInput />} />
+                <Route path="/testing" element={<TestingPage />} />
+                <Route path="/earnings" element={<EarningsPage />} />
 
             </Route>
             {/* ---------------------------------  Auth --------------------------------- */}

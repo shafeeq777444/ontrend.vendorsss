@@ -1,42 +1,57 @@
 import React, { useState } from "react";
 import { Menu, X, ChevronDown, Zap, Search, Clock, Eye, Users, DollarSign } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";
+import useCurrentUser from "../../services/queries/user.query";
+import LogoutConfirmation from "../components/common/LogoutCard";
 
 const SideBarLayout = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate();
+    const { data } = useCurrentUser();
     const [menuOpen, setMenuOpen] = useState(false);
 
     const menuItems = [
-        { name: "Food Menus", icon: <Zap size={16} /> ,route:"/menu"},
-        { name: "Orders", icon: null ,route:"/"},
-        { name: "Earnings", icon: null ,route:"/earnings"},
-        { name: "Profile", icon: null ,route:"/profile" },
+        { name: "Food Menus", icon: <Zap size={16} />, route: "/menu" },
+        { name: "Orders", icon: null, route: "/" },
+        { name: "Earnings", icon: null, route: "/earnings" },
+        { name: "Profile", icon: null, route: "/profile" },
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-slate-50">
             {/* Header */}
-            <div className="bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md h-70">
-                <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="bg-gradient-to-r from-sky-900 via-sky-700 to-sky-600 text-white shadow-lg h-80 border-b-2 ">
+                <div className="max-w-7xl mx-auto px-4 py-8">
                     <div className="flex items-center justify-between">
                         {/* Logo */}
                         <div className="flex items-center gap-2">
                             {/* <img className="w-20" src="/ONtrend/ONtrend-logo.png"></img> */}
-                            <span className="text-xl font-semibold">ONtrend</span>
+                            <span className="text-xl font-semibold text-sky-100">ONtrend</span>
                         </div>
 
                         {/* Right section */}
                         <div className="flex items-center gap-4">
                             {/* Profile dropdown */}
-                            <div className="flex items-center gap-2 cursor-pointer bg-red-700 px-3 py-1 rounded-full">
-                                <img src="https://i.pravatar.cc/32" alt="profile" className="w-6 h-6 rounded-full" />
-                                <span className="text-sm font-medium hidden sm:inline">Floyd Howard</span>
-                                <ChevronDown size={4} />
-                            </div>
+                            {data && (
+                                <div className="flex items-center gap-2 cursor-pointer bg-slate-600 md:px-3 py-1 rounded-full hover:bg-slate-500 transition-colors">
+                                    <img
+                                        src={data?.image}
+                                        alt="profile"
+                                        className="w-6 h-6 rounded-full ring-2 ring-sky-300"
+                                    />
+                                    <span className="text-sm font-medium hidden sm:inline">{data?.name}</span>
+                                    <ChevronDown size={4} className="text-sky-200 hidden sm:inline" />
+                                    {/* <LogoutConfirmation/> */}
+                                </div>
+                            )}
 
                             {/* Mobile menu icon */}
                             <div className="lg:hidden">
-                                <button onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
+                                <button
+                                    onClick={() => setMenuOpen(!menuOpen)}
+                                    className="text-sky-200 hover:text-white transition-colors"
+                                >
+                                    {menuOpen ? <X /> : <Menu />}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -45,13 +60,15 @@ const SideBarLayout = () => {
                     <div className="hidden lg:flex items-center gap-6 mt-4">
                         {menuItems.map((item, index) => (
                             <button
-                            onClick={()=>navigate(item?.route)}
+                                onClick={() => navigate(item?.route)}
                                 key={index}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-full text-md transition ${
-                                    item.active ? "bg-red-700/80 text-white" : "hover:text-gray-200"
+                                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-md transition-colors ${
+                                    item.route === window.location.pathname
+                                        ? "bg-sky-600 text-white shadow-md "
+                                        : "hover:bg-slate-600/30 hover:text-gray-100 "
                                 }`}
                             >
-                                {item.icon && <span>{item.icon}</span>}
+                                {item.icon && <span className="text-sky-200">{item.icon}</span>}
                                 {item.name}
                             </button>
                         ))}
@@ -65,15 +82,15 @@ const SideBarLayout = () => {
                             {menuItems.map((item, index) => (
                                 <button
                                     key={index}
-                                    className={`flex items-center gap-2 text-left px-4 py-2 text-sm rounded ${
-                                        item.active ? "bg-red-700 text-white" : "hover:bg-red-400"
+                                    className={`flex items-center gap-2 text-left px-4 py-2 text-sm rounded-lg transition-colors ${
+                                        item.active ? "bg-sky-600 text-white" : "hover:bg-slate-600/30 hover:text-gray-100"
                                     }`}
                                 >
-                                    {item.icon && <span>{item.icon}</span>}
+                                    {item.icon && <span className="text-sky-200">{item.icon}</span>}
                                     {item.name}
                                 </button>
                             ))}
-                            <button className="flex items-center gap-2 bg-white text-red-600 font-semibold px-4 py-2 rounded-full text-sm mx-4 mt-2">
+                            <button className="flex items-center gap-2 bg-sky-50 text-sky-700 font-semibold px-4 py-2 rounded-lg text-sm mx-4 mt-2 hover:bg-sky-100 transition-colors">
                                 <Search size={16} />
                                 Channel Consultation
                             </button>
