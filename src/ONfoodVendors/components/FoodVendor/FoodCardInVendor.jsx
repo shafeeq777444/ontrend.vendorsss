@@ -28,7 +28,7 @@ const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
   , [isArabic]);
 
   return (
-    <div className="relative rounded-2xl overflow-hidden bg-white shadow hover:shadow-lg transition-all duration-300 group cursor-pointer">
+    <div className="relative rounded-2xl overflow-hidden bg-white shadow-xl border border-gray-100 hover:shadow-lg transition-all duration-300 group cursor-pointer">
       
       {/* Image Section */}
       <div className="relative">
@@ -37,7 +37,7 @@ const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
           alt={item.name}
           placeholder={venderLogo}
           loading="lazy"
-          className="w-full h-44 sm:h-52 object-cover"
+          className="w-full rounded-md h-44 sm:h-52 object-cover"
         />
 
         {/* Discount Badge */}

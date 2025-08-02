@@ -96,7 +96,7 @@ const AddOnListCard = ({ initialAddOn = {}, onChange }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white shadow-2xl rounded-2xl p-6">
       {/* ➕ Add Add-on Input */}
       <div className="flex gap-2 mb-4">
         <input

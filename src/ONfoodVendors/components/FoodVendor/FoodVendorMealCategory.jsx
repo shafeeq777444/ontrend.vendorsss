@@ -31,13 +31,15 @@ const FoodVendorMealCategory = ({
   const debouncedSearch = useDebouncedValue(localSearch, 400);
   const [showFilter, setShowFilter] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const filterRef = useRef(null);
   const filterButtonRef = useRef(null);
   const scrollRef = useRef(null);
   const searchInputRef = useRef(null);
 
-  // Only dispatch when debounced value changes
+  // Sync debounced search
   useEffect(() => {
     if (debouncedSearch !== searchTerm) {
       dispatch(setSearchTerm(debouncedSearch));
@@ -83,6 +85,37 @@ const FoodVendorMealCategory = ({
     setShowFilter((prev) => !prev);
   }, []);
 
+  const updateScrollButtons = useCallback(() => {
+    const el = scrollRef.current;
+    if (el) {
+      setCanScrollLeft(el.scrollLeft > 0);
+      setCanScrollRight(el.scrollLeft + el.offsetWidth < el.scrollWidth);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateScrollButtons();
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("scroll", updateScrollButtons);
+      window.addEventListener("resize", updateScrollButtons);
+    }
+    return () => {
+      el?.removeEventListener("scroll", updateScrollButtons);
+      window.removeEventListener("resize", updateScrollButtons);
+    };
+  }, [updateScrollButtons]);
+
+  const scrollByAmount = 200;
+
+  const scrollLeft = () => {
+    scrollRef.current?.scrollBy({ left: -scrollByAmount, behavior: "smooth" });
+  };
+
+  const scrollRight = () => {
+    scrollRef.current?.scrollBy({ left: scrollByAmount, behavior: "smooth" });
+  };
+
   const categoryButtons = useMemo(() =>
     categories.map((category, i) => {
       const isSelected = selectedCategory === category;
@@ -91,8 +124,7 @@ const FoodVendorMealCategory = ({
           key={category + i}
           onClick={() => handleCategoryClick(category)}
           className={`snap-start flex-shrink-0 px-6 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-all duration-200
-            ${isSelected ? "text-white bg-black shadow-lg" : "text-gray-700 bg-gray-100 hover:bg-gray-200"}
-            ${!isOnline ? "opacity-60 grayscale" : ""}
+            ${isSelected ? "bg-sky-400 text-white shadow-md" : "bg-gray-100 hover:bg-gray-200"}
           `}
         >
           {category}
@@ -104,7 +136,7 @@ const FoodVendorMealCategory = ({
   if (isLoading) return <SkeletonCategoryTabs />;
 
   return (
-    <div className="relative p-4 rounded-2xl bg-white">
+    <div className="relative p-4 rounded-2xl bg-white shadow-xl">
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold text-gray-800">Menu</h2>
@@ -150,6 +182,7 @@ const FoodVendorMealCategory = ({
         </div>
       </div>
 
+      {/* Filter Dropdown */}
       <AnimatePresence>
         {showFilter && (
           <motion.div
@@ -169,8 +202,35 @@ const FoodVendorMealCategory = ({
         )}
       </AnimatePresence>
 
-      <div className="mt-2 overflow-x-auto scrollbar-hide" ref={scrollRef}>
-        <div className="flex gap-3">{categoryButtons}</div>
+      {/* Scrollable Category Tabs with Buttons */}
+      <div className="relative mt-2">
+        {canScrollLeft && (
+          <button
+            onClick={scrollLeft}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow hover:shadow-md"
+            aria-label="Scroll left"
+          >
+            ◀
+          </button>
+        )}
+
+        <div
+          ref={scrollRef}
+          className="mx-6 flex gap-3 overflow-x-auto scroll-smooth scrollbar-hide"
+          style={{ scrollBehavior: 'smooth' }}
+        >
+          {categoryButtons}
+        </div>
+
+        {canScrollRight && (
+          <button
+            onClick={scrollRight}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow hover:shadow-md"
+            aria-label="Scroll right"
+          >
+            ▶
+          </button>
+        )}
       </div>
     </div>
   );

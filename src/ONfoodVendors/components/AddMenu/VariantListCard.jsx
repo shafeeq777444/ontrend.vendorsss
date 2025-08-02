@@ -59,7 +59,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-white shadow-2xl rounded-2xl p-6">
       <h3 className="text-lg font-semibold text-gray-800">Variants</h3>
 
       {Object.entries(variants).map(([key, value]) => (

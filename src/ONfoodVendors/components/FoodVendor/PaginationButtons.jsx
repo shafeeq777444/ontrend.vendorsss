@@ -4,10 +4,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 // Memoized utility function for button styles (no isOnline logic)
 const getButtonClasses = (isDisabled) => `
   group relative w-12 h-12 rounded-xl 
-  bg-gradient-to-r from-[#ff3131] to-[#ff4757] text-white 
+  bg-gradient-to-r from-[#87ceeb] to-[#6495ed] text-white 
   border-0 transition-all duration-300 ease-out 
   flex items-center justify-center overflow-hidden
-  hover:shadow-lg hover:shadow-red-500/30 hover:scale-105
+  hover:shadow-lg hover:shadow-sky-500/30 hover:scale-105
   ${isDisabled ? 'opacity-40 cursor-not-allowed hover:scale-100 hover:shadow-none' : ''}
 `;
 
@@ -46,7 +46,7 @@ const PaginationButtons = React.memo(({
 
       {/* Page Indicator */}
       <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#ff3131] to-[#ff4757] rounded-2xl blur-sm opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#87ceeb] to-[#6495ed] rounded-2xl blur-sm opacity-20" />
         <span className="relative text-sm font-bold text-gray-800 bg-white/95 backdrop-blur-sm px-6 py-3 rounded-2xl border border-gray-200/50 shadow-lg">
           {isArabic ? `صفحة ${currentPageIndex + 1}` : `Page ${currentPageIndex + 1}`}
         </span>

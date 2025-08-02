@@ -93,8 +93,8 @@ const VenderFoodPage = () => {
 
   return (
     <div className="min-h-screen    bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>
-      <div className="overflow-y-hidden bg-white rounded-t-2xl z-30 -mt-4 scrollbar-hide">
-        <div ref={productsRef} className="bg-white shadow-xl p-4">
+      <div className="overflow-y-hidden bg-gradient-to-br from-white to-offwhite rounded-t-2xl z-30 -mt-4 scrollbar-hide">
+        <div ref={productsRef} className="bg-gradient-to-br from-white to-offwhite shadow-xl p-4">
           <FoodVendorMealCategory
             setCurrentPageIndex={setCurrentPageIndex}
             isOnline={isOnline}

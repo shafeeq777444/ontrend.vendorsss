@@ -125,3 +125,11 @@
 .react-time-picker__wrapper {
   @apply border-none rounded-sm p-1;
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

@@ -12,8 +12,8 @@ const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, is
   if (isLoading) return <SkeltonFoodCard />;
   const vendorType=currentVendor?.vendorType?.split("/")[0]
   return (
-    <div className="py-2 px-2 scrollbar-hide">
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 bg-white">
+    <div className="py-2 px-2 ] scrollbar-hide ">
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 bg-gradient-to-br  p-4 rounded-md">
         {foodItems?.map((item) => (
           <FoodCardInVendor
             key={item.id}
