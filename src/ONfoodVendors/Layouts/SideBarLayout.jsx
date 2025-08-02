@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { Menu, X, ChevronDown, Zap, Search, Clock, Eye, Users, DollarSign } from "lucide-react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import useCurrentUser from "../../services/queries/user.query";
 import LogoutConfirmation from "../components/common/LogoutCard";
 
+import { getAuth } from "firebase/auth";
+import { useFirebaseAuthReady } from "../../services/firebase/auth";
+
 const SideBarLayout = () => {
+    const authReady = useFirebaseAuthReady();
+    const user = getAuth().currentUser;
     const navigate = useNavigate();
-    const { data } = useCurrentUser();
+    const { data,isLoading } = useCurrentUser();
     const [menuOpen, setMenuOpen] = useState(false);
 
     const menuItems = [
@@ -15,7 +20,8 @@ const SideBarLayout = () => {
         { name: "Earnings", icon: null, route: "/earnings" },
         { name: "Profile", icon: null, route: "/profile" },
     ];
-
+    if (!authReady) return <div className="p-10 text-center">ONtrend Loading...</div>;
+    if (!user) return <Navigate to="/auth" replace />;
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header */}
