@@ -22,9 +22,9 @@ export default function App() {
                 <Route index element={<OrderPage />} />
                 <Route path="/menu" element={<VenderFoodPage />} />
                 <Route path="/menu/:vendorType/:category/:id" element={<AddMenuPage />} />
-                <Route path="/profile" element={<VendorProfileInfo />} />
                 <Route path="/testing" element={<TestingPage />} />
                 <Route path="/earnings" element={<EarningsPage />} />
+                <Route path="/profile" element={<VendorProfileInfo />} />
 
             </Route>
             {/* ---------------------------------  Auth --------------------------------- */}

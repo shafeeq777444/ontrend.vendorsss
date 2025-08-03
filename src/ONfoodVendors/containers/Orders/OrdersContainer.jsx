@@ -53,7 +53,7 @@ const OrdersContainer = () => {
         }
     };
 
-    if (isUserLoading || isLoading) return <div>Loading orders...</div>;
+    const loading = isUserLoading || isLoading;
     if (isError) return <div>Error: {error.message}</div>;
 
     const currentPageOrders = pages[pageIndex]?.orders ?? [];
@@ -62,6 +62,7 @@ const OrdersContainer = () => {
         <div>
             <OrderTabBar />
             <OrderTableContainer
+                loading={loading}
                 orders={currentPageOrders}
                 onNext={handleNext}
                 onPrevious={handlePrevious}

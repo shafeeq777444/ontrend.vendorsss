@@ -1,16 +1,13 @@
-
 import React, { useState, useRef, useEffect } from "react";
-// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import TabButton from "../../components/Orders/TabButton";
-import {  useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../slices/order/orderSlice";
 
-// const TABS = ["Request's", "all", "Preparing", "Ready", "Pickup", "Delivered","Cancelled"];
-const TABS = ['Pending',"all", 'Processing', 'Ready', 'Picked Up', 'Delivered',"Cancelled"];
+const TABS = ['Pending', 'all', 'Processing', 'Ready', 'Picked Up', 'Delivered', 'Cancelled'];
 
 const OrderTabBar = () => {
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const activeTab = useSelector((state) => state.order.activeTab);
   const tabRefs = useRef({});
 
@@ -31,28 +28,27 @@ const OrderTabBar = () => {
   }, [activeTab]);
 
   return (
-    <div className="relative border-b border-white/30 mb-4 overflow-x-auto">
-      <div className="flex">
+    <div className="relative px-3 py-2 bg-white rounded-xl shadow border border-gray-200 overflow-x-auto scrollbar-hide mb-3">
+      <div className="flex gap-2 whitespace-nowrap">
         {TABS.map((label) => (
-         <TabButton
-         key={label}
-         handleTabClick={handleTabClick}
-         tabRefs={tabRefs}
-         activeTab={activeTab}
-         label={label}
-         />
+          <TabButton
+            key={label}
+            handleTabClick={handleTabClick}
+            tabRefs={tabRefs}
+            activeTab={activeTab}
+            label={label}
+          />
         ))}
       </div>
 
       {/* Animated underline */}
       <motion.div
-        className="absolute bottom-0 h-0.5 bg-white"
+        className="absolute h-[2px] bg-blue-600 rounded"
         layout
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         style={{
           left: underlineStyle.left,
           width: underlineStyle.width,
-          position: "absolute",
         }}
       />
     </div>

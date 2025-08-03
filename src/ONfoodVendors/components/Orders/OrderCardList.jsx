@@ -7,7 +7,7 @@ const statusOptions = [
   "Ready",
   "Picked Up",
   "Delivered",
-  "Cancelled"
+  "Cancelled",
 ];
 
 const statusBadgeClass = (status) => {
@@ -37,25 +37,32 @@ const OrderCardList = ({ orders, handleSelector, onInvoiceClick }) => {
       {orders.map((order) => (
         <div
           key={order.id + order.orderTimeStamp}
-          className="border rounded-2xl shadow-lg p-5 bg-white hover:bg-gray-50 transition flex flex-col gap-3"
+          className="border border-gray-100 rounded-2xl shadow-md bg-white p-5 transition hover:shadow-lg"
         >
-          <div className="flex items-center justify-between">
-            <div className="text-base font-bold text-gray-800">
+          {/* Header Row */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-base font-semibold text-gray-900">
               Order ID: <span className="font-mono">{order.id}</span>
             </div>
             <span
-              className={`inline-block px-3 py-1 rounded-full text-sm font-bold border ${statusBadgeClass(order.status)}`}
+              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${statusBadgeClass(order.status)}`}
             >
               {order.status}
             </span>
           </div>
-          <div className="text-sm text-gray-600 font-medium">Customer: {order.userName}</div>
-          <div className="flex flex-col items-center gap-1 mt-2">
-            <label className="text-xs text-gray-500 mb-1">Update Status</label>
+
+          {/* Customer */}
+          <div className="text-sm text-gray-600 mb-1">
+            <span className="font-medium">Customer:</span> {order.userName}
+          </div>
+
+          {/* Status Selector */}
+          <div className="mt-3">
+            <label className="text-xs text-gray-500 mb-1 block">Update Status</label>
             <select
               value={order?.status}
               onChange={(e) => handleSelector(order.id, e.target.value)}
-              className="w-full max-w-xs px-3 py-2 rounded-md text-sm font-medium border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-400 bg-white shadow-sm transition hover:border-red-400"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition"
             >
               {statusOptions.map((status) => (
                 <option key={status} value={status}>
@@ -64,21 +71,39 @@ const OrderCardList = ({ orders, handleSelector, onInvoiceClick }) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-wrap gap-4 mt-2">
-            <div className="text-sm text-gray-700 font-semibold">Amount: <span className="font-normal">{order.totalPrice}</span></div>
-            <div className="text-sm text-gray-700 font-semibold">Order Time: <span className="font-normal">{order.orderTimeStamp?.toDate().toLocaleString()}</span></div>
+
+          {/* Info Rows */}
+          <div className="mt-4 space-y-1 text-sm text-gray-700">
+            <div>
+              <span className="font-semibold">Amount:</span> OMR {order.totalPrice}
+            </div>
+            <div>
+              <span className="font-semibold">Order Time:</span>{" "}
+              {order.orderTimeStamp?.toDate().toLocaleString()}
+            </div>
           </div>
 
-          <div className="mt-3 flex justify-end">
+          {/* Invoice Button */}
+          <div className="mt-4 flex justify-end">
             <button
               onClick={() => onInvoiceClick(order)}
-              className="text-red-600 underline hover:text-red-800 text-sm font-semibold transition"
+              className="text-blue-700 text-sm font-medium underline hover:text-blue-900 transition"
             >
               View Invoice
             </button>
           </div>
         </div>
       ))}
+
+      {orders.length === 0 && (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+            <span className="text-2xl text-gray-400">📭</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
+          <p className="text-gray-500">Check back later or try different filters.</p>
+        </div>
+      )}
     </div>
   );
 };

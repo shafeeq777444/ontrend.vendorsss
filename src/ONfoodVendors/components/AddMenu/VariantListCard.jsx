@@ -59,7 +59,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
   };
 
   return (
-    <div className="space-y-4 bg-white shadow-2xl rounded-2xl p-6">
+    <div className="space-y-4  p-6">
       <h3 className="text-lg font-semibold text-gray-800">Variants</h3>
 
       {Object.entries(variants).map(([key, value]) => (
@@ -67,17 +67,17 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
           {editKey === key ? (
             <>
               <input
-                className="border p-1 px-2 w-32 rounded"
+                className="border rounded-full p-1 px-2 w-32 "
                 value={editVariant.key}
                 onChange={(e) => setEditVariant({ ...editVariant, key: e.target.value })}
               />
               <input
-                className="border p-1 px-2 w-20 rounded"
+                className="border rounded-full p-1 px-2 w-20 "
                 value={editVariant.qty}
                 onChange={(e) => setEditVariant({ ...editVariant, qty: e.target.value })}
               />
               <input
-                className="border p-1 px-2 w-20 rounded"
+                className="border rounded-full p-1 px-2 w-20 "
                 value={editVariant.price}
                 onChange={(e) => setEditVariant({ ...editVariant, price: e.target.value })}
               />
@@ -87,10 +87,10 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
           ) : (
             <>
               <div className="w-32 font-medium text-gray-700">{key}</div>
-              <div className="text-gray-600">Qty: {value.qty}</div>
-              <div className="text-gray-600">Price: {value.price}</div>
-              <Pencil className="w-4 h-4 text-blue-500 cursor-pointer" onClick={() => handleEdit(key)} />
-              <Trash2 className="w-4 h-4 text-red-500 cursor-pointer" onClick={() => handleDelete(key)} />
+              <div className="text-gray-600 mr-9">Qty: {value.qty}</div>
+              <div className="text-gray-600 mr-7">Price: {value.price}</div>
+              <Pencil className="w-4 h-4 mr-4 text-black cursor-pointer" onClick={() => handleEdit(key)} />
+              <Trash2 className="w-4 h-4 mr-4 text-black cursor-pointer" onClick={() => handleDelete(key)} />
             </>
           )}
         </div>
@@ -100,24 +100,24 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
       <div className="flex flex-wrap gap-2 items-center mt-4">
         <input
           placeholder="Variant Name"
-          className="border p-1 px-2 w-32 rounded"
+          className="border rounded-full p-1 px-2 w-32 "
           value={newVariant.key}
           onChange={(e) => setNewVariant({ ...newVariant, key: e.target.value })}
         />
         <input
           placeholder="Qty"
-          className="border p-1 px-2 w-20 rounded"
+          className="border rounded-full p-1 px-2 w-20 "
           value={newVariant.qty}
           onChange={(e) => setNewVariant({ ...newVariant, qty: e.target.value })}
         />
         <input
           placeholder="Price"
-          className="border p-1 px-2 w-20 rounded"
+          className="border rounded-full p-1 px-2 w-20 "
           value={newVariant.price}
           onChange={(e) => setNewVariant({ ...newVariant, price: e.target.value })}
         />
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded shadow flex items-center"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-full shadow flex items-center"
           onClick={handleAdd}
         >
           <Plus className="w-4 h-4" />

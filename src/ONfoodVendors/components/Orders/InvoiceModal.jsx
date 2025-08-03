@@ -1,12 +1,42 @@
 import React from "react";
+import { formatOMR } from "../../../utils/formatOMR";
 
 const InvoiceModal = ({ order, onClose }) => {
     if (!order) return null;
+    // Helper function to calculate total amount
+    const calculateTotalPrice = (items) => {
+        if (!items || !Array.isArray(items)) return 0;
+        return items.reduce((acc, item) => {
+            const total = item?.total || 0;
+            return acc + total;
+        }, 0);
+    };
+
+    // Helper function to calculate commission
+    const calculateTotalCommission = (items) => {
+        if (!items || !Array.isArray(items)) return 0;
+        return items.reduce((acc, item) => {
+            const commissionPer = item?.commission || 0;
+            const commissionAmount = (item?.total * commissionPer) / 100;
+            return acc + commissionAmount;
+        }, 0);
+    };
+    // Helper function to calculate seller earnings
+    const calculateSellerEarnings = (items) => {
+        if (!items || !Array.isArray(items)) return 0;
+
+        return items.reduce((acc, item) => {
+            const total = item?.total || 0;
+            const commission = item?.commission || 0;
+            const sellerEarning = total - (total * commission) / 100;
+            return acc + sellerEarning;
+        }, 0);
+    };
 
     const subtotal = order.totalPrice;
-    const sellerEarnings = subtotal - order.totalCommission || 0;
+    // const sellerEarnings = subtotal - order.totalCommission || 0;
     const discount = order.discount || 0;
-    const total = subtotal - discount;
+    // const total = subtotal - discount;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -50,23 +80,23 @@ const InvoiceModal = ({ order, onClose }) => {
                 <div className="text-sm space-y-1">
                     <div className="flex justify-between">
                         <span>Subtotal</span>
-                        <span>${subtotal.toFixed(3)}</span>
+                        <span>OMR {formatOMR(calculateTotalPrice(order?.items))}</span>
                     </div>
-                    <div className="flex justify-between text-yellow-700">
+                    {/* <div className="flex justify-between text-yellow-700">
                         <span>Discount</span>
-                        <span>- ${discount.toFixed(3)}</span>
-                    </div>
-                    <div className="flex justify-between font-bold">
+                        <span>- OMR {formatOMR(discount)}</span>
+                    </div> */}
+                    {/* <div className="flex justify-between font-bold">
                         <span>Total</span>
                         <span>${total.toFixed(3)}</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between text-red-600 font-medium">
                         <span>ONtrend service Fee</span>
-                        <span>${order?.totalCommission?.toFixed(3) || "0.000"}</span>
+                        <span>OMR {formatOMR(calculateTotalCommission(order?.items))}</span>
                     </div>
                     <div className="flex justify-between text-green-700">
                         <span>Seller Earnings</span>
-                        <span>${sellerEarnings?.toFixed(3) || 0}</span>
+                        <span>OMR {formatOMR(calculateSellerEarnings(order?.items))}</span>
                     </div>
                 </div>
 

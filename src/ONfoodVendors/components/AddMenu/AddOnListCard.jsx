@@ -96,7 +96,7 @@ const AddOnListCard = ({ initialAddOn = {}, onChange }) => {
   };
 
   return (
-    <div className="space-y-6 bg-white shadow-2xl rounded-2xl p-6">
+    <div className="space-y-6  p-6">
       {/* ➕ Add Add-on Input */}
       <div className="flex gap-2 mb-4">
         <input
@@ -104,13 +104,13 @@ const AddOnListCard = ({ initialAddOn = {}, onChange }) => {
           placeholder="Enter new add-on group name"
           value={newAddOnName}
           onChange={(e) => setNewAddOnName(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="border border-gray-300 rounded-2xl px-6 py-3 w-full focus:outline-none focus:ring-0 "
         />
         <button
           onClick={handleAddAddOn}
-          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+          className="bg-green-600 text-white px-6 py-3 rounded-2xl hover:bg-green-700 transition"
         >
-          Add Group
+          Add
         </button>
       </div>
 

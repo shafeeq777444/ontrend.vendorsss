@@ -1,6 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { formatOMR } from "../../../utils/formatOMR";
 
 const OrdersTable = ({
     filteredOrders = [],
@@ -13,6 +14,15 @@ const OrdersTable = ({
     getPaymentModeIcon,
     getPaymentModeColor,
 }) => {
+ // Helper function to calculate total amount
+ const calculateTotalPrice = (items) => {
+    if (!items || !Array.isArray(items)) return 0;
+    return items.reduce((acc, item) => {
+        const total = item?.total || 0;
+        return acc + total;
+    }, 0);
+};
+
     // Helper function to calculate seller earnings
     const calculateSellerEarnings = (items) => {
         if (!items || !Array.isArray(items)) return 0;
@@ -25,12 +35,7 @@ const OrdersTable = ({
         }, 0);
     };
 
-    // Helper function to safely format currency
-    const formatCurrency = (amount) => {
-        const numAmount = Number(amount) || 0;
-        return numAmount.toFixed(2);
-    };
-
+   
     console.log(paginatedOrders, "paginated orders");
     return (
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -72,12 +77,12 @@ const OrdersTable = ({
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">
-                                        OMR {formatCurrency(order?.totalPrice || order?.itemTotal)}
+                                        OMR {formatOMR(calculateTotalPrice(order?.items))}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-semibold text-green-600">
-                                        OMR {formatCurrency(calculateSellerEarnings(order?.items))}
+                                        OMR {formatOMR(calculateSellerEarnings(order?.items))}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">

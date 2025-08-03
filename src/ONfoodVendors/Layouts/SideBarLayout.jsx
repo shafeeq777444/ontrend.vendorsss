@@ -15,9 +15,9 @@ const SideBarLayout = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const menuItems = [
-        { name: "Food Menus", icon: <Zap size={16} />, route: "/menu" },
         { name: "Orders", icon: null, route: "/" },
-        { name: "Earnings", icon: null, route: "/earnings" },
+        { name: "Food Menus", icon:null , route: "/menu" },
+        { name: "Earnings", icon: <Zap size={16} />, route: "/earnings" },
         { name: "Profile", icon: null, route: "/profile" },
     ];
     if (!authReady) return <div className="p-10 text-center">ONtrend Loading...</div>;
