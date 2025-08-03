@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useVendorFoodDetails } from "../../services/queries/foodVendor.query";
 import AddEditFoodForm from "../components/AddEditFoodForm/AddEditFoodForm";
 import { useEProductgetDetails } from "../../services/queries/Eproduct.query";
+import AddEditFoodFormSkeleton from "../components/AddEditFoodForm/AddEditFoodFormSkeleton";
 
 const AddMenuPage = () => {
     const { id, category, vendorType } = useParams();
@@ -21,14 +22,16 @@ console.log(vendorType,"vendor ty")
     const isLoading = vendorType === "E-Shopping" ? isLoadingEproduct : isLoadingFood;
 
     if (!isNew && isLoading) {
-        return <div>Loading...</div>;
+        return <AddEditFoodFormSkeleton />;
     }
 
     const selectedData = isNew ? {} : vendorType === "E-Shopping" ? EproductDetails : foodDetails;
-
+    if(isLoading){
+        return <AddEditFoodFormSkeleton />
+    }
     return (
         <div>
-            <AddEditFoodForm existingData={selectedData} />
+            <AddEditFoodForm  existingData={selectedData} />
         </div>
     );
 };

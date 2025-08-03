@@ -6,7 +6,7 @@ import FoodCardInVendor from "../../components/FoodVendor/FoodCardInVendor";
 import SkeltonFoodCard from "../../components/menus/SkeltonFoodCard";
 import { useNavigate } from "react-router-dom";
 
-const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, isOnline ,currentVendor}) => {
+const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, isOnline ,currentVendor,onClickView}) => {
   const navigate=useNavigate()
   console.log(foodItems,"food items")
   if (isLoading) return <SkeltonFoodCard />;
@@ -16,6 +16,7 @@ const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, is
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 bg-gradient-to-br  p-4 rounded-md">
         {foodItems?.map((item) => (
           <FoodCardInVendor
+          onClickView={onClickView}
             key={item.id}
             item={item}
             isOnline={isOnline}

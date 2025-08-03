@@ -7,19 +7,22 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import toast from "react-hot-toast";
 import useCurrentUser from "../../services/queries/user.query";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../config/firebase";
 import { v4 as uuid } from "uuid";
 import { useAddFoodMutation, useUpdateFoodMutation } from "../../services/queries/foodAdd.mutation";
-import { useAddEproductMutation, useUpdateEproducMutation } from "../../services/queries/Eproduct.query";
+import { useAddEproductMutation, useDeleteEproductMutation, useUpdateEproducMutation } from "../../services/queries/Eproduct.query";
+import { useDeleteFoodMutation } from "../../services/queries/foodVendor.query";
 
 const useFoodForm = ({ existingData = {}, onFinish }) => {
     // food-----------------------
     const { mutate: addFoodMutate } = useAddFoodMutation();
     const { mutate: updateFoodMutate } = useUpdateFoodMutation();
+    const { mutate: deleteFoodMutate } = useDeleteFoodMutation();
     // eproduct-------------------------
     const { mutate: addEProductMutate } = useAddEproductMutation();
     const { mutate: updateEProductMutate } = useUpdateEproducMutation();
+    const { mutate: deleteEProductMutate } = useDeleteEproductMutation();
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -49,7 +52,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         id: null,
         reference: null,
         timeStamp: serverTimestamp(),
-        stock:0,
+        stock: 0,
         restaurantName: "",
         arabicRestaurantName: "",
         lowerCaseRestaurantName: "",
@@ -82,18 +85,51 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         setTempName(val);
     };
     const handleDescription = (val) => setFormData({ ...formData, description: val });
+    // const handleImageUpload = async (croppedfile) => {
+    //     const imageRef = ref(storage, `${currentVendor?.id}/images/product_images/${uuid()}`);
+    //     await uploadBytes(imageRef, croppedfile);
+    //     const downloadURL = await getDownloadURL(imageRef);
+    //     downloadURL;
+    //     console.log(downloadURL, "img");
+    //     setFormData({ ...formData, imageUrl: downloadURL });
+    // };
     const handleImageUpload = async (croppedfile) => {
-        const imageRef = ref(storage, `FoodImages/${uuid()}`); //change path into vendorname/... check
-        await uploadBytes(imageRef, croppedfile);
-        const downloadURL = await getDownloadURL(imageRef);
-        downloadURL;
-        console.log(downloadURL, "img");
-        setFormData({ ...formData, imageUrl: downloadURL });
+        try {
+            // Step 1: Delete old image if it exists
+            if (formData.imageUrl) {
+                try {
+                    let oldImageRef;
+                    if (!formData.imageUrl.startsWith("http")) {
+                        oldImageRef = ref(storage, formData.imageUrl);
+                    } else {
+                        const path = decodeURIComponent(formData.imageUrl.split("/o/")[1].split("?")[0]);
+                        oldImageRef = ref(storage, path);
+                    }
+
+                    await deleteObject(oldImageRef);
+                    console.log("✅ Previous image deleted");
+                } catch (err) {
+                    console.warn("⚠️ Failed to delete previous image:", err);
+                }
+            }
+
+            // Step 2: Upload new image
+            // const imageRef = ref(storage, `${currentVendor?.id}/images/product_images/${uuid()}`);
+            const imageRef = ref(storage, `ABC/${uuid()}`);
+            await uploadBytes(imageRef, croppedfile);
+            const downloadURL = await getDownloadURL(imageRef);
+            console.log("📤 Uploaded image URL:", downloadURL);
+
+            // Step 3: Update form data
+            setFormData((prev) => ({ ...prev, imageUrl: downloadURL }));
+        } catch (err) {
+            console.error("❌ Error during image upload:", err);
+            toast.error("Image upload failed");
+        }
     };
 
     const handleToggleDisabled = () => setFormData((prev) => ({ ...prev, isDisabled: !prev.isDisabled }));
-    const handleCategoryChange = (selectedOption) =>
-        setFormData((prev) => ({ ...prev, tag: selectedOption?.value || "" }));
+    const handleCategoryChange = (selectedOption) => setFormData((prev) => ({ ...prev, tag: selectedOption?.value || "" }));
 
     const handleOriginalPrice = (e) => {
         const itemPrice = parseFloat(e.target.value);
@@ -148,7 +184,8 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         setFormData({ ...formData, preparationTime: time });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (category) => {
+        
         const priceBase = formData.discountPrice > 0 ? formData.discountPrice : formData.itemPrice;
         const commissionRate = priceBase * 0.22;
 
@@ -157,8 +194,8 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             timeStamp: serverTimestamp(),
             addedBy: currentVendor?.id,
             commissionRate,
-            tag: formData?.category,
-            localTag: formData?.category,
+            tag: formData?.tag,
+            localTag: formData?.localTag,
             lowerCaseName: formData?.name?.toLowerCase(),
             arabicRestaurantName: currentVendor?.restaurantArabicName,
             lowerCaseRestaurantName: currentVendor?.restaurantName?.toLowerCase(),
@@ -170,20 +207,30 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         if (currentVendor?.vendorType === "E-Shopping") {
             // E-Shop logic (add/update)
             if (id === "new") {
-                addEProductMutate({ category: formData?.tag, productObj: finalPayload });
-            } else {
-                updateEProductMutate({ category: formData?.tag, docId: finalPayload?.id, updatedData: finalPayload });
+                addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
+            } else if(category==finalPayload?.tag) {
+                updateEProductMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
             }
+            else{
+                deleteEProductMutate({ category, docId: finalPayload?.id });
+                addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
+            }
+            
+            
         } else {
             // Food logic (add/update)
             if (id === "new") {
-                addFoodMutate({ category: formData?.tag, foodObj: finalPayload });
-            } else {
-                updateFoodMutate({ category: formData?.tag, docId: finalPayload?.id, updatedData: finalPayload });
+                console.log("form");
+                addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
+            } else if(category==finalPayload?.tag){
+                updateFoodMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
+            }
+            else{
+                deleteFoodMutate({ category, docId: finalPayload?.id });
+                addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
             }
         }
 
-        
         if (onFinish) onFinish();
     };
 
@@ -194,9 +241,28 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             stock: isNaN(value) ? 0 : value,
         }));
     };
+    const handleCancel = async () => {
+        if (formData.imageUrl) {
+            try {
+                let imageRef;
 
+                if (!formData.imageUrl.startsWith("http")) {
+                    imageRef = ref(storage, formData.imageUrl);
+                } else {
+                    const path = decodeURIComponent(formData.imageUrl.split("/o/")[1].split("?")[0]);
+                    imageRef = ref(storage, path);
+                }
 
-    
+                await deleteObject(imageRef);
+                console.log("✅ Image deleted during cancel");
+            } catch (imgErr) {
+                console.warn("⚠️ Failed to delete image on cancel:", imgErr);
+                // Optional: toast.error("Failed to delete uploaded image");
+            }
+        }
+
+        navigate(-1); // Go back to previous page
+    };
 
     return {
         formData,
@@ -212,7 +278,8 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         handleAvilableEndTime,
         handlePrepearationTime,
         handleSubmit,
-        handleStock
+        handleStock,
+        handleCancel,
     };
 };
 

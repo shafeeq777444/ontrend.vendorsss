@@ -1,8 +1,10 @@
 
 
 
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getAllFoodCategories ,getVendorFoodCategories, getVendorFoodDetails, getVendorFoodsPaginated} from "../firebase/firestore/foodVendorsFireStore";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createCategoryInFood, deleteFoodItem, getAllFoodCategories ,getVendorFoodCategories, getVendorFoodDetails, getVendorFoodsPaginated} from "../firebase/firestore/foodVendorsFireStore";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 // get all categories
 
@@ -48,4 +50,35 @@ export const useVendorFoodDetails = (category, foodId, options = {}) => {
     enabled: !!category && !!foodId && (options.enabled ?? true),
     staleTime: 5 * 60 * 1000,
   });
+};
+
+// delete
+export const useDeleteFoodMutation = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ category, docId }) => deleteFoodItem(category, docId),
+        onSuccess: (_, { category, docId }) => {
+            queryClient.invalidateQueries(["vendorFoodsPaginated", category]);
+            queryClient.invalidateQueries({
+                queryKey: ["vendorFood", category, docId],
+                refetchType: "active", // refetch immediately
+            });
+            navigate("/menu");
+        },
+    });
+};
+
+// create category
+export const useCreateCategoryMutationInFood = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (categoryName) => createCategoryInFood(categoryName),
+        onSuccess: () => {
+          toast.success("Category created successfully");
+          queryClient.invalidateQueries(["allCategories"]);
+            navigate("/menu");
+        },
+    });
 };

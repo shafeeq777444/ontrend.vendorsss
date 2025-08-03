@@ -10,7 +10,7 @@ export const useAddFoodMutation = () => {
         mutationFn: ({category,foodObj}) => addFoodItem(category,foodObj),
         onSuccess: (_,{category}) => {
             queryClient.invalidateQueries(["vendorFoodsPaginated",category]);
-              toast.success("Menu hooke Added Successfully");
+
         navigate("/menu");
         },
     });
@@ -23,7 +23,7 @@ export const useUpdateFoodMutation = () => {
         mutationFn: ({category,docId,updatedData}) => updateFoodItem(category,docId,updatedData),
         onSuccess: (_,{category,docId}) => {
             queryClient.invalidateQueries(["vendorFoodsPaginated",category,docId]);
-              toast.success("Menu hooke Added Successfully");
+
         navigate("/menu");
         },
     });

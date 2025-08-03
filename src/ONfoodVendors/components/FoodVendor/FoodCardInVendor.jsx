@@ -3,7 +3,7 @@ import { FaEdit, FaEye } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LazyImg from '../common/LazyImg';
 
-const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
+const FoodCardInVendor = ({ item, venderLogo, onClick,onClickView }) => {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
 
@@ -42,12 +42,29 @@ const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
 
         {/* Discount Badge */}
         {hasDiscount && (
-          <div className={`absolute top-3 ${isArabic ? 'left-3' : 'right-3'}`}>
-            <div className="bg-red-600 text-white text-xs px-2 py-1 rounded-full shadow font-semibold">
-              {isArabic ? `% خصم ${item.discountPercentage}` : `${item.discountPercentage}% OFF`}
-            </div>
-          </div>
-        )}
+  <div className={`absolute top-3 ${isArabic ? 'left-3' : 'right-3'}`}>
+    <div className="bg-red-600 text-white text-xs px-2 py-1 rounded-full shadow font-semibold">
+      {isArabic ? `% خصم ${item.discountPercentage}` : `${item.discountPercentage}% OFF`}
+    </div>
+  </div>
+)}
+
+{/* Not Approved Badge */}
+{item?.isApproved === false && (
+  <div className={`absolute top-3 ${isArabic ? 'right-3' : 'left-3'}`}>
+    <div className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full shadow font-semibold">
+      {isArabic ? 'قيد المراجعة' : 'Not Approved'}
+    </div>
+  </div>
+)}
+{/* Disabled Badge */}
+{item?.isDisabled && (
+  <div className="absolute inset-0 bg-black/50 rounded-lg z-10 flex items-center justify-center">
+    <div className=" text-white text-lg px-2 py-1 rounded-full shadow font-semibold">
+      {isArabic ? 'غير متاح' : 'Disabled'}
+    </div>
+  </div>
+)}
 
         {/* Overlay Info */}
         <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-black/70 to-transparent">
@@ -83,6 +100,7 @@ const FoodCardInVendor = ({ item, venderLogo, onClick }) => {
       {/* Minimal Action Buttons */}
       <div className="absolute bottom-0 w-full px-4 pb-4 flex gap-2">
         <button
+          onClick={()=>onClickView(item)}
           className="flex-1 flex items-center justify-center gap-1 border border-gray-300 text-gray-700 hover:bg-gray-100 text-xs py-1.5 rounded-lg transition"
         >
           <FaEye size={13} className="opacity-70" />

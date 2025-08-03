@@ -1,13 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import {
     addEProductItem,
+    createCategoryInEshop,
+    deleteEProductItem,
     getAllEShopCategories,
     getEProductDetail,
     updateEProductItem,
 } from "../firebase/firestore/eProduct.FireStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 // get
 export const useEProductgetDetails = (category, productId, options = {}) => {
     console.log(category, productId, "--chek 1");
@@ -28,7 +31,7 @@ export const useAddEproductMutation = () => {
         onSuccess: (_, { category, productObj }) => {
             queryClient.invalidateQueries(["vendorFoodsPaginated", category]);
             queryClient.invalidateQueries(["eshopProductDetails", category,productObj.id]);
-            toast.success("Menu hooke Added Successfully");
+
         navigate("/menu");
         },
     });
@@ -48,7 +51,7 @@ export const useUpdateEproducMutation = () => {
         queryKey: ["eshopProductDetails", category, docId],
         refetchType: "active", // refetch immediately
       });
-       toast.success("Menu hooke Added Successfully");
+
         navigate("/menu");
     },
   });
@@ -62,3 +65,34 @@ export function useGetAllCategoriesFromEshop() {
         
     });
 }
+
+// delete
+export const useDeleteEproductMutation = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ category, docId }) => deleteEProductItem(category, docId),
+        onSuccess: (_, { category, docId }) => {
+            queryClient.invalidateQueries(["vendorFoodsPaginated", category]);
+            queryClient.invalidateQueries({
+                queryKey: ["eshopProductDetails", category, docId],
+                refetchType: "active", // refetch immediately
+            });
+            // navigate("/menu");
+        },
+    });
+};
+
+// create category
+export const useCreateCategoryMutationInEshop = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (categoryName) => createCategoryInEshop(categoryName),
+        onSuccess: () => {
+          toast.success("Category created successfully");
+          queryClient.invalidateQueries(["allCategories"]);
+            // navigate("/menu");
+        },
+    });
+};

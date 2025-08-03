@@ -1,5 +1,8 @@
 import React from "react";
 import CreatableSelect from "react-select/creatable";
+import { useCreateCategoryMutationInFood } from "../../../services/queries/foodVendor.query";
+import { useCreateCategoryMutationInEshop } from "../../../services/queries/Eproduct.query";
+import { useParams } from "react-router-dom";
 
 const ItemInfoCard = ({
   name,
@@ -11,6 +14,22 @@ const ItemInfoCard = ({
   allCategories,
   description,
 }) => {
+  const {vendorType}=useParams()
+  const {mutateAsync: createCategoryMutationInFood} = useCreateCategoryMutationInFood()
+  const {mutateAsync: createCategoryMutationInEshop}=useCreateCategoryMutationInEshop()
+  const handleCategoryCreate = async (inputValue) => {
+    try {
+      if(vendorType=="Food"){
+      await createCategoryMutationInFood(inputValue)
+      }else{
+      await createCategoryMutationInEshop(inputValue)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 ">
       {/* English Name */}
@@ -47,7 +66,11 @@ const ItemInfoCard = ({
             options={allCategories}
             value={allCategories?.find((opt) => opt.value === category)}
             onChange={categoryOnchange}
-            onCreateOption={(inputValue) => categoryOnchange(inputValue)}
+            onCreateOption={(inputValue) => {
+              handleCategoryCreate(inputValue)
+              // categoryOnchange(inputValue)
+              console.log(inputValue,"inputValue")
+            }}
             classNamePrefix="react-select"
             placeholder="Select or create category"
             isClearable

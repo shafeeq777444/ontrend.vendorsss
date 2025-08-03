@@ -7,6 +7,7 @@ import FoodVendorProducts from "../containers/FoodVendor/FoodVendorProducts";
 import PaginationButtons from "../components/FoodVendor/PaginationButtons";
 import { useGetVendorFoodsAndCategories, useVendorFoodCategories } from "../../services/queries/foodVendor.query";
 import useCurrentUser from "../../services/queries/user.query";
+import ProductViewModal from "../containers/FoodVendor/ProductViewModal";
 
 const getLocalizedField = (item, field, isArabic) =>
   isArabic ? item?.[`${field}Arabic`] || item?.[field] : item?.[field];
@@ -20,6 +21,7 @@ const VenderFoodPage = () => {
   const {data:currentVendor,isLoading:isCurrentVendorLoading} = useCurrentUser()
   // const currentVendor={id:"7nPgH0pAzrSmWoK0kkZTztcHmsr1"}
   console.log(currentVendor,"current vendor")
+  const [viewModalItem,setViewModalItem]=useState({})
  
   const {
     data,
@@ -91,6 +93,12 @@ const VenderFoodPage = () => {
     return <div>Loading...</div>;
   }
 
+  const handleClickView=(item)=>{
+    console.log(item,"item")
+
+    setViewModalItem(item)
+  }
+
   return (
     <div className="min-h-screen scrollbar-hide   bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>
       <div className="overflow-y-hidden bg-gradient-to-br from-white to-offwhite rounded-t-2xl z-30 -mt-4 scrollbar-hide">
@@ -110,6 +118,7 @@ const VenderFoodPage = () => {
             isArabic={isArabic}
             venderLogo={venderLogo}
             currentVendor={currentVendor}
+            onClickView={handleClickView}
           />
 
           {!isFoodsLoading && (
@@ -125,6 +134,10 @@ const VenderFoodPage = () => {
           )}
         </div>
       </div>
+      {viewModalItem && Object.keys(viewModalItem).length > 0 && (
+  <ProductViewModal item={viewModalItem} onClose={() => setViewModalItem(null)} />
+)}
+
     </div>
   );
 };

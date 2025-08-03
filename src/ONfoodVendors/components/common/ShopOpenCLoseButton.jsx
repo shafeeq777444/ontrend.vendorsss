@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { DoorOpen, DoorClosed } from 'lucide-react';
 
-const ShopOpenCloseButton = () => {
+const ShopOpenCloseButton = ({ onClick }) => {
   return (
     <StyledWrapper>
-      <div className="container">
+      <div onClick={onClick} className="container">
         <label htmlFor="switch" className="toggle">
           <input type="checkbox" className="input" id="switch" />
           <DoorClosed className="icon icon--off" size={32} color="white" />

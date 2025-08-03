@@ -1,6 +1,7 @@
-import { addDoc, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../config/firebase";
 import toast from "react-hot-toast";
+import { deleteObject, getStorage, ref } from "firebase/storage";
 
 // get individual eproduct details
 export const getEProductDetail = async (category, productId) => {
@@ -81,3 +82,59 @@ export const getAllEShopCategories = async () => {
         return [];
     }
 };
+
+// delete
+
+export const deleteEProductItem = async (category, docId) => {
+    const trimmedCategory = category.trim();
+    const trimmedDocId = docId.trim();
+    const docRef = doc(db, "E-Shop", "items", "categories", trimmedCategory, "details", trimmedDocId);
+  
+    try {
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        const imageUrl = data?.imageUrl;
+  
+        if (imageUrl) {
+          try {
+            const storage = getStorage();
+            let imageRef;
+  
+            if (!imageUrl.startsWith("http")) {
+              // Direct storage path
+              imageRef = ref(storage, imageUrl);
+            } else {
+              // Extract path from download URL
+              const path = decodeURIComponent(imageUrl.split("/o/")[1].split("?")[0]);
+              imageRef = ref(storage, path);
+            }
+  
+            await deleteObject(imageRef);
+          } catch (imgErr) {
+            console.warn("⚠️ Failed to delete image from storage:", imgErr);
+          }
+        }
+      }
+  
+      await deleteDoc(docRef);
+      toast.success(" E-Product deleted successfully");
+    } catch (error) {
+      console.error("❌Error deleting E-Product:", error);
+      toast.error("Failed to delete E-Product");
+    }
+  };
+
+
+//   create categories
+export const createCategoryInEshop = async (categoryName) => {
+    try {
+        const colRef = collection(db, "E-Shop", "items", "categories");
+        const docRef = await addDoc(colRef, { name: categoryName });
+        toast.success("Category created successfully");
+    } catch (error) {
+        console.error("Error creating category:", error);
+        toast.error("Failed to create category");
+    }
+};
+    

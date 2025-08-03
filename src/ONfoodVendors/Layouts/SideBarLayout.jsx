@@ -14,6 +14,8 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { resetApp } from "../../app/actions/appActions";
+import { useUpdateVendorProfile } from "../../services/queries/vendor.query";
+
 
 const SideBarLayout = () => {
     // -------------------------------------------------- hooks --------------------------------------------------
@@ -22,38 +24,50 @@ const SideBarLayout = () => {
     const navigate = useNavigate();
     const authReady = useFirebaseAuthReady();
     const user = getAuth().currentUser;
-const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const { mutate } = useUpdateVendorProfile();
 
     // -------------------------------------- states --------------------------------------------------
     const [menuOpen, setMenuOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
-    
+
     // -------------------------------------- functions --------------------------------------
     const handleLogout = async () => {
         const auth = getAuth();
         try {
-          await signOut(auth);              
-          queryClient.clear();              
-          toast.success("Logged out");
-          navigate("/auth");
-          dispatch(resetApp());
-          setModalOpen(false);
+            await signOut(auth);
+            queryClient.clear();
+            toast.success("Logged out");
+            navigate("/auth");
+            dispatch(resetApp());
+            setModalOpen(false);
         } catch (error) {
-          console.error("Logout failed:", error);
-          toast.error("Failed to log out");
+            console.error("Logout failed:", error);
+            toast.error("Failed to log out");
         }
-      };
+    };
+
+    const handleShopOpenClose = () => {
+        mutate({ vendorId: data?.id, updatedData: { isOnline: !data?.isOnline } }, {
+            onSuccess: () => {
+                toast.success(`Shop ${!data?.isOnline ? "opened" : "closed"}`);
+            },
+            onError: () => {
+                toast.error("Failed to update shop status");
+            }
+        });
+    };
 
     // -------------------------------------- constants --------------------------------------------------
     const menuItems = [
         { name: "Orders", icon: null, route: "/" },
-        { name: "Food Menus", icon: null, route: "/menu" },
+        { name: "Menus", icon: null, route: "/menu" },
         { name: "Earnings", icon: <Zap size={16} />, route: "/earnings" },
         { name: "Profile", icon: null, route: "/profile" },
     ];
 
     // ------------------------------------------------------------- UI --------------------------------------------------
-    if (!authReady) return <div className="p-10 text-center">ONtrend Loading...</div>;
+    if (!authReady) return <div className="p-10 text-center"></div>;
     if (!user) return <Navigate to="/auth" replace />;
     return (
         <div className="min-h-screen bg-slate-50">
@@ -69,12 +83,15 @@ const dispatch = useDispatch();
 
                         {/* Right section */}
                         <div className="flex items-center gap-4">
-                            <ShopOpenCLoseButton />
+                            <ShopOpenCLoseButton onClick={handleShopOpenClose} />
                             {/* <NotificationButton /> */}
                             <LogoutButton onClick={() => setModalOpen(true)} />
                             {/* Profile dropdown */}
                             {data && (
-                                <div onClick={() => navigate("/profile")} className="flex items-center gap-2 cursor-pointer bg-[rgba(0,0,0,0.2)]  md:px-3 py-2 rounded-full hover:bg-[rgba(0,0,0,0.3)]  transition-colors duration-300 ease-in-out">
+                                <div
+                                    onClick={() => navigate("/profile")}
+                                    className="flex items-center gap-2 cursor-pointer bg-[rgba(0,0,0,0.2)]  md:px-3 py-2 rounded-full hover:bg-[rgba(0,0,0,0.3)]  transition-colors duration-300 ease-in-out"
+                                >
                                     <img src={data?.image} alt="profile" className="w-8 h-8 rounded-full ring-2" />
                                     <span className="text-sm font-medium hidden sm:inline">{data?.name}</span>
                                     <ChevronDown size={4} className="text-sky-200 hidden sm:inline" />

@@ -2,6 +2,7 @@ import {
     addDoc,
     collection,
     collectionGroup,
+    deleteDoc,
     doc,
     getDoc,
     getDocs,
@@ -14,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../config/firebase";
 import toast from "react-hot-toast";
+import { deleteObject, getStorage, ref } from "firebase/storage";
 
 
 
@@ -145,5 +147,65 @@ export const updateFoodItem = async (category, docId, updatedData) => {
         toast.success("Food item updated");
     } else {
         toast.error("Food item does not exist");
+    }
+};
+
+// delete food item
+export const deleteFoodItem = async (category, docId) => {
+    const trimmedCategory = category?.trim();
+    const trimmedDocId = docId?.trim();
+  
+    if (!trimmedCategory || !trimmedDocId) {
+      toast.error("Invalid category or document ID");
+      return;
+    }
+  
+    const docRef = doc(db, "Food", "items", "categories", trimmedCategory, "details", trimmedDocId);
+  
+    try {
+      const snap = await getDoc(docRef);
+  
+      if (snap.exists()) {
+        const data = snap.data();
+        const imageUrl = data?.imageUrl;
+  
+        if (imageUrl) {
+          try {
+            const storage = getStorage();
+            let imageRef;
+  
+            if (!imageUrl.startsWith("http")) {
+              imageRef = ref(storage, imageUrl);
+            } else {
+              const path = decodeURIComponent(imageUrl.split("/o/")[1].split("?")[0]);
+              imageRef = ref(storage, path);
+            }
+  
+            await deleteObject(imageRef);
+            toast.success("Image deleted successfully");
+          } catch (imgErr) {
+            console.warn("⚠️ Failed to delete image:", imgErr);
+            toast.error("Failed to delete image");
+          }
+        }
+      }
+  
+      await deleteDoc(docRef);
+      toast.success("🍽️ Food item deleted");
+    } catch (error) {
+      console.error("❌ Error deleting food item:", error);
+      toast.error("Failed to delete food item");
+    }
+  };
+
+//   create categories
+export const createCategoryInFood = async (categoryName) => {
+    try {
+        const colRef = collection(db, "Food", "items", "categories");
+        const docRef = await addDoc(colRef, { name: categoryName });
+        toast.success("Category created successfully");
+    } catch (error) {
+        console.error("Error creating category:", error);
+        toast.error("Failed to create category");
     }
 };

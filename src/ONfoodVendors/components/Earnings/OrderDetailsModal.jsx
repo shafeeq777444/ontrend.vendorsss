@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 
 const OrderDetailsModal = ({ selectedOrder, setSelectedOrder, getPaymentModeIcon }) => {
   if (!selectedOrder) return null;
-
+console.log(selectedOrder, "selectedOrder");
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl relative">
@@ -23,42 +23,60 @@ const OrderDetailsModal = ({ selectedOrder, setSelectedOrder, getPaymentModeIcon
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm font-medium text-gray-600">Order ID</p>
-              <p className="text-lg font-semibold text-gray-900">{selectedOrder.orderId}</p>
+              <p className="text-lg font-semibold text-gray-900">{selectedOrder?.orderID
+              }</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm font-medium text-gray-600">Payment Mode</p>
               <div className="flex items-center mt-1">
-                <span className="mr-2">{getPaymentModeIcon(selectedOrder.paymentMode)}</span>
-                <span className="text-lg font-semibold text-gray-900">{selectedOrder.paymentMode}</span>
+                <span className="mr-2">{getPaymentModeIcon(selectedOrder?.paymentType)}</span>
+                <span className="text-lg font-semibold text-gray-900">{selectedOrder?.paymentType}</span>
               </div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
+            {/* <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm font-medium text-gray-600">Item Total</p>
-              <p className="text-lg font-semibold text-gray-900">₹{selectedOrder.itemTotal.toFixed(2)}</p>
+              <p className="text-lg font-semibold text-gray-900">₹{selectedOrder?.itemTotal?.toFixed(3)}</p>
             </div>
             <div className="bg-green-50 rounded-lg p-4">
               <p className="text-sm font-medium text-green-600">Your Earnings</p>
-              <p className="text-lg font-semibold text-green-700">₹{selectedOrder.sellerEarnings.toFixed(2)}</p>
-            </div>
+              <p className="text-lg font-semibold text-green-700">₹{selectedOrder?.sellerEarnings?.toFixed(3)}</p>
+            </div> */}
           </div>
           
           <div className="space-y-3">
             <div>
               <p className="text-sm font-medium text-gray-600">Customer</p>
-              <p className="text-lg text-gray-900">{selectedOrder.deliveryTo}</p>
+              <p className="text-lg text-gray-900">{selectedOrder?.userName
+              }</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Delivery Address</p>
-              <p className="text-lg text-gray-900">{selectedOrder.deliveryAddress}</p>
+              {selectedOrder?.deliveryLocation?.address || selectedOrder?.deliveryLocation?.houseNumber || selectedOrder?.deliveryLocation?.apartmentNumber || selectedOrder?.deliveryLocation?.city ? (
+                <p className="text-lg text-gray-900">
+                  {selectedOrder?.deliveryLocation?.address ? `${selectedOrder?.deliveryLocation?.address}, ` : ''}
+                  {selectedOrder?.deliveryLocation?.houseNumber ? `${selectedOrder?.deliveryLocation?.houseNumber}, ` : ''}
+                  {selectedOrder?.deliveryLocation?.apartmentNumber ? `${selectedOrder?.deliveryLocation?.apartmentNumber}, ` : ''}
+                  {selectedOrder?.deliveryLocation?.city}
+                </p>
+              ) : null}
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Item Ordered</p>
-              <p className="text-lg text-gray-900">{selectedOrder.deliveryItem}</p>
+              <ul className="list-disc pl-4 space-y-2">
+                {selectedOrder?.items?.map((item, index) => (
+                  <li key={index}>
+                    <span className="font-semibold">{item.itemName}</span> ({item.itemQuantity} x {item.itemPrice}) = {item.total}
+                  </li>
+                ))}
+              </ul>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Order Date & Time</p>
-              <p className="text-lg text-gray-900">{format(selectedOrder.orderDate, 'MMMM dd, yyyy')}</p>
-              <p className="text-sm text-gray-500">{format(selectedOrder.orderDate, 'HH:mm')}</p>
+              <p className="text-lg text-gray-900">{selectedOrder?.assignedTimestamp
+                  ? `${format(selectedOrder.assignedTimestamp.toDate(), 'dd MMM yyyy')} at ${format(selectedOrder.assignedTimestamp.toDate(), 'hh:mm a')}`
+                  : ''
+              }</p>
+
             </div>
           </div>
         </div>
