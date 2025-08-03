@@ -1,15 +1,18 @@
 
 import { createSlice } from "@reduxjs/toolkit";
+import { resetApp } from "../../app/actions/appActions";
 
-const userSlice = createSlice({
-    name: "user",
-    initialState: {
+const initialState= {
         location: { lat: "", lng: "" },
         locationName: "Tap Here to Set Location",
         wishlistIds: [],
         userId: null,
         language: "english",
-    },
+    }
+
+const userSlice = createSlice({
+    name: "user",
+    initialState,
     reducers: {
         setLocation: (state, action) => {
             state.location = action.payload;
@@ -24,6 +27,9 @@ const userSlice = createSlice({
             state.wishlistIds = action.payload;
         },
     },
+extraReducers: (builder) => {
+    builder.addCase(resetApp, () => initialState);
+  }
 });
 
 export const { setLocation, setLocationName, setWhishListIds,setUserID } = userSlice.actions;

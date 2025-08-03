@@ -14,6 +14,7 @@ import TransliterateInput from "./ONfoodVendors/Test";
 import OrderPage from "./ONfoodVendors/pages/orderPage";
 import EarningsPage from "./ONfoodVendors/pages/EarningsPage";
 import TestingPage from "./ONfoodVendors/pages/TestingPage";
+import NotificationButton from "./ONfoodVendors/components/common/NotificationButton";
 
 export default function App() {
     return (
@@ -22,7 +23,7 @@ export default function App() {
                 <Route index element={<OrderPage />} />
                 <Route path="/menu" element={<VenderFoodPage />} />
                 <Route path="/menu/:vendorType/:category/:id" element={<AddMenuPage />} />
-                <Route path="/testing" element={<TestingPage />} />
+                <Route path="/testing" element={<NotificationButton />} />
                 <Route path="/earnings" element={<EarningsPage />} />
                 <Route path="/profile" element={<VendorProfileInfo />} />
 
