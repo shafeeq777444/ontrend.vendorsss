@@ -78,21 +78,20 @@ export const useDeleteEproductMutation = () => {
                 queryKey: ["eshopProductDetails", category, docId],
                 refetchType: "active", // refetch immediately
             });
-            // navigate("/menu");
+
         },
     });
 };
 
 // create category
 export const useCreateCategoryMutationInEshop = () => {
-    const navigate = useNavigate();
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (categoryName) => createCategoryInEshop(categoryName),
-        onSuccess: () => {
-          toast.success("Category created successfully");
-          queryClient.invalidateQueries(["allCategories"]);
-            // navigate("/menu");
-        },
+      mutationFn: ( {categoryName, vendorId }) => createCategoryInEshop({categoryName, vendorId}),
+      onSuccess: () => {
+        toast.success("Category created successfully");
+        queryClient.invalidateQueries(["allCategories"]);
+      },
     });
-};
+  };
+  

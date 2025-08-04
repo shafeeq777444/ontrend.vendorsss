@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import ImageUploading from "../AddMenu/ImageUploading.jsx";
 import ItemInfoCard from "../AddMenu/ItemInfoCard.jsx";
 import IsDisabled from "../AddMenu/IsDisabled.jsx";
@@ -35,6 +35,7 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
         handleSubmit,
     } = useFoodForm({ existingData, onFinish });
     console.log(existingData, "existingDta");
+    const [categoryOptions, setCategoryOptions] = useState([]);
     const [deleteModal, setDeleteModal] = useState(false);
     const { mutate: deleteEproduct } = useDeleteEproductMutation();
     const { mutate: deleteFood } = useDeleteFoodMutation();
@@ -53,7 +54,14 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
         }
         setDeleteModal(false);
     };
+    useEffect(() => {
+        const data = currentUSer?.vendorType === "Food/Restaurant" ? allCategories : allCategoriesFromEShop;
+        if(data){
+            console.log(data,"data")
 
+            setCategoryOptions(data);
+        }
+    }, [allCategories, allCategoriesFromEShop, currentUSer?.vendorType]);
 
     return (
         <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 space-y-10 max-w-7xl mx-auto ">
@@ -67,7 +75,8 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
                         category={formData.tag}
                         handleNameChange={handleNameChange}
                         handleDescription={handleDescription}
-                        allCategories={currentUSer?.vendorType == "E-Shopping" ? allCategoriesFromEShop : allCategories}
+                        allCategories={categoryOptions}
+                        setAllCategories={setCategoryOptions} 
                         categoryOnchange={handleCategoryChange}
                     />
                 </div>

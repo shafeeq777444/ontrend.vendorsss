@@ -199,13 +199,20 @@ export const deleteFoodItem = async (category, docId) => {
   };
 
 //   create categories
-export const createCategoryInFood = async (categoryName) => {
+export const createCategoryInFood = async ({categoryName,vendorId}) => {
+    const trimmedName = categoryName.trim();
+    console.log(trimmedName,"trimmedName")
+    console.log(vendorId,"vendorId")
+  
     try {
-        const colRef = collection(db, "Food", "items", "categories");
-        const docRef = await addDoc(colRef, { name: categoryName });
-        toast.success("Category created successfully");
+      const docRef = doc(db, "Food", "items", "categories", trimmedName);
+      console.log(docRef,"docRef")
+      const docSnap = await setDoc(docRef, { name: trimmedName,isApproved:false,addedBy:vendorId,imageUrl:"",localName:"" });
+      console.log(docSnap,"docSnap")
+      console.log("Created category with ID:", trimmedName);
+      toast.success("Category created successfully");
     } catch (error) {
-        console.error("Error creating category:", error);
-        toast.error("Failed to create category");
+      console.error("Error creating category:", error);
+      toast.error("Failed to create category");
     }
-};
+  };

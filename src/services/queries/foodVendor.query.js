@@ -71,14 +71,34 @@ export const useDeleteFoodMutation = () => {
 
 // create category
 export const useCreateCategoryMutationInFood = () => {
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (categoryName) => createCategoryInFood(categoryName),
-        onSuccess: () => {
-          toast.success("Category created successfully");
-          queryClient.invalidateQueries(["allCategories"]);
-            navigate("/menu");
-        },
-    });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ categoryName, vendorId }) =>
+      createCategoryInFood({ categoryName, vendorId }),
+
+    onSuccess: (_, { categoryName }) => {
+      toast.success("Category created successfully");
+
+      queryClient.setQueryData(["allCategories"], (oldData) => {
+        const newCategory = {
+          name: categoryName,
+          label: categoryName,
+        };
+
+        if (!oldData || !Array.isArray(oldData)) {
+          return [newCategory];
+        }
+
+        // Avoid duplicate entry
+        const exists = oldData.some(
+          (item) => item.name?.toLowerCase() === categoryName.toLowerCase()
+        );
+        if (exists) return oldData;
+
+        return [...oldData, newCategory];
+      });
+    },
+  });
 };
