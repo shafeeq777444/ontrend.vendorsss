@@ -21,17 +21,6 @@ const STATUS_FLOW = {
 };
 
 
-    // Helper function to calculate seller earnings
-    const calculateSellerEarnings = (items) => {
-        if (!items || !Array.isArray(items)) return 0;
-
-        return items.reduce((acc, item) => {
-            const total = item?.total || 0;
-            const commission = item?.commission || 0;
-            const sellerEarning = total - (total * commission) / 100;
-            return acc + sellerEarning;
-        }, 0);
-    };
 
     // Helper function to calculate total amount
     const calculateTotalPrice = (items) => {
@@ -42,10 +31,7 @@ const STATUS_FLOW = {
         }, 0);
     };
 
-    const formatCurrency = (amount) => {
-        const numAmount = Number(amount) || 0;
-        return numAmount.toFixed(2);
-    };
+  
 
     if (loading) {
         return <OrdersSkeleton />;

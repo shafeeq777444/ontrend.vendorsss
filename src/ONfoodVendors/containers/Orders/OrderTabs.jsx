@@ -10,6 +10,7 @@ const OrderTabBar = () => {
   const dispatch = useDispatch();
   const activeTab = useSelector((state) => state.order.activeTab);
   const tabRefs = useRef({});
+  const pendingOrders = useSelector((state) => state.order.pendingOrders);
 
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 
@@ -29,6 +30,7 @@ const OrderTabBar = () => {
 
   return (
     <div className="relative px-3 py-2 bg-white rounded-xl shadow border border-gray-200 overflow-x-auto scrollbar-hide mb-3">
+      
       <div className="flex gap-2 whitespace-nowrap">
         {TABS.map((label) => (
           <TabButton
@@ -37,6 +39,7 @@ const OrderTabBar = () => {
             tabRefs={tabRefs}
             activeTab={activeTab}
             label={label}
+           span={label === "Pending" ? pendingOrders : undefined}
           />
         ))}
       </div>

@@ -15,6 +15,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { resetApp } from "../../app/actions/appActions";
 import { useUpdateVendorProfile } from "../../services/queries/vendor.query";
+import { useLiveOrdersWithSound } from "../../services/hooks/orders/useLiveOrdersWithSound";
+import StopAlertButton from "../components/Orders/StopAlertButton";
 
 
 const SideBarLayout = () => {
@@ -26,6 +28,8 @@ const SideBarLayout = () => {
     const user = getAuth().currentUser;
     const dispatch = useDispatch();
     const { mutate } = useUpdateVendorProfile();
+    const { orders, stopAlertSequence, alertLoop } = useLiveOrdersWithSound(data?.id);
+    console.log(orders,"notification orders");
 
     // -------------------------------------- states --------------------------------------------------
     const [menuOpen, setMenuOpen] = useState(false);
@@ -166,6 +170,9 @@ const SideBarLayout = () => {
                 closeText="Cancel"
                 actionText="Log out"
             />
+
+            {/* --------------------- extra components --------------------- */}
+            { <StopAlertButton stopAlertSequence={stopAlertSequence} alertLoop={alertLoop}/>}
 
             {/*------------------------------- Main Content Area ---------------------------*/}
             <div className="h-80 px-4 py-6 -mt-40">

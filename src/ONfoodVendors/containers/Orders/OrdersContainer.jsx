@@ -66,7 +66,7 @@ const OrdersContainer = () => {
         return (
             <>
                 <OrderTabBarSkeleton />
-                <OrdersSkeleton />
+                {/* <OrdersSkeleton /> */}
             </>
         );
     }
