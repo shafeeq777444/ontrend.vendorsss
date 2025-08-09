@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { subDays, subMonths, subYears, startOfDay, endOfDay } from 'date-fns';
 import { Timestamp } from 'firebase/firestore';
-import { useTotalDeliveredOrders, useVendorEarningsAndOrdersByFiltered } from '../../../services/queries/earnings.quey';
+
 import { 
   StatsCards, 
   EarningsSummary, 
@@ -11,6 +11,8 @@ import {
   OrderDetailsModal 
 } from '../../components/Earnings';
 import useCurrentUser from '../../../services/queries/user.query';
+import { useLiveVendorEarningsAndOrdersByFiltered } from '../../../services/hooks/earnings/useFilterOrdersLive';
+import { useLiveTotalDeliveredOrders } from '../../../services/hooks/earnings/useTotalOrdersLive';
 
 // Main EarningsTable Component
 const EarningsTable = () => {
@@ -55,12 +57,12 @@ const EarningsTable = () => {
   }, [selectedFilter, selectedYear]);
 
   //  filtered earnings and filtered orders
-  const {data:filteredOrdersEarningsAndCountOfOrders}=useVendorEarningsAndOrdersByFiltered({vendorId:currentUser?.id,startDate: getDateRange.startDate,
+  const filteredOrdersEarningsAndCountOfOrders=useLiveVendorEarningsAndOrdersByFiltered({vendorId:currentUser?.id,startDate: getDateRange.startDate,
     endDate: getDateRange.endDate})
   console.log(filteredOrdersEarningsAndCountOfOrders?.totalData,"totalData");
   // total orders
-  const {data:totalDeliveredOrders}=useTotalDeliveredOrders(currentUser?.id);
-
+  const totalDeliveredOrders=useLiveTotalDeliveredOrders(currentUser?.id);
+    console.log(totalDeliveredOrders,"totalDeliveredOrders");
   // Transform filtered orders
   const filteredOrders = useMemo(() => {
     if (!filteredOrdersEarningsAndCountOfOrders?.totalData) return [];

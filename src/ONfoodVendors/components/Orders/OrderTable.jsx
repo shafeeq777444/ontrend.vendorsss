@@ -122,8 +122,7 @@ const STATUS_FLOW = {
 </td>
 
                                 <td className="px-6 py-4 text-sm text-gray-700">
-                                    {" "}
-                                    OMR {formatOMR(calculateTotalPrice(order?.items))}
+                                    {formatOMR(calculateTotalPrice(order?.items))}
                                 </td>
                                 <td className="px-6 py-4 text-sm">
                                     <button

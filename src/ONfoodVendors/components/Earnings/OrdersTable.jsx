@@ -77,12 +77,12 @@ const OrdersTable = ({
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">
-                                        OMR {formatOMR(calculateTotalPrice(order?.items))}
+                                         {formatOMR(calculateTotalPrice(order?.items))}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-semibold text-green-600">
-                                        OMR {formatOMR(calculateSellerEarnings(order?.items))}
+                                        {formatOMR(calculateSellerEarnings(order?.items))}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">

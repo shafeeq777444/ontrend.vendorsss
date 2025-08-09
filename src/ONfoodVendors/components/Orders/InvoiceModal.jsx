@@ -68,9 +68,9 @@ const InvoiceModal = ({ order, onClose }) => {
                     {order.items.map((item, i) => (
                         <div key={i} className="flex justify-between">
                             <div>
-                                {item.itemName} ({item.itemQuantity} × ${item.itemPrice.toFixed(3)})
+                                {item.itemName} ({item.itemQuantity} × {formatOMR(item.itemPrice.toFixed(3))})
                             </div>
-                            <div>${item.total.toFixed(3)}</div>
+                            <div>{formatOMR(item.total.toFixed(3))}</div>
                         </div>
                     ))}
                 </div>
@@ -80,7 +80,7 @@ const InvoiceModal = ({ order, onClose }) => {
                 <div className="text-sm space-y-1">
                     <div className="flex justify-between">
                         <span>Subtotal</span>
-                        <span>OMR {formatOMR(calculateTotalPrice(order?.items))}</span>
+                        <span>{formatOMR(calculateTotalPrice(order?.items))}</span>
                     </div>
                     {/* <div className="flex justify-between text-yellow-700">
                         <span>Discount</span>
@@ -92,11 +92,11 @@ const InvoiceModal = ({ order, onClose }) => {
                     </div> */}
                     <div className="flex justify-between text-red-600 font-medium">
                         <span>ONtrend service Fee</span>
-                        <span>OMR {formatOMR(calculateTotalCommission(order?.items))}</span>
+                        <span>{formatOMR(calculateTotalCommission(order?.items))}</span>
                     </div>
                     <div className="flex justify-between text-green-700">
                         <span>Seller Earnings</span>
-                        <span>OMR {formatOMR(calculateSellerEarnings(order?.items))}</span>
+                        <span> {formatOMR(calculateSellerEarnings(order?.items))}</span>
                     </div>
                 </div>
 
