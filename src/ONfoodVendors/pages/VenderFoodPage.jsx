@@ -6,7 +6,7 @@ import FoodVendorProducts from "../containers/FoodVendor/FoodVendorProducts";
 import PaginationButtons from "../components/FoodVendor/PaginationButtons";
 import ProductViewModal from "../containers/FoodVendor/ProductViewModal";
 import { useLiveGetCategoriesFromVendor } from "../../services/hooks/menu/useLiveGetCategoriesFromVendor";
-import useCurrentUser from "../../services/queries/user.query";
+import { useCurrentUser } from "../../services/hooks/profile/useCurrentUserLiveData";
 import { useVendorFoodsLivePaginated } from "../../services/hooks/menu/useLiveGetAllProductsPaginated";
 
 const getLocalizedField = (item, field, isArabic) =>

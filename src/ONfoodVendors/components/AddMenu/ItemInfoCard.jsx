@@ -3,7 +3,8 @@ import CreatableSelect from "react-select/creatable";
 import { useCreateCategoryMutationInFood } from "../../../services/queries/foodVendor.query";
 import { useCreateCategoryMutationInEshop } from "../../../services/queries/Eproduct.query";
 import { useParams } from "react-router-dom";
-import useCurrentUser from "../../../services/queries/user.query";
+import { useCurrentUser } from "../../../services/hooks/profile/useCurrentUserLiveData";
+
 
 const ItemInfoCard = ({
     name,

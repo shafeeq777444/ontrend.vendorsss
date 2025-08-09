@@ -4,7 +4,7 @@ import VendorInfo from "../containers/Profile/VendorInfo";
 
 import VendorContactDetails from "../containers/Profile/VendorContactDetails";
 import VendorWorkingHours from "../containers/Profile/VendorWorkingHours";
-import useCurrentUser from "../../services/queries/user.query";
+import { useCurrentUser } from "../../services/hooks/profile/useCurrentUserLiveData";
 
 const VendorProfileInfo = () => {
     const { data: VendorData, isLoading } = useCurrentUser();

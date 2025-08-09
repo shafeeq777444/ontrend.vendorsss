@@ -6,7 +6,7 @@ import { transliterateINTOarabic } from "../../lib/arabicTransilarate";
 import { useNavigate, useParams } from "react-router-dom";
 
 import toast from "react-hot-toast";
-import useCurrentUser from "../../services/queries/user.query";
+import { useCurrentUser } from "../../services/hooks/profile/useCurrentUserLiveData";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../config/firebase";
 import { v4 as uuid } from "uuid";

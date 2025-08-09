@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Menu, X, ChevronDown, Zap, Search, Clock, Eye, Users, DollarSign } from "lucide-react";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import useCurrentUser from "../../services/queries/user.query";
+import { useCurrentUser } from "../../services/hooks/profile/useCurrentUserLiveData";
 import LogoutConfirmation from "../components/common/LogoutCard";
 import { getAuth } from "firebase/auth";
 import { signOut } from "firebase/auth";

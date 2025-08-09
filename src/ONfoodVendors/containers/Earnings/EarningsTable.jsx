@@ -10,9 +10,11 @@ import {
   OrdersTable, 
   OrderDetailsModal 
 } from '../../components/Earnings';
-import useCurrentUser from '../../../services/queries/user.query';
+
 import { useLiveVendorEarningsAndOrdersByFiltered } from '../../../services/hooks/earnings/useFilterOrdersLive';
 import { useLiveTotalDeliveredOrders } from '../../../services/hooks/earnings/useTotalOrdersLive';
+import { useCurrentUser } from '../../../services/hooks/profile/useCurrentUserLiveData';
+
 
 // Main EarningsTable Component
 const EarningsTable = () => {

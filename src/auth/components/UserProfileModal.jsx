@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import useCurrentUser from "@/shared/services/queries/user.query";
+
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiLogOut, FiCheckCircle } from "react-icons/fi";
@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase/config";
+import { useCurrentUser } from "../../services/hooks/profile/useCurrentUserLiveData";
 
 
 const UserProfileModal = ({ setShowUserMOdal }) => {

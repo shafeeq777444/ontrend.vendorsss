@@ -8,7 +8,7 @@ import { AlertTriangle } from "lucide-react";
 import AddOnListCard from "../AddMenu/AddOnListCard.jsx";
 import { useDeleteFoodMutation,  } from "../../../services/queries/foodVendor.query.js";
 import useFoodForm from "../../hooks/useFoodForm.js";
-import useCurrentUser from "../../../services/queries/user.query.js";
+
 import CompactFoodFormFields from "../AddMenu/CompactFoodFormFields.jsx";
 import { useParams } from "react-router-dom";
 import ReusableConfirmationModal from "../common/ReusableConfirmationModal.jsx";
@@ -16,6 +16,7 @@ import { useDeleteEproductMutation } from "../../../services/queries/Eproduct.qu
 import AddEditFoodFormSkeleton from "./AddEditFoodFormSkeleton.jsx";
 import { useLiveAllCategoriesFromEshop } from "../../../services/hooks/menu/useLiveGetAllcategoriesFromEshop.js";
 import { useLiveGetAllCategories } from "../../../services/hooks/menu/useLiveGetAllCategoriesFromFood.js";
+import { useCurrentUser } from "../../../services/hooks/profile/useCurrentUserLiveData.js";
 
 const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
     const {

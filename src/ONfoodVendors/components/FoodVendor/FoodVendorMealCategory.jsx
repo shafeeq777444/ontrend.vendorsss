@@ -8,8 +8,9 @@ import Filter from "../menus/Filter";
 import { setSearchTerm, setVendorMealCategory } from "../../../slices/food/foodSlice";
 import SkeletonCategoryTabs from "../menus/SkeltonVendorFoodCategories";
 import { useNavigate } from "react-router-dom";
-import useCurrentUser from "../../../services/queries/user.query";
+
 import AddButton from "../common/AddButton";
+import { useCurrentUser } from "../../../services/hooks/profile/useCurrentUserLiveData";
 
 // Debounce hook
 function useDebouncedValue(value, delay) {

@@ -17,24 +17,6 @@ import { auth, db } from "../../config/firebase";
 
 const fbProvider = new FacebookAuthProvider();
 
-//----------------------- Fetch current user Data ---------------------------
-export const fetchCurrentUserData = async () => {
-    const currentUser = auth.currentUser;
-  
-    if (!currentUser) throw new Error("User not signed in");
-  
-    const docRef = doc(db, "users", currentUser.uid);
-    const docSnap = await getDoc(docRef);
-  
-    if (docSnap.exists()) {
-      return {
-        id: currentUser.uid,       // 🔹 include user ID
-        ...docSnap.data(),          // 🔹 include user document data
-      };
-    } else {
-      throw new Error("No user data found in Firestore");
-    }
-  };
 
 // --------------- sign with google ------------------------------------------
 export const handleGoogleLogin = async ({toast,navigate}) => {

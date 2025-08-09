@@ -1,5 +1,5 @@
 import React from "react";
-import useCurrentUser from "../../../services/queries/user.query";
+import { useCurrentUser } from "../../../services/hooks/profile/useCurrentUserLiveData";
 import OrderTableContainer from "./OrderTableContainer";
 import OrderTabBar from "./OrderTabs";
 import { useSelector } from "react-redux";

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
-import useCurrentUser from "../../../../services/queries/user.query";
+import { useCurrentUser } from "../../../../services/hooks/profile/useCurrentUserLiveData";
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
