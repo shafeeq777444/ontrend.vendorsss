@@ -1,15 +1,11 @@
-// pages/VenderFoodPage.jsx
 import React, { useMemo, useRef, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-
 import FoodVendorMealCategory from "../components/FoodVendor/FoodVendorMealCategory";
 import FoodVendorProducts from "../containers/FoodVendor/FoodVendorProducts";
 import PaginationButtons from "../components/FoodVendor/PaginationButtons";
 import ProductViewModal from "../containers/FoodVendor/ProductViewModal";
-
-
-import { useVendorFoodCategories } from "../../services/queries/foodVendor.query";
+import { useLiveGetCategoriesFromVendor } from "../../services/hooks/menu/useLiveGetCategoriesFromVendor";
 import useCurrentUser from "../../services/queries/user.query";
 import { useVendorFoodsLivePaginated } from "../../services/hooks/menu/useLiveGetAllProductsPaginated";
 
@@ -35,7 +31,7 @@ const VenderFoodPage = () => {
     isLoading: isFoodsLoading,
   } = useVendorFoodsLivePaginated(currentVendor?.id, selectedVendorMealCategory, 12);
 
-  const { data: vendorCategories, isLoading: isCategoryLoading } = useVendorFoodCategories(currentVendor?.id);
+  const { categories: vendorCategories, loading: isCategoryLoading } = useLiveGetCategoriesFromVendor(currentVendor?.id);
 
   const scrollToProducts = () =>
     productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });

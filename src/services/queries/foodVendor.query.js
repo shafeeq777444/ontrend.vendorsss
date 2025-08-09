@@ -2,45 +2,10 @@ import {  useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     createCategoryInFood,
     deleteFoodItem,
-    getVendorFoodCategories,
     getVendorFoodDetails,
 } from "../firebase/firestore/foodOrAllProduct.fireStore";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-// import { getVendorFoodsPaginatedLive } from "../hooks/menu/useLiveGetAllProductsPaginated";
-
-// vender included categories
-export function useVendorFoodCategories(vendorId) {
-    return useQuery({
-        queryKey: ["vendorFoodCategories", vendorId],
-        queryFn: () => getVendorFoodCategories(vendorId),
-        staleTime: 5 * 60 * 1000,
-        cacheTime: 10 * 60 * 1000,
-        refetchOnWindowFocus: false,
-        enabled: !!vendorId,
-    });
-}
-
-//GetVendorFoodsAndCategories--(vendor page :vendoorId) with pagination
-
-// export function useGetVendorFoodsAndCategoriesLive(vendorId, selectedCategory = "All") {
-//     return useInfiniteQuery({
-//         queryKey: ["vendorFoodsLivePaginated", vendorId, selectedCategory],
-//         queryFn: ({ pageParam = null }) =>
-//             new Promise((resolve) => {
-//                 const unsubscribe = getVendorFoodsPaginatedLive(vendorId, 12, pageParam, selectedCategory, (data) =>
-//                     resolve(data)
-//                 );
-//                 // Return unsubscribe for cleanup
-//                 return () => unsubscribe();
-//             }),
-//         getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.lastVisible : undefined),
-//         enabled: !!vendorId,
-//         staleTime: Infinity, // Since data is live, no need for re-fetch timing
-//         cacheTime: Infinity,
-//         refetchOnWindowFocus: false,
-//     });
-// }
 
 // individual product detail
 export const useVendorFoodDetails = (category, foodId, options = {}) => {

@@ -1,43 +1,17 @@
 import {
     addDoc,
     collection,
-    collectionGroup,
     deleteDoc,
     doc,
     getDoc,
-    getDocs,
-    limit,
-    query,
     setDoc,
-    startAfter,
     updateDoc,
-    where,
+
 } from "firebase/firestore";
 import { db } from "../../../config/firebase";
 import toast from "react-hot-toast";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 
-// get  catergories (vedner included)
-export const getVendorFoodCategories = async (vendorId) => {
-    try {
-        const q = query(collectionGroup(db, "details"), where("addedBy", "==", vendorId)); //add where isApproved true
-
-        const snapshot = await getDocs(q);
-
-        const categoriesSet = new Set();
-
-        snapshot.forEach((doc) => {
-            const tag = doc.data()?.tag;
-            if (tag) categoriesSet.add(tag);
-        });
-
-        const categories = ["All", ...Array.from(categoriesSet)];
-        return categories;
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        return ["All"];
-    }
-};
 
 // avoid collection mapping--------------(avoid fetching collection)
 // export const getVendorFoodsPaginated = async (vendorId, pageSize = 12, lastVisibleDoc = null, categoryFilter = "All") => {
