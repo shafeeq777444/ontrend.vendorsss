@@ -1,26 +1,7 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getVendorAllOrders, updateOrder } from "../firebase/firestore/orders.firestore";
+import {  useMutation, useQueryClient } from "@tanstack/react-query"
+import {  updateOrder } from "../firebase/firestore/orders.firestore";
 import toast from "react-hot-toast";
 
-
-
-// get all orders of vendor
-export const useVendorAllOrders = ({ vendorId, status, startDate, endDate }) => {
-  return useInfiniteQuery({
-    queryKey: ["vendor-orders", vendorId, status, startDate?.toMillis?.(), endDate?.toMillis?.()],
-    queryFn: ({ pageParam = null }) =>
-      getVendorAllOrders({
-        vendorId,
-        status,
-        lastDoc: pageParam,
-        startDate,
-        endDate,
-      }),
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? lastPage.lastDoc : undefined,
-    enabled: !!vendorId,
-  });
-};
 
 // update each order
 export const useUpdateOrder = () => {

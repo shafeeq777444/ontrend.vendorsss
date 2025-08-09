@@ -10,7 +10,7 @@ import VendorProfileInfo from "./ONfoodVendors/pages/VendorProfileInfo";
 
 import AddMenuPage from "./ONfoodVendors/pages/AddMenuPage";
 import VenderFoodPage from "./ONfoodVendors/pages/VenderFoodPage";
-import TransliterateInput from "./ONfoodVendors/Test";
+// import TransliterateInput from "./ONfoodVendors/Test";
 import OrderPage from "./ONfoodVendors/pages/orderPage";
 import EarningsPage from "./ONfoodVendors/pages/EarningsPage";
 import TestingPage from "./ONfoodVendors/pages/TestingPage";

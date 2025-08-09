@@ -14,8 +14,8 @@ const [nextStatus, setNextStatus] = React.useState("");
 const STATUS_FLOW = {
     Pending: "Processing",
     Processing: "Ready",
-    Ready: "Picked Up",
-    "Picked Up": "Delivered",
+    Ready: null,
+    "Picked Up": null,
     Delivered: null,
     Cancelled: null,
 };
@@ -52,7 +52,7 @@ const STATUS_FLOW = {
     }
 
     return (
-        <div className="bg-white rounded-t-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-t-2xl  border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
                 <h2 className="text-xl font-semibold text-gray-900">Orders</h2>
             </div>
@@ -107,7 +107,17 @@ const STATUS_FLOW = {
             Mark as {STATUS_FLOW[order.status]}
         </button>
     ) : (
-        <span className="text-xs text-gray-400 italic">No next step</span>
+        order?.status === 'Ready' ? (
+            <span className="text-xs text-gray-400 italic">Waiting for Picked Up</span>
+        ) : order?.status === 'Picked Up' ? (
+            <span className="text-xs text-gray-400 italic">Waiting for Delivery</span>
+        ) : order?.status === 'Delivered' ? (
+            <span className="text-xs text-gray-400 italic">Delivered</span>
+        ) : order?.status === 'Cancelled' ? (
+            <span className="text-xs text-gray-400 italic">Cancelled</span>
+        ) : (
+            <span className="text-xs text-gray-400 italic">No next step</span>
+        )
     )}
 </td>
 

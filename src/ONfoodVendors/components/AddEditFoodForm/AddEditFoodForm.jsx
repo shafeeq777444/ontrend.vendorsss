@@ -6,15 +6,16 @@ import SaveButton from "../AddMenu/SaveButton.jsx";
 import VariantListCard from "../AddMenu/VariantListCard.jsx";
 import { AlertTriangle } from "lucide-react";
 import AddOnListCard from "../AddMenu/AddOnListCard.jsx";
-import { useDeleteFoodMutation, useGetAllCategories } from "../../../services/queries/foodVendor.query.js";
+import { useDeleteFoodMutation,  } from "../../../services/queries/foodVendor.query.js";
 import useFoodForm from "../../hooks/useFoodForm.js";
 import useCurrentUser from "../../../services/queries/user.query.js";
-import { useGetAllCategoriesFromEshop } from "../../../services/queries/Eproduct.query.js";
 import CompactFoodFormFields from "../AddMenu/CompactFoodFormFields.jsx";
 import { useParams } from "react-router-dom";
 import ReusableConfirmationModal from "../common/ReusableConfirmationModal.jsx";
 import { useDeleteEproductMutation } from "../../../services/queries/Eproduct.query.js";
 import AddEditFoodFormSkeleton from "./AddEditFoodFormSkeleton.jsx";
+import { useLiveAllCategoriesFromEshop } from "../../../services/hooks/menu/useLiveGetAllcategoriesFromEshop.js";
+import { useLiveGetAllCategories } from "../../../services/hooks/menu/useLiveGetAllCategoriesFromFood.js";
 
 const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
     const {
@@ -39,8 +40,8 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
     const [deleteModal, setDeleteModal] = useState(false);
     const { mutate: deleteEproduct } = useDeleteEproductMutation();
     const { mutate: deleteFood } = useDeleteFoodMutation();
-    const { data: allCategories } = useGetAllCategories();
-    const { data: allCategoriesFromEShop } = useGetAllCategoriesFromEshop();
+    const allCategories = useLiveGetAllCategories();
+    const { categories: allCategoriesFromEShop} = useLiveAllCategoriesFromEshop();
     const { data: currentUSer } = useCurrentUser();
     const { id, category, vendorType } = useParams();
     const handleDeleteModal = () => {

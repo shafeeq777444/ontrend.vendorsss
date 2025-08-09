@@ -17,22 +17,6 @@ import { db } from "../../../config/firebase";
 import toast from "react-hot-toast";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 
-
-
-export const getAllFoodCategories = async () => {
-    try {
-        const q = query(collection(db, "Food/items/categories"), where("isApproved", "==", true));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map((doc) => {
-            const name = doc.get("name");
-            return { value: name, label: name };
-        });
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        return [];
-    }
-};
-
 // get  catergories (vedner included)
 export const getVendorFoodCategories = async (vendorId) => {
     try {
@@ -56,42 +40,42 @@ export const getVendorFoodCategories = async (vendorId) => {
 };
 
 // avoid collection mapping--------------(avoid fetching collection)
-export const getVendorFoodsPaginated = async (vendorId, pageSize = 12, lastVisibleDoc = null, categoryFilter = "All") => {
-    try {
-        let filters = [ where("addedBy", "==", vendorId)];//add where isApproved true
+// export const getVendorFoodsPaginated = async (vendorId, pageSize = 12, lastVisibleDoc = null, categoryFilter = "All") => {
+//     try {
+//         let filters = [ where("addedBy", "==", vendorId)];//add where isApproved true
 
-        if (categoryFilter && categoryFilter !== "All") {
-            filters.push(where("tag", "==", categoryFilter));
-        }
+//         if (categoryFilter && categoryFilter !== "All") {
+//             filters.push(where("tag", "==", categoryFilter));
+//         }
 
-        let q = query(collectionGroup(db, "details"), ...filters, limit(pageSize));
+//         let q = query(collectionGroup(db, "details"), ...filters, limit(pageSize));
 
-        if (lastVisibleDoc) {
-            q = query(q, startAfter(lastVisibleDoc));
-        }
+//         if (lastVisibleDoc) {
+//             q = query(q, startAfter(lastVisibleDoc));
+//         }
 
-        const snapshot = await getDocs(q);
+//         const snapshot = await getDocs(q);
 
-        const foods = snapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-            category: doc.data()?.tag || "Unknown",
-        }));
+//         const foods = snapshot.docs.map((doc) => ({
+//             ...doc.data(),
+//             id: doc.id,
+//             category: doc.data()?.tag || "Unknown",
+//         }));
 
-        return {
-            foods,
-            lastVisible: snapshot.docs[snapshot.docs.length - 1] || null,
-            hasMore: snapshot.size === pageSize,
-        };
-    } catch (error) {
-        console.error("Error fetching paginated foods:", error);
-        return {
-            foods: [],
-            lastVisible: null,
-            hasMore: false,
-        };
-    }
-};
+//         return {
+//             foods,
+//             lastVisible: snapshot.docs[snapshot.docs.length - 1] || null,
+//             hasMore: snapshot.size === pageSize,
+//         };
+//     } catch (error) {
+//         console.error("Error fetching paginated foods:", error);
+//         return {
+//             foods: [],
+//             lastVisible: null,
+//             hasMore: false,
+//         };
+//     }
+// };
 
 // get individual food details
 export const getVendorFoodDetails = async (category, foodId) => {

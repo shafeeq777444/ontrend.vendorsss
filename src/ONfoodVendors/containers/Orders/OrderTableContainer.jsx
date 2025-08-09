@@ -1,92 +1,148 @@
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import OrderTable from "../../components/Orders/OrderTable";
 import InvoiceModal from "../../components/Orders/InvoiceModal";
 import OrderCardList from "../../components/Orders/OrderCardList";
 import { useDispatch, useSelector } from "react-redux";
 import { setInvoice } from "../../../slices/order/orderSlice";
 import { useUpdateOrder } from "../../../services/queries/orders.query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-const OrderTableContainer = ({
-  loading,
-  orders,
-  onNext,
-  onPrevious,
-  pageIndex,
-  isFetchingNextPage,
-  hasNextPage,
-  maxPage,
-}) => {
-  const { mutate: updateOrder } = useUpdateOrder();
- const invoice = useSelector((state) => state.order.invoice);
-  console.log(invoice,"invoice")
-  const dispatch = useDispatch(); 
-  const onInvoiceClick = (order) => {
-  dispatch(setInvoice(order)); // ✅ Use dispatch correctly
-};
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import OrdersSkeleton from "../../components/Orders/OrdersSkeleton";
 
-const handleCloseModal = () => {
-  dispatch(setInvoice(null)); // ✅ Close modal
-};
+const OrderTableContainer = ({ loading, orders, onNext, onPrevious, currentPage, maxPage, hasPrevious, hasMore }) => {
+    const dispatch = useDispatch();
+    const invoice = useSelector((state) => state.order.invoice);
+    const { mutate: updateOrder, isLoading: isUpdatingOrder } = useUpdateOrder();
 
-const handleSelector = (orderId, status) => {
-  updateOrder({ orderId: orderId, updatedData: { status } });
-};
+    // Memoized handlers to prevent unnecessary re-renders
+    const handleInvoiceClick = useMemo(
+        () => (order) => {
+            dispatch(setInvoice(order));
+        },
+        [dispatch]
+    );
 
-  return (
-    <>
-      {/* Desktop Table */}
-      <div className="hidden lg:block">
-        <OrderTable orders={orders} onInvoiceClick={onInvoiceClick} handleSelector={handleSelector} loading={loading}/>
-      </div>
+    const handleCloseModal = useMemo(
+        () => () => {
+            dispatch(setInvoice(null));
+        },
+        [dispatch]
+    );
 
-      {/* Mobile Cards */}
-      <div className="block lg:hidden">
-        <OrderCardList orders={orders}   onInvoiceClick={onInvoiceClick} handleSelector={handleSelector} loading={loading}/>
-      </div>
+    const handleStatusChange = useMemo(
+        () => (orderId, status) => {
+            updateOrder({ orderId, updatedData: { status } });
+        },
+        [updateOrder]
+    );
 
-      
+    // Pagination info
+    const paginationInfo = useMemo(() => {
+        const totalPages = Math.max(maxPage, 1);
+        const displayCurrentPage = Math.max(currentPage, 1);
+        const displayMaxPage = Math.max(totalPages, displayCurrentPage);
 
-{/* Pagination Controls */}
-<div className="px-6 py-4 bg-white border-t border-gray-100  rounded-b-2xl shadow-lg ">
-  <div className="flex items-center justify-between">
-    <div className="text-sm text-gray-700">
-      Page {pageIndex + 1} of {maxPage + 1}
-    </div>
+        return {
+            current: displayCurrentPage,
+            total: displayMaxPage,
+            showingStart: orders.length > 0 ? (displayCurrentPage - 1) * 10 + 1 : 0,
+            showingEnd: Math.min(displayCurrentPage * 10, (displayCurrentPage - 1) * 10 + orders.length),
+            totalOrders: (displayCurrentPage - 1) * 10 + orders.length + (hasMore ? 1 : 0), // Approximate
+        };
+    }, [currentPage, maxPage, orders.length, hasMore]);
 
-    <div className="flex items-center space-x-1">
-      {/* Previous Button */}
-      <button
-        onClick={onPrevious}
-        disabled={pageIndex === 0}
-        className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        <ChevronLeft className="w-4 h-4" />
-      </button>
+    if (loading && orders.length === 0) {
+        return (
+           <OrdersSkeleton/>
+        );
+    }
 
-      {/* Next Button */}
-      <button
-        onClick={onNext}
-        disabled={!hasNextPage && pageIndex === maxPage}
-        className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        {isFetchingNextPage ? (
-          <span className="flex items-center space-x-1">
-            <span>Loading</span>
-            <span className="animate-spin">⏳</span>
-          </span>
-        ) : (
-          <ChevronRight className="w-4 h-4" />
-        )}
-      </button>
-    </div>
-  </div>
-</div>
+    return (
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            {/* Orders Content */}
+            <div className="relative">
+                {/* Loading overlay */}
+                {loading && orders.length > 0 && (
+                      <OrdersSkeleton/>
+                          
+                )}
 
-{/* Invoice Modal */}
-{invoice && <InvoiceModal onClose={handleCloseModal} order={invoice} />}
+                {/* Desktop Table */}
+                <div className="hidden lg:block">
+                    <OrderTable
+                        orders={orders}
+                        onInvoiceClick={handleInvoiceClick}
+                        handleSelector={handleStatusChange}
+                        loading={loading}
+                        isUpdating={isUpdatingOrder}
+                    />
+                </div>
 
-    </>
-  );
+                {/* Mobile Cards */}
+                <div className="block lg:hidden">
+                    <OrderCardList
+                        orders={orders}
+                        onInvoiceClick={handleInvoiceClick}
+                        handleSelector={handleStatusChange}
+                        loading={loading}
+                        isUpdating={isUpdatingOrder}
+                    />
+                </div>
+            </div>
+
+            {/* Enhanced Pagination Controls */}
+            {orders.length > 0 && (
+                <div className="px-6 py-4 bg-white ">
+                    <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0">
+                        {/* Pagination Info */}
+                        <div className="text-sm text-gray-700">
+                            <span className="font-medium">
+                                Showing {paginationInfo.showingStart}-{paginationInfo.showingEnd}
+                            </span>
+                            <span className="mx-1">of</span>
+                            <span className="font-medium">
+                                {hasMore ? `${paginationInfo.totalOrders}+` : paginationInfo.totalOrders} orders
+                            </span>
+                        </div>
+
+                        {/* Page Info & Controls */}
+                        <div className="flex items-center space-x-4">
+                            <div className="text-sm text-gray-700">
+                                Page <span className="font-medium">{paginationInfo.current}</span> of{" "}
+                                <span className="font-medium">{paginationInfo.total}</span>
+                            </div>
+
+                            <div className="flex items-center space-x-1">
+                                {/* Previous Button */}
+                                <button
+                                    onClick={onPrevious}
+                                    disabled={!hasPrevious || loading}
+                                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+                                    aria-label="Previous page"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                {/* Next Button */}
+                                <button
+                                    onClick={onNext}
+                                    disabled={!hasMore || loading}
+                                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+                                    aria-label="Next page"
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Empty State */}
+            {!loading && orders.length === 0 && <div className="text-center "></div>}
+
+            {/* Invoice Modal */}
+            {invoice && <InvoiceModal onClose={handleCloseModal} order={invoice} />}
+        </div>
+    );
 };
 
 export default OrderTableContainer;

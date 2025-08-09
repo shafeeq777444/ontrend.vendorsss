@@ -1,13 +1,17 @@
+// pages/VenderFoodPage.jsx
 import React, { useMemo, useRef, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 import FoodVendorMealCategory from "../components/FoodVendor/FoodVendorMealCategory";
-import { useTranslation } from "react-i18next";
 import FoodVendorProducts from "../containers/FoodVendor/FoodVendorProducts";
 import PaginationButtons from "../components/FoodVendor/PaginationButtons";
-import { useGetVendorFoodsAndCategories, useVendorFoodCategories } from "../../services/queries/foodVendor.query";
-import useCurrentUser from "../../services/queries/user.query";
 import ProductViewModal from "../containers/FoodVendor/ProductViewModal";
+
+
+import { useVendorFoodCategories } from "../../services/queries/foodVendor.query";
+import useCurrentUser from "../../services/queries/user.query";
+import { useVendorFoodsLivePaginated } from "../../services/hooks/menu/useLiveGetAllProductsPaginated";
 
 const getLocalizedField = (item, field, isArabic) =>
   isArabic ? item?.[`${field}Arabic`] || item?.[field] : item?.[field];
@@ -16,20 +20,20 @@ const VenderFoodPage = () => {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const { selectedVendorMealCategory, searchTerm, sortOption } = useSelector((state) => state.food);
+
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const productsRef = useRef(null);
-  const {data:currentVendor,isLoading:isCurrentVendorLoading} = useCurrentUser()
-  // const currentVendor={id:"7nPgH0pAzrSmWoK0kkZTztcHmsr1"}
-  console.log(currentVendor,"current vendor")
-  const [viewModalItem,setViewModalItem]=useState({})
- 
+  const [viewModalItem, setViewModalItem] = useState({});
+
+  const { data: currentVendor, isLoading: isCurrentVendorLoading } = useCurrentUser();
+
   const {
-    data,
+    pages,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isLoading: isFoodsLoading,
-  } = useGetVendorFoodsAndCategories(currentVendor?.id, selectedVendorMealCategory);
+  } = useVendorFoodsLivePaginated(currentVendor?.id, selectedVendorMealCategory, 12);
 
   const { data: vendorCategories, isLoading: isCategoryLoading } = useVendorFoodCategories(currentVendor?.id);
 
@@ -37,16 +41,16 @@ const VenderFoodPage = () => {
     productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   const handleNext = useCallback(() => {
-    if (currentPageIndex + 1 < (data?.pages.length || 0)) {
+    if (currentPageIndex + 1 < (pages?.length || 0)) {
       setCurrentPageIndex((prev) => prev + 1);
       scrollToProducts();
     } else if (hasNextPage) {
-      fetchNextPage().then(() => {
+      Promise.resolve(fetchNextPage()).then(() => {
         setCurrentPageIndex((prev) => prev + 1);
         scrollToProducts();
       });
     }
-  }, [currentPageIndex, data?.pages?.length, hasNextPage, fetchNextPage]);
+  }, [currentPageIndex, pages?.length, hasNextPage, fetchNextPage]);
 
   const handlePrevious = useCallback(() => {
     if (currentPageIndex > 0) {
@@ -56,10 +60,10 @@ const VenderFoodPage = () => {
   }, [currentPageIndex]);
 
   const isNextDisabled =
-    (!hasNextPage && currentPageIndex === (data?.pages?.length || 0) - 1) || isFetchingNextPage;
+    (!hasNextPage && currentPageIndex === (pages?.length || 0) - 1) || isFetchingNextPage;
 
   const filteredFoods = useMemo(() => {
-    const currentFoods = data?.pages?.[currentPageIndex]?.foods || [];
+    const currentFoods = pages?.[currentPageIndex]?.foods || [];
     let result = currentFoods;
 
     if (selectedVendorMealCategory && selectedVendorMealCategory !== "All") {
@@ -82,25 +86,19 @@ const VenderFoodPage = () => {
     }
 
     return result;
-  }, [data?.pages, currentPageIndex, selectedVendorMealCategory, searchTerm, sortOption, isArabic]);
+  }, [pages, currentPageIndex, selectedVendorMealCategory, searchTerm, sortOption, isArabic]);
 
   const limitedFoods = useMemo(() => filteredFoods.slice(0, 12), [filteredFoods]);
- 
-  // Removed redundant memoization for logo and isOnline
+
   const venderLogo = currentVendor?.image;
   const isOnline = currentVendor?.isOnline;
-  if (isCurrentVendorLoading) {
-    return <div>Loading...</div>;
-  }
 
-  const handleClickView=(item)=>{
-    console.log(item,"item")
+  if (isCurrentVendorLoading) return <div>Loading...</div>;
 
-    setViewModalItem(item)
-  }
+  const handleClickView = (item) => setViewModalItem(item);
 
   return (
-    <div className="min-h-screen scrollbar-hide   bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="min-h-screen scrollbar-hide bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>
       <div className="overflow-y-hidden bg-gradient-to-br from-white to-offwhite rounded-t-2xl z-30 -mt-4 scrollbar-hide">
         <div ref={productsRef} className="bg-gradient-to-br from-white to-offwhite shadow-xl p-4">
           <FoodVendorMealCategory
@@ -134,10 +132,10 @@ const VenderFoodPage = () => {
           )}
         </div>
       </div>
-      {viewModalItem && Object.keys(viewModalItem).length > 0 && (
-  <ProductViewModal item={viewModalItem} onClose={() => setViewModalItem(null)} />
-)}
 
+      {viewModalItem && Object.keys(viewModalItem).length > 0 && (
+        <ProductViewModal item={viewModalItem} onClose={() => setViewModalItem(null)} />
+      )}
     </div>
   );
 };

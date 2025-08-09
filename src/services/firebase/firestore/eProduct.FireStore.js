@@ -3,7 +3,7 @@ import { db } from "../../../config/firebase";
 import toast from "react-hot-toast";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 
-// get individual eproduct details
+// -------------------------------------------------- get individual eproduct details (direct data get) -------------------------------------------------- ✅
 export const getEProductDetail = async (category, productId) => {
     console.log(category, productId, "check2");
     try {
@@ -24,7 +24,7 @@ export const getEProductDetail = async (category, productId) => {
     }
 };
 
-// add and update food item
+// -------------------------------------------------- add and update food item --------------------------------------------------
 export const addEProductItem = async (category, productObj) => {
     try {
         if (!category || !productObj) return toast.error("Invalid category or food object");
@@ -68,22 +68,8 @@ export const updateEProductItem = async (category, docId, updatedData) => {
     }
 };
 
-// -------------------------------------- get All categories from e-shop -----------------------------------------------------------
-export const getAllEShopCategories = async () => {
-    try {
-        const q = query(collection(db, "E-Shop/items/categories"), where("isApproved", "==", true));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map((doc) => {
-            const name = doc.get("name");
-            return { value: name, label: name };
-        });
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        return [];
-    }
-};
 
-// delete
+// -------------------------------------------------- delete --------------------------------------------------
 
 export const deleteEProductItem = async (category, docId) => {
     const trimmedCategory = category.trim();
@@ -126,7 +112,7 @@ export const deleteEProductItem = async (category, docId) => {
   };
 
 
-//   create categories
+// -------------------------------------------------- create categories --------------------------------------------------
 export const createCategoryInEshop = async ({categoryName, vendorId}) => {
     const trimmedName = categoryName.trim();
     try {

@@ -1,55 +1,55 @@
-
-
-
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createCategoryInFood, deleteFoodItem, getAllFoodCategories ,getVendorFoodCategories, getVendorFoodDetails, getVendorFoodsPaginated} from "../firebase/firestore/foodVendorsFireStore";
+import {  useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    createCategoryInFood,
+    deleteFoodItem,
+    getVendorFoodCategories,
+    getVendorFoodDetails,
+} from "../firebase/firestore/foodOrAllProduct.fireStore";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
-// get all categories
-
-export function useGetAllCategories() {
-  return useQuery({
-    queryKey: ["allCategories"],
-    queryFn: () => getAllFoodCategories(),
-  });
-}
+// import { getVendorFoodsPaginatedLive } from "../hooks/menu/useLiveGetAllProductsPaginated";
 
 // vender included categories
 export function useVendorFoodCategories(vendorId) {
-  return useQuery({
-    queryKey: ["vendorFoodCategories", vendorId],
-    queryFn: () => getVendorFoodCategories(vendorId),
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    enabled: !!vendorId,
-  });
+    return useQuery({
+        queryKey: ["vendorFoodCategories", vendorId],
+        queryFn: () => getVendorFoodCategories(vendorId),
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        enabled: !!vendorId,
+    });
 }
 
 //GetVendorFoodsAndCategories--(vendor page :vendoorId) with pagination
-export function useGetVendorFoodsAndCategories(vendorId, selectedCategory = "All") {
-  return useInfiniteQuery({
-    queryKey: ["vendorFoodsPaginated", vendorId, selectedCategory],
-    queryFn: ({ pageParam = null }) =>
-      getVendorFoodsPaginated(vendorId, 12, pageParam, selectedCategory),
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? lastPage.lastVisible : undefined,
-    enabled: !!vendorId ,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
-}
+
+// export function useGetVendorFoodsAndCategoriesLive(vendorId, selectedCategory = "All") {
+//     return useInfiniteQuery({
+//         queryKey: ["vendorFoodsLivePaginated", vendorId, selectedCategory],
+//         queryFn: ({ pageParam = null }) =>
+//             new Promise((resolve) => {
+//                 const unsubscribe = getVendorFoodsPaginatedLive(vendorId, 12, pageParam, selectedCategory, (data) =>
+//                     resolve(data)
+//                 );
+//                 // Return unsubscribe for cleanup
+//                 return () => unsubscribe();
+//             }),
+//         getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.lastVisible : undefined),
+//         enabled: !!vendorId,
+//         staleTime: Infinity, // Since data is live, no need for re-fetch timing
+//         cacheTime: Infinity,
+//         refetchOnWindowFocus: false,
+//     });
+// }
 
 // individual product detail
 export const useVendorFoodDetails = (category, foodId, options = {}) => {
-  return useQuery({
-    queryKey: ["vendorFood", category, foodId],
-    queryFn: () => getVendorFoodDetails(category, foodId),
-    enabled: !!category && !!foodId && (options.enabled ?? true),
-    staleTime: 5 * 60 * 1000,
-  });
+    return useQuery({
+        queryKey: ["vendorFood", category, foodId],
+        queryFn: () => getVendorFoodDetails(category, foodId),
+        enabled: !!category && !!foodId && (options.enabled ?? true),
+        staleTime: 5 * 60 * 1000,
+    });
 };
 
 // delete
@@ -71,34 +71,30 @@ export const useDeleteFoodMutation = () => {
 
 // create category
 export const useCreateCategoryMutationInFood = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ categoryName, vendorId }) =>
-      createCategoryInFood({ categoryName, vendorId }),
+    return useMutation({
+        mutationFn: ({ categoryName, vendorId }) => createCategoryInFood({ categoryName, vendorId }),
 
-    onSuccess: (_, { categoryName }) => {
-      toast.success("Category created successfully");
+        onSuccess: (_, { categoryName }) => {
+            toast.success("Category created successfully");
 
-      queryClient.setQueryData(["allCategories"], (oldData) => {
-        const newCategory = {
-          name: categoryName,
-          label: categoryName,
-        };
+            queryClient.setQueryData(["allCategories"], (oldData) => {
+                const newCategory = {
+                    name: categoryName,
+                    label: categoryName,
+                };
 
-        if (!oldData || !Array.isArray(oldData)) {
-          return [newCategory];
-        }
+                if (!oldData || !Array.isArray(oldData)) {
+                    return [newCategory];
+                }
 
-        // Avoid duplicate entry
-        const exists = oldData.some(
-          (item) => item.name?.toLowerCase() === categoryName.toLowerCase()
-        );
-        if (exists) return oldData;
+                // Avoid duplicate entry
+                const exists = oldData.some((item) => item.name?.toLowerCase() === categoryName.toLowerCase());
+                if (exists) return oldData;
 
-        return [...oldData, newCategory];
-      });
-    },
-  });
+                return [...oldData, newCategory];
+            });
+        },
+    });
 };

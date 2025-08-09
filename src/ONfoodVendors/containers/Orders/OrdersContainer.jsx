@@ -1,77 +1,91 @@
+import React from "react";
 import useCurrentUser from "../../../services/queries/user.query";
 import OrderTableContainer from "./OrderTableContainer";
 import OrderTabBar from "./OrderTabs";
-import { useVendorAllOrders } from "../../../services/queries/orders.query";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setPageIndex } from "../../../slices/order/orderSlice";
-
+import { useSelector } from "react-redux";
+import { usePaginatedLiveOrders } from "../../../services/hooks/orders/useLiveVendorOrders";
+import OrdersSkeleton from "../../components/Orders/OrdersSkeleton";
+import OrderTabBarSkeleton from "../../components/Orders/OrderTabBarSkelton";
 const OrdersContainer = () => {
-    // eslint-disable-next-line no-unused-vars
-    const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
+    const { data: currentUser, isLoading: isUserLoading, error: userError } = useCurrentUser();
     const activeTab = useSelector((state) => state.order.activeTab);
-    const dispatch = useDispatch();
+
     const {
-        data: vendorOrders,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isLoading,
-        isError,
-        error,
-        // } = useVendorAllOrders({ vendorId: "4bSsRJ5TbrUEtZ8RkXjtlpZFlfm2", status: activeTab });
-    } = useVendorAllOrders({ vendorId: currentUser?.id, status: activeTab });
+        orders,
+        loading: ordersLoading,
+        error: ordersError,
+        loadNext,
+        loadPrevious,
+        hasMore,
+        hasPrevious,
+        currentPage,
+        maxPage,
+        refetch,
+    } = usePaginatedLiveOrders({
+        vendorId: currentUser?.id,
+        status: activeTab,
+        pageSize: 10,
+        enabled: !!currentUser?.id, // Only fetch when user ID is available
+    });
 
-    // Only first page index
-    const pageIndex = useSelector((state) => state.order.pageIndex);
-    // Safe pages variable
-    const pages = vendorOrders?.pages || [];
+    // Handle loading states
+    const isLoading = isUserLoading || ordersLoading;
 
-    // Fetch next page if trying to go beyond loaded pages
-    useEffect(() => {
-        if (
-            pages.length > 0 &&
-            pageIndex === pages.length - 1 &&
-            hasNextPage
-        ) {
-            fetchNextPage();
-        }
-    }, [pageIndex, pages.length, hasNextPage, fetchNextPage]);
+    // Handle error states
+    if (userError) {
+        return (
+            <div className="flex items-center justify-center p-8">
+                <div className="text-center">
+                    <p className="text-red-600 mb-2">Failed to load user data</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-    const handleNext = () => {
-        if (pageIndex < pages.length - 1) {
-            dispatch(setPageIndex(1));
-        } else if (hasNextPage) {
-            // This will auto-fetch next in useEffect
-            dispatch(setPageIndex(1));
-        }
-    };
+    if (ordersError) {
+        return (
+            <div className="flex items-center justify-center p-8">
+                <div className="text-center">
+                    <p className="text-red-600 mb-2">Failed to load orders</p>
+                    <button onClick={refetch} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-    const handlePrevious = () => {
-        if (pageIndex > 0) {
-            dispatch(setPageIndex(-1));
-        }
-    };
-
-    const loading = isUserLoading || isLoading;
-    if (isError) return <div>Error: {error.message}</div>;
-
-    const currentPageOrders = pages[pageIndex]?.orders ?? [];
+    // Don't render orders until user is loaded
+    if (!currentUser?.id) {
+        return (
+            <>
+                <OrderTabBarSkeleton />
+                <OrdersSkeleton />
+            </>
+        );
+    }
 
     return (
-        <div>
+        <div className="space-y-6">
             <OrderTabBar />
             <OrderTableContainer
-                loading={loading}
-                orders={currentPageOrders}
-                onNext={handleNext}
-                onPrevious={handlePrevious}
-                pageIndex={pageIndex}
-                isFetchingNextPage={isFetchingNextPage}
-                hasNextPage={hasNextPage}
-                maxPage={pages.length > 0 ? pages.length - 1 : 0}
+                loading={isLoading}
+                orders={orders}
+                onNext={loadNext}
+                onPrevious={loadPrevious}
+                currentPage={currentPage}
+                maxPage={maxPage}
+                hasPrevious={hasPrevious}
+                hasMore={hasMore}
             />
         </div>
     );
 };
+
 export default OrdersContainer;
