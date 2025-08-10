@@ -6,20 +6,19 @@ import StatusChangeModal from "./StatusChangeModal";
 
 const OrderTable = ({ orders, onInvoiceClick, handleSelector, loading }) => {
     const [modalOpen, setModalOpen] = React.useState(false);
-const [selectedOrderId, setSelectedOrderId] = React.useState(null);
-const [currentStatus, setCurrentStatus] = React.useState("");
-const [nextStatus, setNextStatus] = React.useState("");
+    const [selectedOrderId, setSelectedOrderId] = React.useState(null);
+    const [currentStatus, setCurrentStatus] = React.useState("");
+    const [nextStatus, setNextStatus] = React.useState("");
 
 
-const STATUS_FLOW = {
-    Pending: "Processing",
-    Processing: "Ready",
-    Ready: null,
-    "Picked Up": null,
-    Delivered: null,
-    Cancelled: null,
-};
-
+    const STATUS_FLOW = {
+        Pending: "Processing",
+        Processing: "Ready",
+        Ready: "Picked Up",
+        "Picked Up": "Delivered",
+        Delivered: null,
+        Cancelled: null,
+    };
 
 
     // Helper function to calculate total amount
@@ -31,7 +30,6 @@ const STATUS_FLOW = {
         }, 0);
     };
 
-  
 
     if (loading) {
         return <OrdersSkeleton />;
@@ -80,32 +78,57 @@ const STATUS_FLOW = {
                                 <td className="px-6 py-4 text-sm text-gray-700">{order?.userName}</td>
                                 <td className="px-6 py-4 text-sm text-gray-700">{order?.status}</td>
                                 <td className="px-6 py-4 text-sm">
-    {STATUS_FLOW[order.status] ? (
-        <button
-            onClick={() => {
-                setSelectedOrderId(order.id);
-                setCurrentStatus(order.status);
-                setNextStatus(STATUS_FLOW[order.status]);
-                setModalOpen(true);
-            }}
-            className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200"
-        >
-            Mark as {STATUS_FLOW[order.status]}
-        </button>
-    ) : (
-        order?.status === 'Ready' ? (
-            <span className="text-xs text-gray-400 italic">Waiting for Picked Up</span>
-        ) : order?.status === 'Picked Up' ? (
-            <span className="text-xs text-gray-400 italic">Waiting for Delivery</span>
-        ) : order?.status === 'Delivered' ? (
-            <span className="text-xs text-gray-400 italic">Delivered</span>
-        ) : order?.status === 'Cancelled' ? (
-            <span className="text-xs text-gray-400 italic">Cancelled</span>
-        ) : (
-            <span className="text-xs text-gray-400 italic">No next step</span>
-        )
-    )}
-</td>
+                                    {order?.status === "Pending" ? (
+                                        <div className="flex items-center space-x-2">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedOrderId(order.id);
+                                                    setCurrentStatus(order.status);
+                                                    setNextStatus(STATUS_FLOW[order.status]);
+                                                    setModalOpen(true);
+                                                }}
+                                                className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200"
+                                            >
+                                                Accept
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedOrderId(order.id);
+                                                    setCurrentStatus(order.status);
+                                                    setNextStatus("Cancelled");
+                                                    setModalOpen(true);
+                                                }}
+                                                className="text-xs font-medium px-3 py-1 rounded-full bg-red-100 text-red-700 hover:bg-red-200"
+                                            >
+                                                Reject
+                                            </button>
+                                        </div>
+                                    ) : order?.status === "Processing" ? (
+                                        <div className="flex items-center space-x-2">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedOrderId(order.id);
+                                                    setCurrentStatus(order.status);
+                                                    setNextStatus(STATUS_FLOW[order.status]);
+                                                    setModalOpen(true);
+                                                }}
+                                                className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200"
+                                            >
+                                                Mark as Ready
+                                            </button>
+                                        </div>
+                                    ) : order?.status === "Ready" ? (
+                                        <span className="text-xs text-gray-400 italic">Waiting for Picked Up</span>
+                                    ) : order?.status === "Picked Up" ? (
+                                        <span className="text-xs text-gray-400 italic">Waiting for Delivery</span>
+                                    ) : order?.status === "Delivered" ? (
+                                        <span className="text-xs text-gray-400 italic">Delivered</span>
+                                    ) : order?.status === "Cancelled" ? (
+                                        <span className="text-xs text-gray-400 italic">Cancelled</span>
+                                    ) : (
+                                        <span className="text-xs text-gray-400 italic">No next step</span>
+                                    )}
+                                </td>
 
                                 <td className="px-6 py-4 text-sm text-gray-700">
                                     {formatOMR(calculateTotalPrice(order?.items))}
@@ -129,7 +152,7 @@ const STATUS_FLOW = {
                 </table>
 
                 {orders.length === 0 && (
-                    <div className="text-center py-12">
+                    <div className="text-center h-[50vh] py-12 flex flex-col items-center justify-center">
                         <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
                             <span className="text-2xl text-gray-400">📭</span>
                         </div>
@@ -139,16 +162,15 @@ const STATUS_FLOW = {
                 )}
             </div>
             <StatusChangeModal
-    isOpen={modalOpen}
-    onClose={() => setModalOpen(false)}
-    onConfirm={() => {
-        handleSelector(selectedOrderId, nextStatus);
-        setModalOpen(false);
-    }}
-    currentStatus={currentStatus}
-    nextStatus={nextStatus}
-/>
-
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onConfirm={() => {
+                    handleSelector(selectedOrderId, nextStatus);
+                    setModalOpen(false);
+                }}
+                currentStatus={currentStatus}
+                nextStatus={nextStatus}
+            />
         </div>
     );
 };

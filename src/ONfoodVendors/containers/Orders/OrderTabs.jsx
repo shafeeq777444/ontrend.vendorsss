@@ -4,13 +4,18 @@ import TabButton from "../../components/Orders/TabButton";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../slices/order/orderSlice";
 
-const TABS = ['Pending', 'all', 'Processing', 'Ready', 'Picked Up', 'Delivered', 'Cancelled'];
+const TABS = ['Pending', 
+  // 'all', //when want time uncommented this is useful part
+   'Processing', 'Ready', 'Picked Up', 'Delivered', 'Cancelled'];
 
 const OrderTabBar = () => {
   const dispatch = useDispatch();
   const activeTab = useSelector((state) => state.order.activeTab);
   const tabRefs = useRef({});
   const pendingOrders = useSelector((state) => state.order.pendingOrders);
+  const processingOrders = useSelector((state) => state.order.processingOrders);
+  console.log("pendingOrders", pendingOrders);
+  console.log("processingOrders", processingOrders);
 
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 
@@ -39,7 +44,7 @@ const OrderTabBar = () => {
             tabRefs={tabRefs}
             activeTab={activeTab}
             label={label}
-           span={label === "Pending" ? pendingOrders : undefined}
+           span={label === "Pending" ? pendingOrders : label === "Processing"? processingOrders : undefined}
           />
         ))}
       </div>

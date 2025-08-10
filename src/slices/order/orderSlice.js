@@ -5,7 +5,7 @@ const initialState= {
     pageIndex: 0,
     invoice: null,
     pendingOrders: 0,
-
+    processingOrders: 0,
 }
 
 const orderSlice = createSlice({
@@ -25,11 +25,14 @@ const orderSlice = createSlice({
     setPendingOrders: (state, action) => {
       state.pendingOrders = action.payload;
     },
+    setProcessingOrders: (state, action) => {
+      state.processingOrders = action.payload;
+    },
     },
 extraReducers: (builder) => {
     builder.addCase(resetApp, () => initialState);
   }
 });
 
-export const { setActiveTab ,setPageIndex,setInvoice,setPendingOrders} = orderSlice.actions;
+export const { setActiveTab ,setPageIndex,setInvoice,setPendingOrders,setProcessingOrders} = orderSlice.actions;
 export default orderSlice.reducer;

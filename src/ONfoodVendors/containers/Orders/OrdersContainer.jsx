@@ -4,7 +4,6 @@ import OrderTableContainer from "./OrderTableContainer";
 import OrderTabBar from "./OrderTabs";
 import { useSelector } from "react-redux";
 import { usePaginatedLiveOrders } from "../../../services/hooks/orders/useLiveVendorOrders";
-import OrdersSkeleton from "../../components/Orders/OrdersSkeleton";
 import OrderTabBarSkeleton from "../../components/Orders/OrderTabBarSkelton";
 const OrdersContainer = () => {
     const { data: currentUser, isLoading: isUserLoading, error: userError } = useCurrentUser();
@@ -23,6 +22,7 @@ const OrdersContainer = () => {
         refetch,
     } = usePaginatedLiveOrders({
         vendorId: currentUser?.id,
+        // vendorId: "5A4T7kMkHKVotcf6V6kFskJN8JW2",
         status: activeTab,
         pageSize: 10,
         enabled: !!currentUser?.id, // Only fetch when user ID is available
@@ -66,7 +66,6 @@ const OrdersContainer = () => {
         return (
             <>
                 <OrderTabBarSkeleton />
-                {/* <OrdersSkeleton /> */}
             </>
         );
     }

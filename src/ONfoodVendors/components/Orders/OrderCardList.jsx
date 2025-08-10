@@ -96,7 +96,7 @@ const OrderCardList = ({ orders, handleSelector, onInvoiceClick }) => {
       ))}
 
       {orders.length === 0 && (
-        <div className="text-center py-12">
+        <div className="text-center h-[50vh] py-12 flex flex-col items-center justify-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
             <span className="text-2xl text-gray-400">📭</span>
           </div>

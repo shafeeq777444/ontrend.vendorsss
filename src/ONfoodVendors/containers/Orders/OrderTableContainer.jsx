@@ -50,11 +50,7 @@ const OrderTableContainer = ({ loading, orders, onNext, onPrevious, currentPage,
         };
     }, [currentPage, maxPage, orders.length, hasMore]);
 
-    if (loading && orders.length === 0) {
-        return (
-           <OrdersSkeleton/>
-        );
-    }
+
 
     return (
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -114,7 +110,15 @@ const OrderTableContainer = ({ loading, orders, onNext, onPrevious, currentPage,
                             <div className="flex items-center space-x-1">
                                 {/* Previous Button */}
                                 <button
-                                    onClick={onPrevious}
+                                    onClick={ 
+                                        ()=>{onPrevious()
+                                        window.scrollTo({
+                                            top: 0,
+                                            behavior: "smooth",
+                                        });
+
+                                        }
+                                    }
                                     disabled={!hasPrevious || loading}
                                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
                                     aria-label="Previous page"
@@ -123,7 +127,15 @@ const OrderTableContainer = ({ loading, orders, onNext, onPrevious, currentPage,
                                 </button>
                                 {/* Next Button */}
                                 <button
-                                    onClick={onNext}
+                                    onClick={
+                                        ()=>{
+                                            onNext()
+                                            window.scrollTo({
+                                                top: 0,
+                                                behavior: "smooth",
+                                            });
+                                        }
+                                    }
                                     disabled={!hasMore || loading}
                                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
                                     aria-label="Next page"

@@ -17,6 +17,7 @@ import { resetApp } from "../../app/actions/appActions";
 import { useUpdateVendorProfile } from "../../services/queries/vendor.query";
 import { useLiveOrdersWithSound } from "../../services/hooks/orders/useLiveOrdersWithSound";
 import StopAlertButton from "../components/Orders/StopAlertButton";
+import useProcessingOrdersCount from "../../services/hooks/orders/useProcessingOrdersCountLive";
 
 
 const SideBarLayout = () => {
@@ -29,6 +30,7 @@ const SideBarLayout = () => {
     const dispatch = useDispatch();
     const { mutate } = useUpdateVendorProfile();
     const { orders, stopAlertSequence, alertLoop } = useLiveOrdersWithSound(data?.id);
+     useProcessingOrdersCount(data?.id);
     console.log(orders,"notification orders");
 
     // -------------------------------------- states --------------------------------------------------
