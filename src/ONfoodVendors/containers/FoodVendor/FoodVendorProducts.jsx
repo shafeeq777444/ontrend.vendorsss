@@ -12,8 +12,8 @@ const FoodVendorProductsComponent = ({ foodItems = [], venderLogo, isLoading, is
   if (isLoading) return <SkeltonFoodCard />;
   const vendorType=currentVendor?.vendorType?.split("/")[0]
   return (
-    <div className="py-2 px-2 ] scrollbar-hide ">
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 bg-gradient-to-br  p-4 rounded-md">
+    <div className="py-1 sm:py-2 px-1 sm:px-2 scrollbar-hide w-full">
+      <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 bg-gradient-to-br p-2 sm:p-4 rounded-md w-full">
         {foodItems?.map((item) => (
           <FoodCardInVendor
           onClickView={onClickView}

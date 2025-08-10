@@ -129,49 +129,53 @@ const FoodVendorMealCategory = ({ categories = [], selectedCategory, isLoading, 
                     <button
                         key={category + i}
                         onClick={() => handleCategoryClick(category)}
-                        className={`snap-start flex-shrink-0 px-6 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-all duration-200
-            ${isSelected ? "bg-sky-400 text-white shadow-md" : "bg-gray-100 hover:bg-gray-200"}
-          `}
+                        className={`snap-start flex-shrink-0 px-4 sm:px-5 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200
+            ${isSelected ? "bg-sky-500 text-white shadow-md" : "bg-gray-100 hover:bg-gray-200"}
+            focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-white`}
+                        aria-pressed={isSelected}
                     >
                         {category}
                     </button>
                 );
             }),
-        [categories, selectedCategory, handleCategoryClick, isOnline]
+        [categories, selectedCategory, handleCategoryClick]
     );
 
     if (isLoading) return <SkeletonCategoryTabs />;
 
     return (
-        <div className="relative p-4 rounded-2xl bg-white shadow-xl">
+        <div className="relative p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white shadow-sm sm:shadow-xl">
             {/* Top Bar */}
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">Menu</h2>
-                <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Menu</h2>
+                <div className="flex items-center gap-1.5 sm:gap-2">
                     <AnimatePresence mode="wait">
                         <motion.button
-                            whileTap={{ scale: 0.9 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => navigate(`/menu/${currentVendor?.vendorType.split("/")[0]}/new/new`)}
-                            className="flex items-center justify-center w-20 h-9 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs duration-300 shadow-md"
+                            className="flex items-center justify-center w-16 sm:w-20 h-8 sm:h-9 rounded-lg sm:rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs sm:text-sm font-medium duration-200 shadow-sm hover:shadow-md transition-all"
                             aria-label="Add New Item"
                         >
-                            Add New
+                            <span className="hidden sm:inline">Add New</span>
+                            <span className="sm:hidden">+</span>
                         </motion.button>
                         {!isSearchExpanded ? (
                             <motion.button
                                 key="search-icon"
                                 onMouseDown={handleSearchIconClick}
-                                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl"
+                                className="p-1.5 sm:p-2 bg-gray-100 hover:bg-gray-200 rounded-lg sm:rounded-xl transition-colors duration-200"
+                                aria-label="Search"
                             >
-                                <Search size={20} className="text-gray-600" />
+                                <Search size={18} className="text-gray-600 w-4 h-4 sm:w-5 sm:h-5" />
                             </motion.button>
                         ) : (
                             <motion.div
                                 key="search-input"
-                                initial={{ opacity: 0, width: 40 }}
-                                animate={{ opacity: 1, width: 250 }}
-                                exit={{ opacity: 0, width: 40 }}
-                                transition={{ duration: 0.3 }}
+                                initial={{ opacity: 0, width: 30 }}
+                                animate={{ opacity: 1, width: 180 }}
+                                exit={{ opacity: 0, width: 30 }}
+                                transition={{ duration: 0.25 }}
+                                className="sm:min-w-[200px]"
                             >
                                 <Input
                                     ref={searchInputRef}
@@ -181,7 +185,7 @@ const FoodVendorMealCategory = ({ categories = [], selectedCategory, isLoading, 
                                     onChange={handleSearchChange}
                                     onBlur={handleSearchBlur}
                                     onKeyDown={handleSearchKeyDown}
-                                    className="w-full px-4 border rounded-xl"
+                                    className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-transparent"
                                 />
                             </motion.div>
                         )}
@@ -190,9 +194,10 @@ const FoodVendorMealCategory = ({ categories = [], selectedCategory, isLoading, 
                     <button
                         ref={filterButtonRef}
                         onClick={handleFilterButtonClick}
-                        className="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl"
+                        className="p-1.5 sm:p-2 bg-gray-100 hover:bg-gray-200 rounded-lg sm:rounded-xl transition-colors duration-200"
+                        aria-label="Filter options"
                     >
-                        <SlidersHorizontal size={20} className="text-gray-600" />
+                        <SlidersHorizontal size={18} className="text-gray-600 w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                 </div>
             </div>
@@ -218,21 +223,23 @@ const FoodVendorMealCategory = ({ categories = [], selectedCategory, isLoading, 
             </AnimatePresence>
 
             {/* Scrollable Category Tabs with Buttons */}
-            <div className="relative mt-2">
+            <div className="relative mt-3 sm:mt-4">
                 {canScrollLeft && (
                     <button
                         onClick={scrollLeft}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow hover:shadow-md"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm p-1.5 sm:p-2 rounded-full shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
                         aria-label="Scroll left"
                     >
-                        ◀
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
                     </button>
                 )}
 
                 <div
                     ref={scrollRef}
-                    className="mx-6 flex gap-3 overflow-x-auto scroll-smooth scrollbar-hide"
-                    style={{ scrollBehavior: "smooth" }}
+                    className="mx-6 sm:mx-8 flex gap-2.5 sm:gap-3 overflow-x-auto scroll-smooth scrollbar-hide pb-1 -mb-1"
+                    style={{ scrollBehavior: "smooth", scrollbarWidth: 'none' }}
                 >
                     {categoryButtons}
                 </div>
@@ -240,10 +247,12 @@ const FoodVendorMealCategory = ({ categories = [], selectedCategory, isLoading, 
                 {canScrollRight && (
                     <button
                         onClick={scrollRight}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow hover:shadow-md"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm p-1.5 sm:p-2 rounded-full shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
                         aria-label="Scroll right"
                     >
-                        ▶
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                     </button>
                 )}
             </div>

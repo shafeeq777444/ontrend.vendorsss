@@ -94,16 +94,18 @@ const VenderFoodPage = () => {
   const handleClickView = (item) => setViewModalItem(item);
 
   return (
-    <div className="min-h-screen scrollbar-hide bg-gradient-to-br" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="min-h-screen scrollbar-hide bg-gradient-to-br from-gray-50 to-gray-100" dir={isArabic ? "rtl" : "ltr"}>
       <div className="overflow-y-hidden bg-gradient-to-br from-white to-offwhite rounded-t-2xl z-30 -mt-4 scrollbar-hide">
-        <div ref={productsRef} className="bg-gradient-to-br from-white to-offwhite shadow-xl p-4">
-          <FoodVendorMealCategory
-            setCurrentPageIndex={setCurrentPageIndex}
-            isOnline={isOnline}
-            isLoading={isCategoryLoading}
-            categories={vendorCategories}
-            selectedCategory={selectedVendorMealCategory}
-          />
+        <div ref={productsRef} className="bg-gradient-to-br from-white to-offwhite shadow-sm sm:shadow-xl p-2 sm:p-4">
+          <div className="mb-3 sm:mb-4">
+            <FoodVendorMealCategory
+              setCurrentPageIndex={setCurrentPageIndex}
+              isOnline={isOnline}
+              isLoading={isCategoryLoading}
+              categories={vendorCategories}
+              selectedCategory={selectedVendorMealCategory}
+            />
+          </div>
 
           <FoodVendorProducts
             isLoading={isFoodsLoading}
@@ -116,15 +118,17 @@ const VenderFoodPage = () => {
           />
 
           {!isFoodsLoading && (
-            <PaginationButtons
-              isOnline={isOnline}
-              currentPageIndex={currentPageIndex}
-              handleNext={handleNext}
-              handlePrevious={handlePrevious}
-              isArabic={isArabic}
-              isFetchingNextPage={isFetchingNextPage}
-              isNextDisabled={isNextDisabled}
-            />
+            <div className="mt-3 sm:mt-4">
+              <PaginationButtons
+                isOnline={isOnline}
+                currentPageIndex={currentPageIndex}
+                handleNext={handleNext}
+                handlePrevious={handlePrevious}
+                isArabic={isArabic}
+                isFetchingNextPage={isFetchingNextPage}
+                isNextDisabled={isNextDisabled}
+              />
+            </div>
           )}
         </div>
       </div>

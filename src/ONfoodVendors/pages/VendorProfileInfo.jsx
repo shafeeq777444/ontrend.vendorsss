@@ -8,7 +8,7 @@ import { useCurrentUser } from "../../services/hooks/profile/useCurrentUserLiveD
 
 const VendorProfileInfo = () => {
     const { data: VendorData, isLoading } = useCurrentUser();
-    console.log(VendorData,"kkk");
+    console.log(VendorData, "kkk");
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -32,7 +32,13 @@ const VendorProfileInfo = () => {
                     />
                 </div>
                 <div className="flex-1 h-110">
-                    <VendorWorkingHours openingTime={VendorData?.openingTime} closingTime={VendorData?.closingTime} workingDays={VendorData?.workingDays} dayWiseOpenAndClosingTime={VendorData?.dayWiseOpenAndClosingTime} vendorId={VendorData?.id}/>
+                    <VendorWorkingHours
+                        openingTime={VendorData?.openingTime}
+                        closingTime={VendorData?.closingTime}
+                        workingDays={VendorData?.workingDays}
+                        dayWiseOpenAndClosingTime={VendorData?.dayWiseOpenAndClosingTime}
+                        vendorId={VendorData?.id}
+                    />
                 </div>
             </div>
             {/* vendor contact details ✅ */}
