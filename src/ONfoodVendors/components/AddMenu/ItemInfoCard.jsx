@@ -114,7 +114,7 @@ const ItemInfoCard = ({
             <div className="space-y-2 w-full mt-4 md:mt-0 col-span-2">
                 <label className="text-sm font-medium text-gray-700">Description</label>
                 <textarea
-                    className="w-full px-3 py-2 rounded-2xl border mt-1 border-gray-300 focus:outline-none focus:ring-0 min-h-[44px] resize-none"
+                    className="w-full px-3 py-2 rounded-2xl border mt-1 border-gray-300 focus:outline-none focus:ring-0 min-h-[142px] resize-none"
                     placeholder="Enter item description"
                     value={description}
                     onChange={(e) => handleDescription(e.target.value)}

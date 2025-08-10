@@ -141,10 +141,21 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
 
     const handleDiscountPercentage = (e) => {
         const discount = parseFloat(e.target.value);
+    
+        if ( discount < 0) {
+            return toast.error("Discount percentage cannot be less than 0%");
+        }
+    
+        if (discount > 100) {
+            return toast.error("Discount percentage cannot be more than 100%");
+        }
+    
         if (!formData.itemPrice) return toast.error("Enter item price first");
+    
         const itemPrice = formData.itemPrice;
         const discountAmount = (itemPrice * discount) / 100;
         const finalPrice = itemPrice - discountAmount;
+    
         setFormData({
             ...formData,
             discountPercentage: discount,
@@ -152,6 +163,33 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             discountAmount,
         });
     };
+    
+
+    const handleOfferPrice = (e) => {
+        const offerPrice = parseFloat(e.target.value);
+        const itemPrice = formData.itemPrice;
+    
+        if (!itemPrice) {
+            toast.error("Enter item price first");
+            return;
+        }
+    
+        if (offerPrice > itemPrice) {
+            toast.error("Offer price cannot be greater than item price");
+            return;
+        }
+    
+        const discountAmount = itemPrice - offerPrice;
+        const discountPercentage = (discountAmount / itemPrice) * 100;
+    
+        setFormData({
+            ...formData,
+            price: offerPrice,
+            discountAmount,
+            discountPercentage: parseFloat(discountPercentage.toFixed(2)),
+        });
+    };
+    
 
     const handleAvilableStartTime = (e) => {
         const [h, m] = e.target.value.split(":").map(Number);
@@ -280,6 +318,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         handleSubmit,
         handleStock,
         handleCancel,
+        handleOfferPrice,
     };
 };
 
