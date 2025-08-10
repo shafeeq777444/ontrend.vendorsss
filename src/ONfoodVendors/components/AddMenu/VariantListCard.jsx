@@ -82,7 +82,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                             exit="exit"
                             variants={boxVariants}
                             transition={{ duration: 0.25 }}
-                            className="group border border-gray-200 rounded-xl p-3 sm:p-4 flex flex-col justify-between bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-indigo-300 focus-within:ring-offset-1"
+                            className="group border border-gray-200 rounded-xl p-3 sm:p-4 flex flex-col justify-between bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-indigo-300 focus-within:ring-offset-1 h-40 min-h-[160px]"
                         >
                             {editKey === key ? (
                                 <>
@@ -160,7 +160,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                         exit="exit"
                         variants={boxVariants}
                         transition={{ duration: 0.25 }}
-                        className="border-2 border-dashed border-gray-300 rounded-xl p-3 sm:p-4 flex items-center justify-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+                        className="border-2 border-dashed border-gray-300 rounded-xl p-3 sm:p-4 flex items-center justify-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors h-40 min-h-[160px]"
                         onClick={() => setIsAdding(true)}
                     >
                         {!isAdding ? (

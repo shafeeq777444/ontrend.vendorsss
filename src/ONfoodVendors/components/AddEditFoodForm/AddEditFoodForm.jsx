@@ -4,7 +4,7 @@ import ItemInfoCard from "../AddMenu/ItemInfoCard.jsx";
 import IsDisabled from "../AddMenu/IsDisabled.jsx";
 import SaveButton from "../AddMenu/SaveButton.jsx";
 import VariantListCard from "../AddMenu/VariantListCard.jsx";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import AddOnListCard from "../AddMenu/AddOnListCard.jsx";
 import { useDeleteFoodMutation } from "../../../services/queries/foodVendor.query.js";
 import useFoodForm from "../../hooks/useFoodForm.js";
@@ -15,6 +15,7 @@ import { useDeleteEproductMutation } from "../../../services/queries/Eproduct.qu
 import { useLiveAllCategoriesFromEshop } from "../../../services/hooks/menu/useLiveGetAllcategoriesFromEshop.js";
 import { useLiveGetAllCategories } from "../../../services/hooks/menu/useLiveGetAllCategoriesFromFood.js";
 import { useCurrentUser } from "../../../services/hooks/profile/useCurrentUserLiveData.js";
+import Summary from "../AddMenu/Summary.jsx";
 
 const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
   const {
@@ -39,6 +40,7 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [cancelModal, setCancelModal] = useState(false);
 
   const { mutate: deleteEproduct } = useDeleteEproductMutation();
   const { mutate: deleteFood } = useDeleteFoodMutation();
@@ -49,6 +51,13 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
   const { id, category, vendorType } = useParams();
 
   const handleDeleteModal = () => setDeleteModal(true);
+
+  const handleCancelModal = () => setCancelModal(true);
+
+  const handleConfirmCancel = () => {
+    setCancelModal(false);
+    handleCancel();
+  };
 
   const handleConfirmationModal = () => {
     if (vendorType === "E-Shopping") {
@@ -71,7 +80,7 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
     switch (activeTab) {
       case 1:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center ">
             <ImageUploading
               imageUrl={formData.imageUrl}
               handleImageUpload={handleImageUpload}
@@ -147,17 +156,11 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
                 </div>
               )}
             </div>
-
-            {id === "new" && (
-              <IsDisabled
-                isDisabled={formData.isDisabled}
-                handleToggleDisabled={handleToggleDisabled}
+            <div className="mt-6">
+              <Summary 
+                formData={formData} 
+                categoryOptions={categoryOptions} 
               />
-            )}
-
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-4">Save & Settings</h3>
-              <SaveButton handleSubmit={() => handleSubmit(category)} />
             </div>
           </>
         );
@@ -175,22 +178,24 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 max-w-7xl mx-auto space-y-8 relative">
-      {/* Top bar with status toggle and Cancel */}
-      <div className="flex justify-between items-center mb-6">
-        {id !== "new" && (
+      {/* Close button - Top Right */}
+      <button
+        type="button"
+        className="absolute top-4 right-4 bg-white hover:bg-gray-100 transition text-gray-800 p-2 rounded-full border border-gray-300 shadow-sm hover:shadow-md"
+        onClick={handleCancelModal}
+        title="Close"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      {/* Status toggle for existing items */}
+      <div className="mb-6">
           <IsDisabled
             isDisabled={formData.isDisabled}
             handleToggleDisabled={handleToggleDisabled}
           />
-        )}
-        <button
-          type="button"
-          className="bg-white hover:bg-gray-100 transition text-gray-800 px-4 py-2 rounded-md font-medium"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-      </div>
+        </div>
+      
 
       {/* Tabs header */}
       <div className="flex space-x-4 border-b border-gray-300">
@@ -237,6 +242,11 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
             </button>
           )}
         </div>
+        {activeTab === 5 && (
+          <div className="flex-shrink-0">
+            <SaveButton handleSubmit={() => handleSubmit(category)} />
+          </div>
+        )}
       </div>
 
       {deleteModal && (
@@ -246,6 +256,16 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
           description="Are you sure you want to delete this item?"
           onAction={handleConfirmationModal}
           onClose={() => setDeleteModal(false)}
+        />
+      )}
+
+      {cancelModal && (
+        <ReusableConfirmationModal
+          title="Cancel Changes"
+          isOpen={cancelModal}
+          description="Are you sure you want to cancel? Any unsaved changes will be lost."
+          onAction={handleConfirmCancel}
+          onClose={() => setCancelModal(false)}
         />
       )}
     </div>

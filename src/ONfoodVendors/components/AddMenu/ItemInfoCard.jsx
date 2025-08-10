@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import CreatableSelect from "react-select/creatable";
 import { useCreateCategoryMutationInFood } from "../../../services/queries/foodVendor.query";
 import { useCreateCategoryMutationInEshop } from "../../../services/queries/Eproduct.query";
 import { useParams } from "react-router-dom";
 import { useCurrentUser } from "../../../services/hooks/profile/useCurrentUserLiveData";
 
-
-const ItemInfoCard = ({
+const ItemInfoCard = React.memo(function ItemInfoCard({
     name,
     arabicName,
     category,
@@ -16,54 +15,79 @@ const ItemInfoCard = ({
     allCategories,
     description,
     setAllCategories,
-}) => {
-    console.log(allCategories,"allCategories")
+}) {
     const { vendorType } = useParams();
     const { data: user } = useCurrentUser();
+
     const { mutateAsync: createCategoryMutationInFood } = useCreateCategoryMutationInFood();
     const { mutateAsync: createCategoryMutationInEshop } = useCreateCategoryMutationInEshop();
-    const handleCategoryCreate = async (inputValue) => {
-        console.log(user, "user");
-        try {
-            if (vendorType?.toLowerCase() === "food") {
-                await createCategoryMutationInFood({ categoryName: inputValue, vendorId: user?.id });
-            } else {
-                await createCategoryMutationInEshop({ categoryName: inputValue, vendorId: user?.id });
-            }
-            const newOption = { value: inputValue, label: inputValue };
 
-            // ✅ Add to list if not already there
-            setAllCategories((prev) => {
-              if (
-                prev.some(
-                  (item) =>
-                    item?.value &&
-                    item.value.toLowerCase() === inputValue.toLowerCase()
-                )
-              )
-                return prev;
-            
-              return [...prev, { value: inputValue, label: inputValue }];
-            });
-            console.log("Calling categoryOnchange with:", newOption);
-            categoryOnchange(newOption);
-            
-        } catch (error) {
-            console.error("Category creation failed:", error);
-        }
-    };
+    // Local form state to prevent unnecessary parent renders
+    const [localName, setLocalName] = useState(name || "");
+    const [localDescription, setLocalDescription] = useState(description || "");
+    const [localCategory, setLocalCategory] = useState(allCategories?.find((opt) => opt.value === category) || null);
+
+    // Sync local state if props change
+    useEffect(() => {
+        setLocalName(name || "");
+    }, [name]);
+
+    useEffect(() => {
+        setLocalDescription(description || "");
+    }, [description]);
+
+    useEffect(() => {
+        setLocalCategory(allCategories?.find((opt) => opt.value === category) || null);
+    }, [category, allCategories]);
+
+    const handleCategoryCreate = useCallback(
+        async (inputValue) => {
+            try {
+                if (vendorType?.toLowerCase() === "food") {
+                    await createCategoryMutationInFood({ categoryName: inputValue, vendorId: user?.id });
+                } else {
+                    await createCategoryMutationInEshop({ categoryName: inputValue, vendorId: user?.id });
+                }
+
+                const newOption = { value: inputValue, label: inputValue };
+
+                setAllCategories((prev) => {
+                    if (prev.some((item) => item?.value?.toLowerCase() === inputValue.toLowerCase())) {
+                        return prev;
+                    }
+                    return [...prev, newOption];
+                });
+
+                setLocalCategory(newOption);
+                categoryOnchange(newOption);
+            } catch (error) {
+                console.error("Category creation failed:", error);
+            }
+        },
+        [
+            vendorType,
+            user?.id,
+            createCategoryMutationInFood,
+            createCategoryMutationInEshop,
+            categoryOnchange,
+            setAllCategories,
+        ]
+    );
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
             {/* English Name */}
             <div className="space-y-4">
                 <label className="text-sm font-medium text-gray-600">Item Name</label>
                 <div className="mt-1">
                     <input
-                        className="w-full text-sm px-5 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:ring-0"
+                        className="w-full text-sm px-5 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-0"
                         placeholder="Enter item name"
-                        value={name}
-                        onChange={(e) => handleNameChange(e.target.value)}
+                        value={localName}
+                        onChange={(e) => {
+                            setLocalName(e.target.value);
+                            handleNameChange(e.target.value);
+                        }}
                     />
                 </div>
             </div>
@@ -73,27 +97,25 @@ const ItemInfoCard = ({
                 <label className="text-sm font-medium text-gray-700">Arabic</label>
                 <div className="mt-1">
                     <input
-                        className="w-full px-5 py-2.5 rounded-full bg-gray-100 border border-gray-200 text-gray-600"
-                        value={arabicName}
+                        className="w-full px-5 py-3 rounded-full bg-gray-100 border border-gray-200 text-gray-600"
+                        value={arabicName || ""}
                         disabled
                     />
                 </div>
             </div>
 
-            {/* Category + Description side-by-side */}
+            {/* Category */}
             <div className="md:flex md:space-x-6 w-full md:col-span-2">
-                {/* Category */}
                 <div className="space-y-2 w-full">
                     <label className="text-sm font-medium text-gray-700">Category</label>
                     <CreatableSelect
                         options={allCategories}
-                        value={allCategories?.find((opt) => opt.value === category)}
-                        onChange={categoryOnchange}
-                        onCreateOption={(inputValue) => {
-                            handleCategoryCreate(inputValue);
-                            // categoryOnchange(inputValue)
-                            console.log(inputValue, "inputValue");
+                        value={localCategory}
+                        onChange={(selected) => {
+                            setLocalCategory(selected);
+                            categoryOnchange(selected);
                         }}
+                        onCreateOption={handleCategoryCreate}
                         classNamePrefix="react-select"
                         placeholder="Select or create category"
                         isClearable
@@ -110,18 +132,22 @@ const ItemInfoCard = ({
                     />
                 </div>
             </div>
+
             {/* Description */}
             <div className="space-y-2 w-full mt-4 md:mt-0 col-span-2">
                 <label className="text-sm font-medium text-gray-700">Description</label>
                 <textarea
-                    className="w-full px-3 py-2 rounded-2xl border mt-1 border-gray-300 focus:outline-none focus:ring-0 min-h-[142px] resize-none"
+                    className="w-full px-3 py-3 rounded-2xl border mt-1 border-gray-300 focus:outline-none focus:ring-0 min-h-[142px] resize-none"
                     placeholder="Enter item description"
-                    value={description}
-                    onChange={(e) => handleDescription(e.target.value)}
+                    value={localDescription}
+                    onChange={(e) => {
+                        setLocalDescription(e.target.value);
+                        handleDescription(e.target.value);
+                    }}
                 />
             </div>
         </div>
     );
-};
+});
 
 export default ItemInfoCard;
