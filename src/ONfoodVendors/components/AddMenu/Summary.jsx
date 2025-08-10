@@ -2,6 +2,7 @@ import React from 'react';
 import { Package, DollarSign, Clock, Users, Tag, FileText, Image } from 'lucide-react';
 
 const Summary = ({ formData, categoryOptions }) => {
+  console.log(formData);
   const getCategoryName = (categoryValue) => {
     const category = categoryOptions?.find(cat => cat.value === categoryValue);
     return category ? category.label : categoryValue || 'Not selected';

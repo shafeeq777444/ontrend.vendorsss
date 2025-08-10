@@ -19,7 +19,6 @@ import { useLiveOrdersWithSound } from "../../services/hooks/orders/useLiveOrder
 import StopAlertButton from "../components/Orders/StopAlertButton";
 import useProcessingOrdersCount from "../../services/hooks/orders/useProcessingOrdersCountLive";
 
-
 const SideBarLayout = () => {
     // -------------------------------------------------- hooks --------------------------------------------------
     const { data, isLoading } = useCurrentUser();
@@ -30,8 +29,8 @@ const SideBarLayout = () => {
     const dispatch = useDispatch();
     const { mutate } = useUpdateVendorProfile();
     const { orders, stopAlertSequence, alertLoop } = useLiveOrdersWithSound(data?.id);
-     useProcessingOrdersCount(data?.id);
-    console.log(orders,"notification orders");
+    useProcessingOrdersCount(data?.id);
+    console.log(orders, "notification orders");
 
     // -------------------------------------- states --------------------------------------------------
     const [menuOpen, setMenuOpen] = useState(false);
@@ -54,14 +53,17 @@ const SideBarLayout = () => {
     };
 
     const handleShopOpenClose = () => {
-        mutate({ vendorId: data?.id, updatedData: { isOnline: !data?.isOnline } }, {
-            onSuccess: () => {
-                toast.success(`Shop ${!data?.isOnline ? "opened" : "closed"}`);
-            },
-            onError: () => {
-                toast.error("Failed to update shop status");
+        mutate(
+            { vendorId: data?.id, updatedData: { isOnline: !data?.isOnline } },
+            {
+                onSuccess: () => {
+                    toast.success(`Shop ${!data?.isOnline ? "opened" : "closed"}`);
+                },
+                onError: () => {
+                    toast.error("Failed to update shop status");
+                },
             }
-        });
+        );
     };
 
     // -------------------------------------- constants --------------------------------------------------
@@ -98,8 +100,9 @@ const SideBarLayout = () => {
                                     onClick={() => navigate("/profile")}
                                     className="flex items-center gap-2 cursor-pointer bg-[rgba(0,0,0,0.2)]  md:px-3 py-2 rounded-full hover:bg-[rgba(0,0,0,0.3)]  transition-colors duration-300 ease-in-out"
                                 >
+                                    {console.log(data, "profile data")}
                                     <img src={data?.image} alt="profile" className="w-8 h-8 rounded-full ring-2" />
-                                    <span className="text-sm font-medium hidden sm:inline">{data?.name}</span>
+                                    <span className="text-sm font-medium hidden sm:inline">{data?.restaurantName}</span>
                                     <ChevronDown size={4} className="text-sky-200 hidden sm:inline" />
                                 </div>
                             )}
@@ -174,7 +177,7 @@ const SideBarLayout = () => {
             />
 
             {/* --------------------- extra components --------------------- */}
-            { <StopAlertButton stopAlertSequence={stopAlertSequence} alertLoop={alertLoop}/>}
+            {<StopAlertButton stopAlertSequence={stopAlertSequence} alertLoop={alertLoop} />}
 
             {/*------------------------------- Main Content Area ---------------------------*/}
             <div className="h-80 px-4 py-6 -mt-40">

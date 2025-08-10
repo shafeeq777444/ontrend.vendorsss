@@ -132,62 +132,64 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
     const handleCategoryChange = (selectedOption) => setFormData((prev) => ({ ...prev, tag: selectedOption?.value || "" }));
 
     const handleOriginalPrice = (e) => {
+        console.log("worked");
+        console.log(formData.itemPrice, "itemPrice before");
+        console.log(e.target.value, "itemPrice input value");
         const itemPrice = parseFloat(e.target.value);
         const discount = formData.discountPercentage || 0;
         const discountAmount = (itemPrice * discount) / 100;
         const price = itemPrice - discountAmount;
-        setFormData({ ...formData, itemPrice, price, discountAmount });
+        setFormData((prev) => ({ ...prev, itemPrice, price, discountAmount }));
     };
 
     const handleDiscountPercentage = (e) => {
         const discount = parseFloat(e.target.value);
-    
-        if ( discount < 0) {
+
+        if (discount < 0) {
             return toast.error("Discount percentage cannot be less than 0%");
         }
-    
+
         if (discount > 100) {
             return toast.error("Discount percentage cannot be more than 100%");
         }
-    
+
         if (!formData.itemPrice) return toast.error("Enter item price first");
-    
+
         const itemPrice = formData.itemPrice;
         const discountAmount = (itemPrice * discount) / 100;
         const finalPrice = itemPrice - discountAmount;
-    
-        setFormData({
-            ...formData,
+
+        setFormData((prev) => ({
+            ...prev,
             discountPercentage: discount,
             price: finalPrice,
             discountAmount,
-        });
+        }));
     };
-    
 
     const handleOfferPrice = (e) => {
         const offerPrice = parseFloat(e.target.value);
         const itemPrice = formData.itemPrice;
-    
+
         if (!itemPrice) {
             toast.error("Enter item price first");
             return;
         }
-    
+
         if (offerPrice > itemPrice) {
             toast.error("Offer price cannot be greater than item price");
             return;
         }
-    
+
         const discountAmount = itemPrice - offerPrice;
         const discountPercentage = (discountAmount / itemPrice) * 100;
-    
-        setFormData({
-            ...formData,
+
+        setFormData((prev) => ({
+            ...prev,
             price: offerPrice,
             discountAmount,
             discountPercentage: parseFloat(discountPercentage.toFixed(2)),
-        });
+        }));
     };
     
 
