@@ -50,6 +50,7 @@ const VendorProfileInfo = () => {
                 phone={VendorData?.phone}
                 vatNumber={VendorData?.vatNumber}
                 location={VendorData?.location}
+                additionalPhone={VendorData?.additionalPhone}
             />
             <div className=" w-full flex justify-center"></div>
         </div>

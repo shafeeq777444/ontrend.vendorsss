@@ -157,7 +157,6 @@ const ItemInfoCard = React.memo(function ItemInfoCard({
                             }),
                         }}
                         className="react-select-container"
-                        classNamePrefix="react-select"
                         aria-label="Select or create a category"
                     />
                 </div>
