@@ -1,5 +1,4 @@
 import React from 'react';
-import { Package, DollarSign, Clock, Users, Tag, FileText, Image } from 'lucide-react';
 
 const Summary = ({ formData, categoryOptions }) => {
   const getCategoryName = (categoryValue) => {
@@ -26,18 +25,12 @@ const Summary = ({ formData, categoryOptions }) => {
 
   return (
     <div className="bg-blue-50 rounded-xl p-6 space-y-6 border border-blue-100">
-      <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center gap-2">
-
-        Summary
-      </h3>
+      <h3 className="text-lg font-semibold text-blue-900 mb-4">Summary</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Basic Information */}
         <div className="bg-white rounded-lg p-4 space-y-3 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2">
-
-            Basic Information
-          </h4>
+          <h4 className="font-medium text-blue-800">Basic Information</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Name:</span>
@@ -62,10 +55,7 @@ const Summary = ({ formData, categoryOptions }) => {
 
         {/* Pricing & Availability */}
         <div className="bg-white rounded-lg p-4 space-y-3 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2">
-
-            Pricing & Availability
-          </h4>
+          <h4 className="font-medium text-blue-800">Pricing & Availability</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Original Price:</span>
@@ -88,10 +78,7 @@ const Summary = ({ formData, categoryOptions }) => {
 
         {/* Time & Preparation */}
         <div className="bg-white rounded-lg p-4 space-y-3 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-blue-500" />
-            Time & Preparation
-          </h4>
+          <h4 className="font-medium text-blue-800">Time & Preparation</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Available From:</span>
@@ -110,10 +97,7 @@ const Summary = ({ formData, categoryOptions }) => {
 
         {/* Variants & Add-ons */}
         <div className="bg-white rounded-lg p-4 space-y-3 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2">
-            <Users className="w-4 h-4 text-blue-500" />
-            Variants & Add-ons
-          </h4>
+          <h4 className="font-medium text-blue-800">Variants & Add-ons</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Variants:</span>
@@ -134,10 +118,7 @@ const Summary = ({ formData, categoryOptions }) => {
       {/* Description */}
       {formData.description && (
         <div className="bg-white rounded-lg p-4 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2 mb-3">
-            <FileText className="w-4 h-4 text-blue-500" />
-            Description
-          </h4>
+          <h4 className="font-medium text-blue-800 mb-3">Description</h4>
           <p className="text-sm text-gray-600 leading-relaxed">
             {formData.description}
           </p>
@@ -147,10 +128,7 @@ const Summary = ({ formData, categoryOptions }) => {
       {/* Image */}
       {formData.imageUrl && (
         <div className="bg-white rounded-lg p-4 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2 mb-3">
-            <Image className="w-4 h-4 text-blue-500" />
-            Product Image
-          </h4>
+          <h4 className="font-medium text-blue-800 mb-3">Product Image</h4>
           <div className="flex justify-center">
             <img 
               src={formData.imageUrl} 
@@ -164,10 +142,7 @@ const Summary = ({ formData, categoryOptions }) => {
       {/* Variants Details */}
       {formData.variants && Object.keys(formData.variants).length > 0 && (
         <div className="bg-white rounded-lg p-4 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2 mb-3">
-            <Tag className="w-4 h-4 text-blue-500" />
-            Variant Details
-          </h4>
+          <h4 className="font-medium text-blue-800 mb-3">Variant Details</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {Object.entries(formData.variants).map(([name, details]) => (
               <div key={name} className="bg-blue-50 rounded-lg p-3 border border-blue-100">
@@ -184,10 +159,7 @@ const Summary = ({ formData, categoryOptions }) => {
       {/* Add-ons Details */}
       {formData.addOn && Object.keys(formData.addOn).length > 0 && (
         <div className="bg-white rounded-lg p-4 border border-gray-100">
-          <h4 className="font-medium text-blue-800 flex items-center gap-2 mb-3">
-            <Users className="w-4 h-4 text-blue-500" />
-            Add-on Details
-          </h4>
+          <h4 className="font-medium text-blue-800 mb-3">Add-on Details</h4>
           <div className="space-y-4">
             {Object.entries(formData.addOn).map(([groupName, items]) => (
               <div key={groupName} className="bg-blue-50 rounded-lg p-3 border border-blue-100">

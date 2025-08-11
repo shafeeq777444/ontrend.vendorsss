@@ -99,18 +99,18 @@ const EarningsTable = () => {
     setCurrentPage(1);
   }, [selectedFilter, selectedYear]);
 
-  // Calculate totals
-  const totalEarnings = useMemo(() => {
-    return filteredOrdersEarningsAndCountOfOrders?.totalEarnings || 0;
-  }, [filteredOrdersEarningsAndCountOfOrders]);
+  // // Calculate totals
+  // const totalEarnings = useMemo(() => {
+  //   return filteredOrdersEarningsAndCountOfOrders?.totalEarnings || 0;
+  // }, [filteredOrdersEarningsAndCountOfOrders]);
 
-  const totalOrders = filteredOrdersEarningsAndCountOfOrders?.totalOrders || 0;
+  // const totalOrders = filteredOrdersEarningsAndCountOfOrders?.totalOrders || 0;
 
-  const allTimeEarnings = useMemo(() => {
-    return currentUser?.sellerEarnings || 0;
-  }, [currentUser]);
+  // const allTimeEarnings = useMemo(() => {
+  //   return currentUser?.sellerEarnings || 0;
+  // }, [currentUser]);
 
-  const allTimeOrdersCount = totalDeliveredOrders || 0;
+  // const allTimeOrdersCount = totalDeliveredOrders || 0;
 
   const getPaymentModeIcon = (mode) => {
     switch (mode) {
@@ -147,7 +147,7 @@ const EarningsTable = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br rounded-t-2xl from-blue-50 to-indigo-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br rounded-t-2xl from-blue-50 to-indigo-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8 ">
         {/* Header Section */}
         <div className="text-center space-y-2">
@@ -164,13 +164,13 @@ const EarningsTable = () => {
         />
 
         {/* Earnings Summary */}
-        <EarningsSummary 
+        {/* <EarningsSummary 
           allTimeEarnings={allTimeEarnings}
           allTimeOrdersCount={allTimeOrdersCount}
           totalEarnings={totalEarnings}
           totalOrders={totalOrders}
           selectedFilter={selectedFilter}
-        />
+        /> */}
 
         {/* Filter Controls */}
         <FilterControls 

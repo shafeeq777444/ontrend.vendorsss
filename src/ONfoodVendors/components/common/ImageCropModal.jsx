@@ -16,8 +16,8 @@ const ImageCropModal = ({ imageSrc, onClose, onCropDone }) => {
   const handleCrop = async () => {
     setLoading(true);
     const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+    await onCropDone(croppedImage);
     setLoading(false);
-    onCropDone(croppedImage);
   };
 
   return (

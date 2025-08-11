@@ -11,7 +11,11 @@ import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage
 import { storage } from "../../config/firebase";
 import { v4 as uuid } from "uuid";
 import { useAddFoodMutation, useUpdateFoodMutation } from "../../services/queries/foodAdd.mutation";
-import { useAddEproductMutation, useDeleteEproductMutation, useUpdateEproducMutation } from "../../services/queries/Eproduct.query";
+import {
+    useAddEproductMutation,
+    useDeleteEproductMutation,
+    useUpdateEproducMutation,
+} from "../../services/queries/Eproduct.query";
 import { useDeleteFoodMutation } from "../../services/queries/foodVendor.query";
 
 const useFoodForm = ({ existingData = {}, onFinish }) => {
@@ -192,7 +196,6 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             discountPercentage: parseFloat(discountPercentage.toFixed(2)),
         }));
     };
-    
 
     const handleAvilableStartTime = (e) => {
         const [h, m] = e.target.value.split(":").map(Number);
@@ -226,8 +229,37 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
     };
 
     const handleSubmit = (category) => {
-        
-        const priceBase = formData.discountPrice > 0 ? formData.discountPrice : formData.itemPrice;
+        // Validation checks
+        if (!formData.name?.trim()) {
+            return toast.error("Item name is required");
+        }
+        if (!formData.tag?.trim()) {
+            return toast.error("Category is required");
+        }
+        if (!formData.description?.trim()) {
+            return toast.error("Description is required");
+        }
+        if (!formData.itemPrice || formData.itemPrice <= 0) {
+            return toast.error("Item price must be greater than 0");
+        }
+        if (formData.discountPercentage < 0 || formData.discountPercentage > 100) {
+            return toast.error("Discount percentage must be between 0 and 100");
+        }
+        if (formData.price > formData.itemPrice) {
+            return toast.error("Offer price cannot be greater than item price");
+        }
+        if (formData.availableTime?.fromMinute === undefined || formData.availableTime?.toMinute === undefined) {
+            return toast.error("Available time (start and end) must be selected");
+        }
+        if (formData.availableTime.fromMinute >= formData.availableTime.toMinute) {
+            return toast.error("Available start time must be before end time");
+        }
+        if (!formData.preparationTime || formData.preparationTime <= 0) {
+            return toast.error("Preparation time must be greater than 0");
+        }
+
+        // If all validations pass, proceed
+        const priceBase = formData.discountPercentage > 0 ? formData.price : formData.itemPrice;
         const commissionRate = priceBase * 0.22;
 
         const finalPayload = {
@@ -241,32 +273,25 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             arabicRestaurantName: currentVendor?.restaurantArabicName,
             lowerCaseRestaurantName: currentVendor?.restaurantName?.toLowerCase(),
             restaurantName: currentVendor?.restaurantName,
+            vID: currentVendor?.vendorID,
             isApproved: formData?.isApproved || false,
         };
 
-        // Update both Food and E-Shop depending on vendorType
         if (currentVendor?.vendorType === "E-Shopping") {
-            // E-Shop logic (add/update)
             if (id === "new") {
                 addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
-            } else if(category==finalPayload?.tag) {
+            } else if (category === finalPayload?.tag) {
                 updateEProductMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
-            }
-            else{
+            } else {
                 deleteEProductMutate({ category, docId: finalPayload?.id });
                 addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
             }
-            
-            
         } else {
-            // Food logic (add/update)
             if (id === "new") {
-                console.log("form");
                 addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
-            } else if(category==finalPayload?.tag){
+            } else if (category === finalPayload?.tag) {
                 updateFoodMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
-            }
-            else{
+            } else {
                 deleteFoodMutate({ category, docId: finalPayload?.id });
                 addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
             }
@@ -274,6 +299,56 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
 
         if (onFinish) onFinish();
     };
+
+    // const handleSubmit = (category) => {
+
+    //     const priceBase = formData.discountPrice > 0 ? formData.discountPrice : formData.itemPrice;
+    //     const commissionRate = priceBase * 0.22;
+
+    //     const finalPayload = {
+    //         ...formData,
+    //         timeStamp: serverTimestamp(),
+    //         addedBy: currentVendor?.id,
+    //         commissionRate,
+    //         tag: formData?.tag,
+    //         localTag: formData?.localTag,
+    //         lowerCaseName: formData?.name?.toLowerCase(),
+    //         arabicRestaurantName: currentVendor?.restaurantArabicName,
+    //         lowerCaseRestaurantName: currentVendor?.restaurantName?.toLowerCase(),
+    //         restaurantName: currentVendor?.restaurantName,
+    //         vID: currentVendor?.vendorID,
+    //         isApproved: formData?.isApproved || false,
+    //     };
+
+    //     // Update both Food and E-Shop depending on vendorType
+    //     if (currentVendor?.vendorType === "E-Shopping") {
+    //         // E-Shop logic (add/update)
+    //         if (id === "new") {
+    //             addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
+    //         } else if(category==finalPayload?.tag) {
+    //             updateEProductMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
+    //         }
+    //         else{
+    //             deleteEProductMutate({ category, docId: finalPayload?.id });
+    //             addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
+    //         }
+
+    //     } else {
+    //         // Food logic (add/update)
+    //         if (id === "new") {
+    //             console.log("form");
+    //             addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
+    //         } else if(category==finalPayload?.tag){
+    //             updateFoodMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
+    //         }
+    //         else{
+    //             deleteFoodMutate({ category, docId: finalPayload?.id });
+    //             addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
+    //         }
+    //     }
+
+    //     if (onFinish) onFinish();
+    // };
 
     const handleStock = (e) => {
         const value = parseInt(e.target.value, 10);
@@ -283,25 +358,6 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         }));
     };
     const handleCancel = async () => {
-        if (formData.imageUrl) {
-            try {
-                let imageRef;
-
-                if (!formData.imageUrl.startsWith("http")) {
-                    imageRef = ref(storage, formData.imageUrl);
-                } else {
-                    const path = decodeURIComponent(formData.imageUrl.split("/o/")[1].split("?")[0]);
-                    imageRef = ref(storage, path);
-                }
-
-                await deleteObject(imageRef);
-                console.log("✅ Image deleted during cancel");
-            } catch (imgErr) {
-                console.warn("⚠️ Failed to delete image on cancel:", imgErr);
-                // Optional: toast.error("Failed to delete uploaded image");
-            }
-        }
-
         navigate(-1); // Go back to previous page
     };
 
