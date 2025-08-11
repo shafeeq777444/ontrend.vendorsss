@@ -71,6 +71,7 @@ const SideBarLayout = () => {
         { name: "Menus", icon: null, route: "/menu" },
         { name: "Earnings", icon: <Zap size={16} />, route: "/earnings" },
         { name: "Profile", icon: null, route: "/profile" },
+        { name: "Banners", icon: null, route: "/banners-gallery" },
     ];
 
     // ------------------------------------------------------------- UI --------------------------------------------------

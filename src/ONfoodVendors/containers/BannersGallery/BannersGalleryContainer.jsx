@@ -5,6 +5,7 @@ import ImageUploading from '../../components/AddMenu/ImageUploading'
 import { useCurrentUser } from '../../../services/hooks/profile/useCurrentUserLiveData'
 import { uploadBannerImageAndSave, deleteBannerById } from '../../../services/firebase/firestore/banner.firestore'
 import ReusableConfirmationDeleteModal from '../../components/common/ReusableConfirmationDeleteModal'
+import BannerSkeleton from '../../components/BannersGallery/BannersSkelton'
 
 
 const BannersGalleryContainer = () => {
@@ -18,11 +19,9 @@ const BannersGalleryContainer = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [bannerToDelete, setBannerToDelete] = useState(null)
 
-  if (!vendorID) {
-    return <div>Please log in to see your banners.</div>
-  }
+ 
 
-  if (loading) return <div>Loading banners...</div>
+  if (loading || !vendorID) return <div><BannerSkeleton /></div>
   if (error) return <div>Error loading banners: {error.message || error}</div>
 
   const handleImageUpload = async (file) => {
