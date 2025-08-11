@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Plus, Trash2, Pencil, Check, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +10,9 @@ const boxVariants = {
 };
 
 const VariantListCard = ({ initialvariants = {}, onChange }) => {
+    const qtyRef = useRef(null);
+    const priceRef = useRef(null);
+    const saveBtnRef = useRef(null);
     const [variants, setVariants] = useState(initialvariants);
     const [editKey, setEditKey] = useState(null);
     const [editVariant, setEditVariant] = useState({ key: "", qty: "", price: "" });
@@ -95,7 +98,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                     <input
                                         className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
                                         value={editVariant.qty}
-                                        onChange={(e) => setEditVariant({ ...editVariant, qty: e.target.value })}
+                                        onChange={(e) => setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })}
                                         placeholder="Quantity"
                                         type="number"
                                         min={0}
@@ -167,50 +170,67 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                             <Plus className="w-8 h-8 text-blue-600" title="Add variant" />
                         ) : (
                             <div className="flex flex-col justify-between h-full w-full">
+                                {/* Variant Name */}
                                 <input
+                                    className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+                                    value={editVariant.key}
+                                    onChange={(e) => setEditVariant({ ...editVariant, key: e.target.value })}
                                     placeholder="Variant Name"
-                                    className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                                    value={newVariant.key}
-                                    onChange={(e) => setNewVariant({ ...newVariant, key: e.target.value })}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            qtyRef.current?.focus(); // Move to Qty
+                                        }
+                                    }}
                                 />
+
+                                {/* Quantity */}
                                 <input
-                                    placeholder="Qty"
+                                    ref={qtyRef}
                                     className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                                    value={newVariant.qty}
-                                    onChange={(e) => setNewVariant({ ...newVariant, qty: e.target.value })}
+                                    value={editVariant.qty}
+                                    onChange={(e) => setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })}
+                                    placeholder="Quantity"
                                     type="number"
                                     min={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            priceRef.current?.focus(); // Move to Price
+                                        }
+                                    }}
                                 />
+
+                                {/* Price */}
                                 <input
-                                    placeholder="Price"
+                                    ref={priceRef}
                                     className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                                    value={newVariant.price}
-                                    onChange={(e) => setNewVariant({ ...newVariant, price: e.target.value })}
+                                    value={editVariant.price}
+                                    onChange={(e) => setEditVariant({ ...editVariant, price: e.target.value })}
+                                    placeholder="Price"
                                     type="number"
                                     min={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            handleSaveEdit(); // Trigger Save
+                                        }
+                                    }}
                                 />
+
+                                {/* Save & Cancel */}
                                 <div className="flex gap-2 justify-end">
-                                    <button
-                                        className="text-green-600 hover:text-green-800"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleAddNewVariant();
-                                        }}
+                                    <Check
+                                        ref={saveBtnRef}
+                                        className="text-green-600 cursor-pointer"
+                                        onClick={handleSaveEdit}
                                         title="Save"
-                                    >
-                                        <Check size={20} />
-                                    </button>
-                                    <button
-                                        className="text-gray-500 hover:text-gray-700"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setIsAdding(false);
-                                            setNewVariant({ key: "", qty: "", price: "" });
-                                        }}
+                                    />
+                                    <X
+                                        className="text-gray-500 cursor-pointer"
+                                        onClick={() => setEditKey(null)}
                                         title="Cancel"
-                                    >
-                                        <X size={20} />
-                                    </button>
+                                    />
                                 </div>
                             </div>
                         )}

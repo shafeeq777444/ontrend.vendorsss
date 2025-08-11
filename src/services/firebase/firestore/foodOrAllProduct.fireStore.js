@@ -168,7 +168,6 @@ export const createCategoryInFood = async ({categoryName,vendorId}) => {
       const docSnap = await setDoc(docRef, { name: trimmedName,isApproved:false,addedBy:vendorId,imageUrl:"",localName:"" });
       console.log(docSnap,"docSnap")
       console.log("Created category with ID:", trimmedName);
-      toast.success("Category created successfully");
     } catch (error) {
       console.error("Error creating category:", error);
       toast.error("Failed to create category");

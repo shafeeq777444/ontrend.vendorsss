@@ -8,14 +8,15 @@ export const listenToAllFoodCategories = (callback) => {
   try {
     const q = query(
       collection(db, "Food/items/categories"),
-      where("isApproved", "==", true)
+      // where("isApproved", "==", true)
     );
 
     // Subscribe to real-time updates
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const categories = snapshot.docs.map((doc) => {
         const name = doc.get("name");
-        return { value: name, label: name };
+        const isApproved = doc.get("isApproved");
+        return { value: name, label: name,isApproved };
       });
       callback(categories);
     });

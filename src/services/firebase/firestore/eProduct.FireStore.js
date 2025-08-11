@@ -123,7 +123,6 @@ export const createCategoryInEshop = async ({categoryName, vendorId}) => {
         addedBy: vendorId,
         imageUrl:"",localName:"" 
       });
-      toast.success("Category created successfully");
     } catch (error) {
       console.error("Error creating category:", error);
       toast.error("Failed to create category");

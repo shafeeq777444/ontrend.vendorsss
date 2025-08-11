@@ -178,6 +178,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
 
         if (offerPrice > itemPrice) {
             toast.error("Offer price cannot be greater than item price");
+            setFormData((prev) => ({ ...prev, price: itemPrice }));
             return;
         }
 

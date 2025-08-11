@@ -11,13 +11,14 @@ export function useLiveAllCategoriesFromEshop() {
     useEffect(() => {
         const q = query(
             collection(db, "E-Shop/items/categories"),
-            where("isApproved", "==", true)
+            // where("isApproved", "==", true)
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const list = snapshot.docs.map((doc) => {
                 const name = doc.get("name");
-                return { value: name, label: name };
+                const isApproved = doc.get("isApproved");
+                return { value: name, label: name,isApproved };
             });
             setCategories(list);
             setLoading(false);

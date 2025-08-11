@@ -74,12 +74,12 @@ export const useDeleteEproductMutation = () => {
 
 // create category
 export const useCreateCategoryMutationInEshop = () => {
-    const queryClient = useQueryClient();
+
     return useMutation({
       mutationFn: ( {categoryName, vendorId }) => createCategoryInEshop({categoryName, vendorId}),
       onSuccess: () => {
-        toast.success("Category created successfully");
-        queryClient.invalidateQueries(["allCategories"]);
+
+
       },
     });
   };
