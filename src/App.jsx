@@ -15,7 +15,7 @@ import OrderPage from "./ONfoodVendors/pages/orderPage";
 import EarningsPage from "./ONfoodVendors/pages/EarningsPage";
 import TestingPage from "./ONfoodVendors/pages/TestingPage";
 import NotificationButton from "./ONfoodVendors/components/common/NotificationButton";
-
+import BannersGalleryPage from "./ONfoodVendors/pages/BannersGalleryPage";
 export default function App() {
     return (
         <Routes>
@@ -26,6 +26,7 @@ export default function App() {
                 <Route path="/testing" element={<NotificationButton />} />
                 <Route path="/earnings" element={<EarningsPage />} />
                 <Route path="/profile" element={<VendorProfileInfo />} />
+                <Route path="/banners-gallery" element={<BannersGalleryPage />} />
 
             </Route>
             {/* ---------------------------------  Auth --------------------------------- */}

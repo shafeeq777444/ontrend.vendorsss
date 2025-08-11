@@ -30,7 +30,6 @@ const SideBarLayout = () => {
     const { mutate } = useUpdateVendorProfile();
     const { orders, stopAlertSequence, alertLoop } = useLiveOrdersWithSound(data?.id);
     useProcessingOrdersCount(data?.id);
-    console.log(orders, "notification orders");
 
     // -------------------------------------- states --------------------------------------------------
     const [menuOpen, setMenuOpen] = useState(false);

@@ -3,11 +3,19 @@ import Cropper from 'react-easy-crop';
 import getCroppedImg from '../../../lib/cropImageHelper';
 import { Slider } from '@mui/material';
 
-const ImageCropModal = ({ imageSrc, onClose, onCropDone }) => {
+const ImageCropModal = ({ imageSrc, onClose, onCropDone, type = "" }) => {
+  const presetAspectRatios = [
+    { label: 'Free', value: 1/1 },
+    { label: '3:1', value: 3 / 1 },
+    { label: '16:9', value: 16 / 9 },
+    { label: '4:1', value: 4 / 1 },
+  ];
+
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState(type === 'banner' ? 3 / 1 : 1);
 
   const onCropComplete = useCallback((_, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -15,8 +23,12 @@ const ImageCropModal = ({ imageSrc, onClose, onCropDone }) => {
 
   const handleCrop = async () => {
     setLoading(true);
-    const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-    await onCropDone(croppedImage);
+    try {
+      const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+      await onCropDone(croppedImage);
+    } catch (error) {
+      console.error("Crop failed:", error);
+    }
     setLoading(false);
   };
 
@@ -27,7 +39,7 @@ const ImageCropModal = ({ imageSrc, onClose, onCropDone }) => {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 rounded-t-2xl">
           <div className="flex items-center gap-2">
             <svg className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-
+              {/* You can put an icon here */}
             </svg>
             <h2 className="text-lg font-semibold text-gray-800">Crop Image</h2>
           </div>
@@ -41,21 +53,40 @@ const ImageCropModal = ({ imageSrc, onClose, onCropDone }) => {
             </svg>
           </button>
         </div>
+
         {/* Cropper Area */}
         <div className="relative w-full flex items-center justify-center bg-gray-300 rounded-b-lg border-b border-gray-100" style={{ minHeight: 440 }}>
-          
-            <Cropper
-              image={imageSrc}
-              crop={crop}
-              zoom={zoom}
-              aspect={1}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
-            />
-          
+          <Cropper
+            image={imageSrc}
+            crop={crop}
+            zoom={zoom}
+            aspect={aspectRatio}
+            onCropChange={setCrop}
+            onZoomChange={setZoom}
+            onCropComplete={onCropComplete}
+          />
         </div>
-        {/* Slider */}
+
+        {/* Aspect ratio buttons for banners */}
+        {type === 'banner' && (
+          <div className="flex justify-center gap-4 my-3">
+            {presetAspectRatios.map((preset) => (
+              <button
+                key={preset.label}
+                onClick={() => setAspectRatio(preset.value)}
+                className={`px-3 py-1 rounded-md border ${
+                  aspectRatio === preset.value
+                    ? 'border-blue-600 bg-blue-100 text-blue-700 font-semibold'
+                    : 'border-gray-300 text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Zoom Slider */}
         <div className="px-6 py-4 bg-gray-50 flex flex-col items-center gap-2">
           <label className="text-xs text-gray-500 font-medium mb-1">Zoom</label>
           <Slider
@@ -67,6 +98,7 @@ const ImageCropModal = ({ imageSrc, onClose, onCropDone }) => {
             sx={{ color: '#2563eb', width: '90%' }}
           />
         </div>
+
         {/* Actions */}
         <div className="flex justify-end gap-3 px-6 py-4 bg-white rounded-b-2xl">
           <button

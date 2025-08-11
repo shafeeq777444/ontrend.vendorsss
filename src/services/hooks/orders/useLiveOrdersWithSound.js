@@ -6,65 +6,81 @@ import { setPendingOrders } from "../../../slices/order/orderSlice";
 import { useDispatch } from "react-redux";
 
 export const useLiveOrdersWithSound = (vendorId) => {
-    const dispatch = useDispatch();
-    const [orders, setOrders] = useState([]);
-    const prevOrdersRef = useRef([]);
-    const timersRef = useRef([]); // store sound timeouts
-    const [alertLoop, setAlertLoop] = useState(false);
+  console.log(vendorId, "venssdorId");
+  const dispatch = useDispatch();
+  const [orders, setOrders] = useState([]);
+  const prevOrdersRef = useRef([]);
+  const timersRef = useRef([]); // store sound timeouts
+  const [alertLoop, setAlertLoop] = useState(false);
 
-    useEffect(() => {
-        if (!vendorId) return;
+  useEffect(() => {
+      console.log(1,"qqq")
+    if (!vendorId) return;
 
-        const q = query(
-            collection(db, "orders"),
-            where("addedBy", "==", vendorId),
-            orderBy("assignedTimestamp", "desc"),
-            where("status", "==", "Pending")
-        );
+    const q = query(
+      collection(db, "orders"),
+      where("addedBy", "==", vendorId),
+    //   orderBy("assignedTimestamp", "desc"),
+      where("status", "==", "Pending")
+    );
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        try {
+          const newOrders = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const newOrders = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          console.log(newOrders, "newOrders.length");
+          dispatch(setPendingOrders(newOrders?.length || 0));
 
-            dispatch(setPendingOrders(newOrders.length || 0));
+          // If new orders added
+          if (newOrders.length > prevOrdersRef.current.length) {
+            playAlertSequence();
+          }
 
-            // If new orders added
-            if (newOrders.length > prevOrdersRef.current.length) {
-                playAlertSequence();
-            }
+          // If orders decreased (status changed), stop any ongoing sounds
+          if (newOrders.length < prevOrdersRef.current.length) {
+            stopAlertSequence();
+          }
 
-            // If orders decreased (status changed), stop any ongoing sounds
-            if (newOrders.length < prevOrdersRef.current.length) {
-                stopAlertSequence();
-            }
+          prevOrdersRef.current = newOrders;
+          setOrders(newOrders);
+        } catch (err) {
+          console.error("Error processing orders snapshot:", err);
+        }
+      },
+      (error) => {
+        console.error("Firestore onSnapshot error:", error);
+      }
+    );
 
-            prevOrdersRef.current = newOrders;
-            setOrders(newOrders);
-        });
-
-        return () => {
-            stopAlertSequence(); // cleanup when unmount
-            unsubscribe();
-        };
-    }, [vendorId]);
-
-    const playSound = () => {
-        const audio = new Audio("/tones/alert.mp3");
-        audio.play().catch((err) => console.warn("Sound play error:", err));
+    return () => {
+      stopAlertSequence(); // cleanup when unmount
+      unsubscribe();
     };
+  }, [vendorId]);
 
-    const playAlertSequence = () => {
-        stopAlertSequence(); // clear previous sequence before starting new
-        setAlertLoop(true);
-        timersRef.current.push(setTimeout(playSound, 0)); // immediate
-        timersRef.current.push(setTimeout(playSound, 4000)); // after 3 sec
-        timersRef.current.push(setTimeout(playSound, 8000)); // after 8 sec
-    };
+  const playSound = () => {
+    try {
+      const audio = new Audio("/tones/alert.mp3");
+      audio.play().catch((err) => console.warn("Sound play error:", err));
+    } catch (err) {
+      console.error("playSound error:", err);
+    }
+  };
 
-    const stopAlertSequence = () => {
-        timersRef.current.forEach(clearTimeout);
-        timersRef.current = [];
-        setAlertLoop(false);
-    };
+  const playAlertSequence = () => {
+    stopAlertSequence(); // clear previous sequence before starting new
+    setAlertLoop(true);
+    timersRef.current.push(setTimeout(playSound, 0)); // immediate
+    timersRef.current.push(setTimeout(playSound, 4000)); // after 4 sec
+    timersRef.current.push(setTimeout(playSound, 8000)); // after 8 sec
+  };
 
-    return { orders, stopAlertSequence, alertLoop };
+  const stopAlertSequence = () => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+    setAlertLoop(false);
+  };
+
+  return { orders, stopAlertSequence, alertLoop };
 };

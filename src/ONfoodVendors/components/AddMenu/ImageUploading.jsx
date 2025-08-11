@@ -7,7 +7,7 @@ import ImageCropModal from '../common/ImageCropModal';
 const MAX_SIZE_MB = 5;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
-const ImageUploading = ({ imageUrl, handleImageUpload }) => {
+const ImageUploading = ({ imageUrl, handleImageUpload,type="" }) => {
   const fileInputRef = useRef();
   const [isDragActive, setIsDragActive] = useState(false);
   const [tempImage, setTempImage] = useState(null);
@@ -136,6 +136,7 @@ const ImageUploading = ({ imageUrl, handleImageUpload }) => {
 
       {tempImage && (
         <ImageCropModal
+          type={type}
           imageSrc={tempImage}
           onClose={() => setTempImage(null)}
           onCropDone={onCropDone}

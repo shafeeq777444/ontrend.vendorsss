@@ -259,8 +259,9 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
         }
 
         // If all validations pass, proceed
-        const priceBase = formData.discountPercentage > 0 ? formData.price : formData.itemPrice;
-        const commissionRate = priceBase * 0.22;
+        // const priceBase = formData.discountPercentage > 0 ? formData.price : formData.itemPrice;
+        // const commissionRate = priceBase * 0.22;
+        const commissionRate = 22;
 
         const finalPayload = {
             ...formData,

@@ -20,7 +20,7 @@ export default function RenderField({ label, value, onSave, fieldName = "", addi
         "Additional Phone Number 2",
         "Additional Phone Number 3",
     ];
-    const isEditable = editableLabels.includes(label) && !value;
+    const isEditable = editableLabels.includes(label) && !value ;
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [editing, setEditing] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -37,11 +37,8 @@ export default function RenderField({ label, value, onSave, fieldName = "", addi
     
         const trimmedInput = inputValue.trim();
         if (!trimmedInput) return;
-        console.log(trimmedInput,"iiii");
-        console.log(fieldName,"kkkk");
         if (fieldName === "additionalPhone" && Array.isArray(additionalPhone) && additionalPhone.length < 3) {
             const currentAdditionalPhones = [...additionalPhone];
-            console.log(currentAdditionalPhones,"jjjj");
     
             if (currentAdditionalPhones.includes(trimmedInput)) {
                 // Show toast if duplicate
