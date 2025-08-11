@@ -11,7 +11,7 @@ export default function VendorInfo({ restaurantName, restaurantArabicName, owner
         },
     });
 
-    const formData = watch(); // watch all fields
+    
 
     return (
         <div className="w-full max-w-4xl rounded-2xl bg-white shadow-lg p-6 mt-6 transition-all duration-300">
@@ -25,27 +25,27 @@ export default function VendorInfo({ restaurantName, restaurantArabicName, owner
                 {/* Company Name */}
                 <div>
                     <label className="text-sm font-medium text-gray-700">Company Name</label>
-                    <p className="mt-1 text-sm text-gray-600">{formData.companyName}</p>
+                    <p className="mt-1 text-sm text-gray-600">{ownerName}</p>
                 </div>
 
                 {/* Restaurant Name */}
                 <div>
                     <label className="text-sm font-medium text-gray-700">Restaurant Name</label>
-                    <p className="mt-1 text-sm text-gray-600">{formData.restaurantName}</p>
+                    <p className="mt-1 text-sm text-gray-600">{restaurantName}</p>
                 </div>
 
                 {/* Restaurant Name Arabic */}
                 <div>
                     <label className="text-sm font-medium text-gray-700">Restaurant Name (Arabic)</label>
                     <p className="mt-1 text-sm text-gray-600" dir="rtl">
-                        {formData.restaurantNameArabic}
+                        {restaurantArabicName}
                     </p>
                 </div>
 
                 {/* Vendor Type (Read-only) */}
                 <div>
                     <label className="text-sm font-medium text-gray-700">Vendor Type</label>
-                    <p className="mt-1 text-sm text-gray-600">{formData.vendorType}</p>
+                    <p className="mt-1 text-sm text-gray-600">{vendorType}</p>
                 </div>
             </div>
         </div>

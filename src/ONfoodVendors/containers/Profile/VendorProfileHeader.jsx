@@ -21,7 +21,7 @@ const VendorProfileHeader = ({ vendorType, restaurantName, vendorLogo, isTop }) 
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-bold text-white">{restaurantName}</h1>
                         {isTop && (
-                            <div className="bg-white text-red-600 rounded-full px-2 py-1 flex items-center gap-2">
+                            <div className="relative rounded-full px-3 py-1 flex items-center gap-2 text-gray-600 bg-white/30 backdrop-blur-sm border border-white/40">
                                 <IoIosStar />
                                 Top Rated
                             </div>
