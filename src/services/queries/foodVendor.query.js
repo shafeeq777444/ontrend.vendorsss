@@ -13,7 +13,6 @@ export const useVendorFoodDetails = (category, foodId, options = {}) => {
         queryKey: ["vendorFood", category, foodId],
         queryFn: () => getVendorFoodDetails(category, foodId),
         enabled: !!category && !!foodId && (options.enabled ?? true),
-        staleTime: 5 * 60 * 1000,
     });
 };
 

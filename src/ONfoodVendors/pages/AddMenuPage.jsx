@@ -26,9 +26,7 @@ const AddMenuPage = () => {
     }
 
     const selectedData = isNew ? {} : vendorType === "E-Shopping" ? EproductDetails : foodDetails;
-    if (isLoading) {
-        return <AddEditFoodFormSkeleton />;
-    }
+ 
     return (
         <div>
             <AddEditFoodForm existingData={selectedData} />

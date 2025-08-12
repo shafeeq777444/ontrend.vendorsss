@@ -3,14 +3,18 @@ import toast from 'react-hot-toast';
 
 import LazyImg from '../common/LazyImg';
 import ImageCropModal from '../common/ImageCropModal';
+import ReusableConfirmationDeleteModal from '../common/ReusableConfirmationDeleteModal'; // Import your modal
 
 const MAX_SIZE_MB = 5;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
-const ImageUploading = ({ imageUrl, handleImageUpload,type="" }) => {
+const ImageUploading = ({ imageUrl, handleImageUpload, type = "", newer=false }) => {
   const fileInputRef = useRef();
   const [isDragActive, setIsDragActive] = useState(false);
   const [tempImage, setTempImage] = useState(null);
+
+  const [pendingFile, setPendingFile] = useState(null); // file waiting for confirmation
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const processFile = (file) => {
     if (!file.type.startsWith('image/')) {
@@ -22,15 +26,47 @@ const ImageUploading = ({ imageUrl, handleImageUpload,type="" }) => {
       toast.error('Image must be less than 5MB');
       return;
     }
+// Create a signature based on file name + size
+    const fileSignature = `${file.name}-${file.size}`;
 
-    const reader = new FileReader();
-    reader.onload = () => setTempImage(reader.result);
-    reader.readAsDataURL(file);
+    // If same file selected again, show toast and stop
+    if (fileSignature === pendingFile) {
+      toast.error('This image is already selected');
+      return;
+    }
+
+    // If there is already an image, ask for confirmation
+    if (imageUrl) {
+      setPendingFile(file);
+      setShowConfirmModal(true);
+    } else {
+      // No existing image, process immediately
+      const reader = new FileReader();
+      reader.onload = () => setTempImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // User confirmed replacing the image
+  const onConfirmReplace = () => {
+    setShowConfirmModal(false);
+    if (pendingFile) {
+      const reader = new FileReader();
+      reader.onload = () => setTempImage(reader.result);
+      reader.readAsDataURL(pendingFile);
+      setPendingFile(null);
+    }
+  };
+
+  // User cancelled replacing the image
+  const onCancelReplace = () => {
+    setShowConfirmModal(false);
+    setPendingFile(null);
   };
 
   const onCropDone = (croppedFile) => {
     setTempImage(null);
-    handleImageUpload(croppedFile);
+    handleImageUpload(croppedFile,newer);
   };
 
   const onAreaClick = () => fileInputRef.current.click();
@@ -67,9 +103,9 @@ const ImageUploading = ({ imageUrl, handleImageUpload,type="" }) => {
         aria-label="Upload food image"
         onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onAreaClick()}
         className={`group flex flex-col items-center justify-center w-full h-48 sm:h-64 md:h-72 lg:h-80 p-4 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 relative overflow-hidden
-          ${isDragActive 
-            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' 
-            : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'} 
+          ${isDragActive
+            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+            : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'}
           ${imageUrl ? 'bg-white' : 'bg-gray-50'}
         `}
         onClick={onAreaClick}
@@ -87,10 +123,10 @@ const ImageUploading = ({ imageUrl, handleImageUpload,type="" }) => {
         />
         {imageUrl ? (
           <div className="relative w-full h-full group">
-            <LazyImg 
-              src={imageUrl} 
-              alt="Food preview" 
-              className="w-full h-full object-cover  rounded-lg transition-transform duration-300 group-hover:scale-105" 
+            <LazyImg
+              src={imageUrl}
+              alt="Food preview"
+              className="w-full h-full object-cover  rounded-lg transition-transform duration-300 group-hover:scale-105"
             />
             <div className="absolute inset-0 hover:bg-black/30  bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
               <div className="bg-white bg-opacity-90 rounded-full p-2 shadow-lg transform translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
@@ -103,11 +139,11 @@ const ImageUploading = ({ imageUrl, handleImageUpload,type="" }) => {
         ) : (
           <div className="flex flex-col items-center justify-center p-4 text-center">
             <div className="p-3 mb-3 bg-blue-50 rounded-full group-hover:bg-blue-100 transition-colors duration-200">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500 transition-transform group-hover:scale-110 duration-200" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500 transition-transform group-hover:scale-110 duration-200"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -142,6 +178,18 @@ const ImageUploading = ({ imageUrl, handleImageUpload,type="" }) => {
           onCropDone={onCropDone}
         />
       )}
+
+      {/* Confirmation modal for replacing image */}
+      <ReusableConfirmationDeleteModal
+        isOpen={showConfirmModal}
+        onClose={onCancelReplace}
+        onAction={onConfirmReplace}
+        title="Replace image?"
+        description="Previous image will be removed and new image will be updated. Are you okay with this?"
+        closeText="Cancel"
+        actionText="Replace"
+        image={imageUrl} // Show current image as preview inside modal if you want
+      />
     </div>
   );
 };

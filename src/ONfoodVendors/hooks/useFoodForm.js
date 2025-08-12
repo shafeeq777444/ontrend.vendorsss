@@ -97,7 +97,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
     //     console.log(downloadURL, "img");
     //     setFormData({ ...formData, imageUrl: downloadURL });
     // };
-    const handleImageUpload = async (croppedfile) => {
+    const handleImageUpload = async (croppedfile,newer=false) => {
         try {
             // Step 1: Delete old image if it exists
             if (formData.imageUrl) {
@@ -111,7 +111,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
                     }
 
                     await deleteObject(oldImageRef);
-                    console.log("✅ Previous image deleted");
+                    toast.success("Previous image deleted");
                 } catch (err) {
                     console.warn("⚠️ Failed to delete previous image:", err);
                 }
@@ -123,9 +123,20 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             await uploadBytes(imageRef, croppedfile);
             const downloadURL = await getDownloadURL(imageRef);
             console.log("📤 Uploaded image URL:", downloadURL);
+            toast.success("Image uploaded successfully");
 
             // Step 3: Update form data
             setFormData((prev) => ({ ...prev, imageUrl: downloadURL }));
+
+            //step 4: update image in db
+            if(!newer && currentVendor?.vendorType==="E-Shopping"){
+                updateEProductMutate({ category:formData?.tag, docId: formData?.id, updatedData: {imageUrl:downloadURL} });
+            }
+            else if(!newer && currentVendor?.vendorType==="Food/Restaurant"){
+                updateFoodMutate({ category:formData?.tag, docId: formData?.id, updatedData: {imageUrl:downloadURL} });
+            }
+            
+
         } catch (err) {
             console.error("❌ Error during image upload:", err);
             toast.error("Image upload failed");
@@ -283,6 +294,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
                 addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
             } else if (category === finalPayload?.tag) {
                 updateEProductMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
+                navigate("/menu");
             } else {
                 deleteEProductMutate({ category, docId: finalPayload?.id });
                 addEProductMutate({ category: finalPayload?.tag, productObj: finalPayload });
@@ -292,6 +304,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
                 addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
             } else if (category === finalPayload?.tag) {
                 updateFoodMutate({ category, docId: finalPayload?.id, updatedData: finalPayload });
+                navigate("/menu");
             } else {
                 deleteFoodMutate({ category, docId: finalPayload?.id });
                 addFoodMutate({ category: finalPayload?.tag, foodObj: finalPayload });
@@ -358,7 +371,39 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             stock: isNaN(value) ? 0 : value,
         }));
     };
-    const handleCancel = async () => {
+    const handleCancel = async (newer,imageUrl) => {
+        // newer✅
+        if (newer && imageUrl ) {
+            try {
+              let imageRef;
+              // If you stored just the path like "users/{uid}/avatar.jpg"
+              if (!imageUrl.startsWith('http')) {
+                imageRef = ref(storage, imageUrl);
+              } else {
+                // If you stored a download URL, extract the path after '/o/'
+                const path = decodeURIComponent(
+                  imageUrl.split('/o/')[1].split('?')[0]
+                );
+                imageRef = ref(storage, path);
+              }
+
+              await deleteObject(imageRef);
+              toast.success("uploaded image is removed")
+            } catch (imgErr) {
+              console.warn('Failed to delete image:', imgErr);
+              // Optional: show a warning but still continue deleting the user doc
+            }
+          }
+        //   else if(!newer && imageUrl){
+        //     if(currentVendor?.vendorType==="E-Shopping"){
+               
+        //       updateEProductMutate({ category:formData?.tag, docId: formData?.id, updatedData: {imageUrl} });
+        //     }
+        //     else if(currentVendor?.vendorType==="Food/Restaurant"){
+                
+        //         updateFoodMutate({ category:formData?.tag, docId: formData?.id, updatedData: {imageUrl} });
+        //     }
+        //   }
         navigate(-1); // Go back to previous page
     };
 

@@ -72,7 +72,7 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
 
     const handleConfirmCancel = () => {
         setCancelModal(false);
-        handleCancel();
+        handleCancel(id=="new",formData?.imageUrl);
     };
 
     const handleConfirmationModal = () => {
@@ -88,13 +88,14 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
         const data = currentUSer?.vendorType === "Food/Restaurant" ? allCategories : allCategoriesFromEShop;
         if (data) setCategoryOptions(data);
     }, [allCategories, allCategoriesFromEShop, currentUSer?.vendorType]);
-
+console.log(existingData,"form data");
+console.log(formData,"form data2");
     const renderTabContent = () => {
         switch (activeTab) {
             case 1:
                 return (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center ">
-                        <ImageUploading imageUrl={formData.imageUrl} handleImageUpload={handleImageUpload} />
+                        <ImageUploading newer={id=="new"} imageUrl={formData?.imageUrl} handleImageUpload={handleImageUpload} />
                         <div className="md:col-span-2">
                             <ItemInfoCard
                                 description={formData.description}
@@ -316,7 +317,7 @@ const AddEditFoodForm = ({ existingData = {}, onFinish }) => {
                         <ReusableConfirmationModal
                             title="Cancel Changes"
                             isOpen={cancelModal}
-                            description="Are you sure you want to cancel? Any unsaved changes will be lost."
+                            description={`Are you sure you want to cancel? Unsaved changes will be lost. ${id === "new" ? "" : " The latest image will be kept."}`}
                             onAction={handleConfirmCancel}
                             onClose={() => setCancelModal(false)}
                         />

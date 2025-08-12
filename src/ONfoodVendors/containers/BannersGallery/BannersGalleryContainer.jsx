@@ -9,6 +9,7 @@ import BannerSkeleton from '../../components/BannersGallery/BannersSkelton'
 
 
 const BannersGalleryContainer = () => {
+  
   const { data: user } = useCurrentUser()
   const vendorID = user?.id
 
