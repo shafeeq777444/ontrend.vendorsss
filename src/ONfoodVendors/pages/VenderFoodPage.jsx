@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useCallback } from "react";
+import React, { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import FoodVendorMealCategory from "../components/FoodVendor/FoodVendorMealCategory";
@@ -13,6 +13,21 @@ const getLocalizedField = (item, field, isArabic) =>
   isArabic ? item?.[`${field}Arabic`] || item?.[field] : item?.[field];
 
 const VenderFoodPage = () => {
+  const [pageSize, setPageSize] = useState(12);
+  useEffect(() => {
+    const updatePageSize = () => {
+      if (window.innerWidth < 1524) { 
+        setPageSize(10);
+      } else { 
+        setPageSize(12);
+      }
+    };
+
+    updatePageSize(); // initial
+    window.addEventListener("resize", updatePageSize);
+
+    return () => window.removeEventListener("resize", updatePageSize);
+  }, []);
   const { i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const { selectedVendorMealCategory, searchTerm, sortOption } = useSelector((state) => state.food);
@@ -29,7 +44,7 @@ const VenderFoodPage = () => {
     hasNextPage,
     isFetchingNextPage,
     isLoading: isFoodsLoading,
-  } = useVendorFoodsLivePaginated(currentVendor?.id, selectedVendorMealCategory, 12);
+  } = useVendorFoodsLivePaginated(currentVendor?.id, selectedVendorMealCategory, pageSize);
 
   const { categories: vendorCategories, loading: isCategoryLoading } = useLiveGetCategoriesFromVendor(currentVendor?.id);
 
