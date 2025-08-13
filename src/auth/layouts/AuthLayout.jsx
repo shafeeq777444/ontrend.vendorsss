@@ -16,7 +16,7 @@ const AuthLayout = () => {
         transition={{ duration: 0.5 }}
         className="hidden md:flex w-1/2 bg-gray-100 items-center justify-center relative p-6"
       >
-        <div className="absolute inset-0 bg-black/30 z-10" />
+        <div className="absolute inset-0 bg-black/5 z-10" />
         <img
           src="/ONtrendLogo/Blue-OntrendPartnersLogo.png"
           alt="testimonial"
