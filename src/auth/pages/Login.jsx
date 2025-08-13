@@ -75,7 +75,7 @@ const LoginScreen = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
         >
-          <img src="/ONtrendLogo/Blue-OntrendPartnersLogo.png" alt="onTrend Logo" className="w-20 h-20 rounded-full" />
+          <img src="/ONtrendLogo/roundedBlue-Ontrend.png" alt="onTrend Logo" className="w-20 h-20 rounded-full" />
         </motion.div>
 
         {/* Welcome Text */}
