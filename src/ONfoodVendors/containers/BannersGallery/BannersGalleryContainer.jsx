@@ -6,6 +6,7 @@ import { useCurrentUser } from '../../../services/hooks/profile/useCurrentUserLi
 import { uploadBannerImageAndSave, deleteBannerById } from '../../../services/firebase/firestore/banner.firestore'
 import ReusableConfirmationDeleteModal from '../../components/common/ReusableConfirmationDeleteModal'
 import BannerSkeleton from '../../components/BannersGallery/BannersSkelton'
+import LazyImage from '../../components/common/LazyImg'
 
 
 const BannersGalleryContainer = () => {
@@ -76,14 +77,14 @@ const BannersGalleryContainer = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 my-5 justify-start">
         {banners.map((banner, idx) => (
-          <div key={`${banner.id}-${idx}`} className="relative max-w-xl rounded-md overflow-hidden">
-            <img
+          <div key={`${banner.id}-${idx}`} className="relative max-w-xl rounded-md overflow-hidden  shadow-2xl ">
+            <LazyImage
               src={banner.url}
               alt={banner.name || 'Banner image'}
               className="w-full h-48 object-cover block rounded-md"
             />
             <button
-              className={`absolute top-2 right-2 bg-red-700 hover:bg-red-800 text-white font-bold rounded-full w-7 h-7 flex items-center justify-center transition-opacity duration-300
+              className={`absolute top-2 right-2 bg-red-700/30  duration-300 hover:bg-red-800 text-white font-bold rounded-full w-7 h-7 flex items-center justify-center transition-opacity ease-in-out
                 ${deletingId === banner.id ? 'opacity-60 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
               disabled={deletingId === banner.id}
               onClick={() => openDeleteModal(banner)}
