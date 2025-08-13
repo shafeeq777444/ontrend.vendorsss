@@ -18,6 +18,7 @@ import { useUpdateVendorProfile } from "../../services/queries/vendor.query";
 import { useLiveOrdersWithSound } from "../../services/hooks/orders/useLiveOrdersWithSound";
 import StopAlertButton from "../components/Orders/StopAlertButton";
 import useProcessingOrdersCount from "../../services/hooks/orders/useProcessingOrdersCountLive";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SideBarLayout = () => {
     // -------------------------------------------------- hooks --------------------------------------------------
@@ -138,28 +139,69 @@ const SideBarLayout = () => {
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
-                {menuOpen && (
-                    <div className="lg:hidden px-4 pb-4">
-                        <div className="flex flex-col gap-2">
-                            {menuItems.map((item, index) => (
+                {/* Mobile Menu (Right-to-Left Slide) */}
+                <AnimatePresence>
+                    {menuOpen && (
+                        <div className="fixed inset-0 z-50 flex">
+                            {/* Overlay */}
+                            <div
+                                className="flex-1 bg-black/30 bg-opacity-40"
+                                onClick={() => setMenuOpen(false)}
+                            />
+                            {/* Sidebar with Framer Motion */}
+                            <motion.div
+                                initial={{ x: '100%' }}
+                                animate={{ x: 0 }}
+                                exit={{ x: '100%' }}
+                                transition={{ type: "tween", duration: 0.35 }}
+                                className="w-64 bg-white h-full shadow-lg flex flex-col fixed right-0 top-0"
+                            >
                                 <button
-                                    key={index}
-                                    className={`flex items-center gap-2 text-left px-4 py-2 text-sm rounded-lg transition-colors ${
-                                        item.active ? "bg-sky-600 text-white" : "hover:bg-slate-600/30 hover:text-gray-100"
-                                    }`}
+                                    className="self-end m-4 text-black hover:text-gray-700"
+                                    onClick={() => setMenuOpen(false)}
                                 >
-                                    {item.icon && <span className="text-sky-200">{item.icon}</span>}
-                                    {item.name}
+                                    <X size={24} />
                                 </button>
-                            ))}
-                            <button className="flex items-center gap-2 bg-sky-50 text-sky-700 font-semibold px-4 py-2 rounded-lg text-sm mx-4 mt-2 hover:bg-sky-100 transition-colors">
-                                <Search size={16} />
-                                Channel Consultation
-                            </button>
+                                {/* Profile dropdown */}
+                           
+                                <div className="flex flex-col gap-2 px-6 py-4">
+                                     {data && (
+                                <div
+                                    onClick={() => navigate("/profile")}
+                                    className="flex items-center gap-2 cursor-pointer bg-[rgba(0,0,0,0.2)]  md:px-3 py-2 rounded-full hover:bg-[rgba(0,0,0,0.3)]  transition-colors duration-300 ease-in-out"
+                                >
+                                    {console.log(data, "profile data")}
+                                    <img src={data?.image} alt="profile" className="w-8 h-8 rounded-full ring-2" />
+                                    <span className="text-sm font-medium hidden sm:inline">{data?.restaurantName}</span>
+                                    <ChevronDown size={4} className="text-sky-200 hidden sm:inline" />
+                                </div>
+                            )}
+                                    {menuItems.map((item, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => {
+                                                navigate(item.route);
+                                                setMenuOpen(false);
+                                            }}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-md transition-colors ${
+                                                item.route === window.location.pathname
+                                                    ? "bg-sky-600 text-white shadow-md"
+                                                    : "hover:bg-slate-600/30 hover:text-gray-900 text-sky-600"
+                                            }`}
+                                        >
+                                            {/* {item.icon && <span className="text-sky-200">{item.icon}</span>}  */}
+                                            {item.name}
+                                        </button>
+                                    ))}
+                                    {/* <button className="flex items-center gap-2 bg-sky-50 text-sky-700 font-semibold px-4 py-2 rounded-lg text-sm mt-2 hover:bg-sky-100 transition-colors">
+                                        <Search size={16} />
+                                        Channel Consultation
+                                    </button> */}
+                                </div>
+                            </motion.div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </AnimatePresence>
             </div>
 
             {/*------------------------------- Modal ---------------------------*/}

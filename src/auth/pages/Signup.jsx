@@ -97,7 +97,7 @@ const SignUP = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
         >
-          <img src="/ONtrend-logo.png" alt="onTrend Logo" className="w-20 h-20" />
+          <img src="/ONtrendLogo/ONtrendPartnersLogo.png" alt="onTrend Logo" className="w-20 h-20" />
         </motion.div>
 
         {/* Welcome Text */}

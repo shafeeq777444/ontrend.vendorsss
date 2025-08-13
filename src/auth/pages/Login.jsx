@@ -75,7 +75,7 @@ const LoginScreen = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
         >
-          <img src="/ONtrend-logo.png" alt="onTrend Logo" className="w-20 h-20" />
+          <img src="/ONtrendLogo/Blue-OntrendPartnersLogo.png" alt="onTrend Logo" className="w-20 h-20" />
         </motion.div>
 
         {/* Welcome Text */}
@@ -91,7 +91,7 @@ const LoginScreen = () => {
           <p className="text-sm text-gray-400 mt-2 leading-relaxed">
             {isArabic
               ? "اليوم هو يومك. رغباتك، احتياجاتك\n كلها على بُعد نقرة واحدة مع onTrend"
-              : "Today is your day. Your cravings, your needs\nAll just a tap away with onTrend"}
+              : "Today is your day. With onTrend Partners, your business grows and your profits rise."}
           </p>
         </motion.div>
 
@@ -107,7 +107,7 @@ const LoginScreen = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={isArabic ? "البريد الإلكتروني" : "Email address"}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-400"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-600 "
             dir={isArabic ? "rtl" : "ltr"}
           />
           <input
@@ -115,18 +115,18 @@ const LoginScreen = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={isArabic ? "كلمة المرور" : "Password"}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-400"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-600 "
             dir={isArabic ? "rtl" : "ltr"}
           />
           <div className="text-sm text-red-500 text-right cursor-pointer">
-            {isArabic ? "هل نسيت كلمة المرور؟" : "Forgot password?"}
+            {/* {isArabic ? "هل نسيت كلمة المرور؟" : "Forgot password?"} */}
           </div>
         </motion.div>
 
         {/* Login Button */}
         <motion.button
           onClick={handleLogin}
-          className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-md transition duration-300"
+          className="w-full py-3 from-sky-900 via-sky-700 to-sky-600 bg-gradient-to-r hover:bg-sky-800 text-white rounded-full shadow-md transition duration-300"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -134,7 +134,7 @@ const LoginScreen = () => {
         </motion.button>
 
         {/* Sign Up */}
-        <motion.p
+        {/* <motion.p
           className="text-center text-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -147,7 +147,7 @@ const LoginScreen = () => {
           >
             {isArabic ? "سجّل الآن" : "Sign Up"}
           </span>
-        </motion.p>
+        </motion.p> */}
 
 
       </motion.div>

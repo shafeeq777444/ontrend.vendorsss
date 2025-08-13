@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import LazyImg from '../common/LazyImg';
 import ImageCropModal from '../common/ImageCropModal';
 import ReusableConfirmationDeleteModal from '../common/ReusableConfirmationDeleteModal'; // Import your modal
+import Loading from '../common/Loading';
 
 const MAX_SIZE_MB = 5;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -12,6 +13,7 @@ const ImageUploading = ({ imageUrl, handleImageUpload, type = "", newer=false })
   const fileInputRef = useRef();
   const [isDragActive, setIsDragActive] = useState(false);
   const [tempImage, setTempImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [pendingFile, setPendingFile] = useState(null); // file waiting for confirmation
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -64,9 +66,11 @@ const ImageUploading = ({ imageUrl, handleImageUpload, type = "", newer=false })
     setPendingFile(null);
   };
 
-  const onCropDone = (croppedFile) => {
+  const onCropDone = async (croppedFile) => {
+    setLoading(true);
     setTempImage(null);
-    handleImageUpload(croppedFile,newer);
+    await handleImageUpload(croppedFile,newer);
+    setLoading(false);
   };
 
   const onAreaClick = () => fileInputRef.current.click();
@@ -96,6 +100,7 @@ const ImageUploading = ({ imageUrl, handleImageUpload, type = "", newer=false })
   };
 
   return (
+    <>
     <div className="mb-6 w-full">
       <div
         role="button"
@@ -191,6 +196,8 @@ const ImageUploading = ({ imageUrl, handleImageUpload, type = "", newer=false })
         image={imageUrl} // Show current image as preview inside modal if you want
       />
     </div>
+    {loading && <Loading />}
+    </>
   );
 };
 

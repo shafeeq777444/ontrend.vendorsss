@@ -13,8 +13,8 @@ const VendorProfileInfo = () => {
         return <div>Loading...</div>;
     }
     return (
-        <div className=" ml-20">
-            <div className=" mt-10  justify-center  flex items-start gap-10 ">
+        <div className=" md:ml-20">
+            <div className=" md:mt-10 -mt-10 justify-center  flex items-start gap-10 flex-col md:flex-row">
                 <div>
                     {/* profile header ✅ */}
                     <VendorProfileHeader
@@ -31,7 +31,7 @@ const VendorProfileInfo = () => {
                         vendorType={VendorData?.vendorType}
                     />
                 </div>
-                <div className="flex-1 h-110">
+                <div className="w-full md:flex-1 md:h-110">
                     <VendorWorkingHours
                         openingTime={VendorData?.openingTime}
                         closingTime={VendorData?.closingTime}

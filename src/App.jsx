@@ -16,6 +16,7 @@ import EarningsPage from "./ONfoodVendors/pages/EarningsPage";
 import TestingPage from "./ONfoodVendors/pages/TestingPage";
 import NotificationButton from "./ONfoodVendors/components/common/NotificationButton";
 import BannersGalleryPage from "./ONfoodVendors/pages/BannersGalleryPage";
+import Loading from "./ONfoodVendors/components/common/Loading";
 export default function App() {
     return (
         <Routes>
@@ -23,7 +24,7 @@ export default function App() {
                 <Route index element={<OrderPage />} />
                 <Route path="/menu" element={<VenderFoodPage />} />
                 <Route path="/menu/:vendorType/:category/:id" element={<AddMenuPage />} />
-                <Route path="/testing" element={<NotificationButton />} />
+                <Route path="/testing" element={<Loading />} />
                 <Route path="/earnings" element={<EarningsPage />} />
                 <Route path="/profile" element={<VendorProfileInfo />} />
                 <Route path="/banners-gallery" element={<BannersGalleryPage />} />

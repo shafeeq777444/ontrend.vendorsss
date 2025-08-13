@@ -4,20 +4,28 @@ import OpenMapButton from "../../components/common/OpenMapButtons";
 import RenderField from "../../components/FoodVendor/RenderField";
 
 
-export default function VendorContactDetails({ email, phone, address, location, accountNumber, ifsc, vatNumber,additionalPhone }) {
+export default function VendorContactDetails({ email, phone, address, location, accountNumber, ifsc, vatNumber, additionalPhone }) {
   return (
     <motion.div
       animate={{ scale: 1 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="relative h-full my-2 bg-white rounded-2xl shadow-lg p-6 md:p-8 flex flex-col gap-6 transition-all duration-300"
+      className="relative h-full my-2 bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 flex flex-col gap-6 transition-all duration-300 "
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full">
+      <div className="grid grid-cols-1  lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 w-full">
         {/* Column 1: Contact Info */}
         <div className="space-y-5">
           <h2 className="text-base font-semibold text-gray-800">Contact Info</h2>
           <RenderField label="Email" value={email} />
           <RenderField label="Phone Number" value={phone} fieldName="phone"/>
-          {[0,1,2].map((i) => <RenderField key={i} label={`Additional Phone Number ${i+1}`} value={additionalPhone?.[i]} fieldName="additionalPhone" additionalPhone={additionalPhone}/>)}
+          {[0,1,2].map((i) => (
+            <RenderField
+              key={i}
+              label={`Additional Phone Number ${i+1}`}
+              value={additionalPhone?.[i]}
+              fieldName="additionalPhone"
+              additionalPhone={additionalPhone}
+            />
+          ))}
         </div>
 
         {/* Column 2: Location + GST */}

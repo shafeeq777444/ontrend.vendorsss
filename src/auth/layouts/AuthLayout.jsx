@@ -18,7 +18,7 @@ const AuthLayout = () => {
       >
         <div className="absolute inset-0 bg-black/30 z-10" />
         <img
-          src="/login/loginui.png"
+          src="/ONtrendLogo/Blue-OntrendPartnersLogo.png"
           alt="testimonial"
           className="absolute inset-0 w-full h-full object-cover z-0"
           loading="lazy"

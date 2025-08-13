@@ -32,6 +32,7 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
     const navigate = useNavigate();
     const { data: currentVendor } = useCurrentUser();
     const [tempName, setTempName] = useState("");
+   
 
     const [formData, setFormData] = useState({
         name: "",
@@ -118,8 +119,8 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
             }
 
             // Step 2: Upload new image
-            // const imageRef = ref(storage, `${currentVendor?.id}/images/product_images/${uuid()}`);
-            const imageRef = ref(storage, `ABC/${uuid()}`);
+            const imageRef = ref(storage, `${currentVendor?.id}/images/product_images/${uuid()}`);
+            // const imageRef = ref(storage, `ABC/${uuid()}`);
             await uploadBytes(imageRef, croppedfile);
             const downloadURL = await getDownloadURL(imageRef);
             console.log("📤 Uploaded image URL:", downloadURL);
@@ -394,16 +395,6 @@ const useFoodForm = ({ existingData = {}, onFinish }) => {
               // Optional: show a warning but still continue deleting the user doc
             }
           }
-        //   else if(!newer && imageUrl){
-        //     if(currentVendor?.vendorType==="E-Shopping"){
-               
-        //       updateEProductMutate({ category:formData?.tag, docId: formData?.id, updatedData: {imageUrl} });
-        //     }
-        //     else if(currentVendor?.vendorType==="Food/Restaurant"){
-                
-        //         updateFoodMutate({ category:formData?.tag, docId: formData?.id, updatedData: {imageUrl} });
-        //     }
-        //   }
         navigate(-1); // Go back to previous page
     };
 

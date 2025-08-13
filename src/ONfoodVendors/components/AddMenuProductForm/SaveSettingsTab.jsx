@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import SaveButton from '../AddMenu/SaveButton.jsx';
 import Summary from '../AddMenu/Summary.jsx';
+import Loading from '../common/Loading.jsx';
 
 const SaveSettingsTab = ({
   id,
@@ -11,6 +12,7 @@ const SaveSettingsTab = ({
   handleSubmit,
   category
 }) => {
+   const [loading, setLoading] = useState(false);
   return (
     <>
       <div className="flex justify-end p-4">
@@ -38,7 +40,11 @@ const SaveSettingsTab = ({
 
       <div className="p-4">
         <h3 className="text-lg font-semibold mb-4 text-gray-800">Save & Settings</h3>
-        <SaveButton handleSubmit={() => handleSubmit(category)} />
+        <SaveButton handleSubmit={async() => {
+          setLoading(true);
+          await handleSubmit(category);
+          setLoading(false);
+        }} />
 
         {/* Summary Section */}
         <div className="mt-6">
@@ -48,6 +54,9 @@ const SaveSettingsTab = ({
           />
         </div>
       </div>
+      {loading && (
+       <Loading />
+      )}
     </>
   );
 };
