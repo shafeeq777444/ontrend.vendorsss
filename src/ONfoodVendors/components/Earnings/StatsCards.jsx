@@ -5,11 +5,11 @@ const StatsCards = ({ currentUser, filteredOrdersEarningsAndCountOfOrders, total
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       
-      {/* All Time Earnings */}
+      {/* Total Seller Earnings */}
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-600">All Time Earnings</p>
+            <p className="text-sm font-medium text-gray-600">Total Seller Earnings</p>
             <p className="text-3xl font-bold text-green-600">
               {formatOMR(currentUser?.sellerEarnings || 0)}
             </p>
