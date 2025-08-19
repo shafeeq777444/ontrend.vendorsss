@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function VendorBankDetails() {
   const [isEditable, setIsEditable] = useState(false);
   const [accountNumber, setAccountNumber] = useState("9040 6000 8081 4525");
-  const [ifscCode, setIfscCode] = useState("7525 0000 2122 2542");
+  const [SWIFTCode, setSWIFTCode] = useState("7525 0000 2122 2542");
 
   const inputStyle =
     "mt-1 w-full shadow-md text-sm px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200";
@@ -59,18 +59,18 @@ export default function VendorBankDetails() {
           )}
         </div>
 
-        {/* IFSC Code */}
+        {/* SWIFT Code */}
         <div>
-          <label className="text-sm font-medium text-gray-700">IFSC Code</label>
+          <label className="text-sm font-medium text-gray-700">SWIFT Code</label>
           {isEditable ? (
             <input
               type="text"
-              value={ifscCode}
-              onChange={(e) => setIfscCode(e.target.value)}
+              value={SWIFTCode}
+              onChange={(e) => setSWIFTCode(e.target.value)}
               className={inputStyle}
             />
           ) : (
-            <p className="mt-1 text-sm text-gray-600">{ifscCode}</p>
+            <p className="mt-1 text-sm text-gray-600">{SWIFTCode}</p>
           )}
         </div>
       </motion.div>

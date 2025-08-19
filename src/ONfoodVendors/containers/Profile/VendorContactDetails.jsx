@@ -4,7 +4,7 @@ import OpenMapButton from "../../components/common/OpenMapButtons";
 import RenderField from "../../components/FoodVendor/RenderField";
 
 
-export default function VendorContactDetails({ email, phone, address, location, accountNumber, ifsc, vatNumber, additionalPhone }) {
+export default function VendorContactDetails({ email, phone, address, location, accountNumber, SWIFT, vatNumber, additionalPhone }) {
   return (
     <motion.div
       animate={{ scale: 1 }}
@@ -43,7 +43,7 @@ export default function VendorContactDetails({ email, phone, address, location, 
         <div className="space-y-5">
           <h2 className="text-base font-semibold text-gray-800">Bank Info</h2>
           <RenderField label="Account Number" value={accountNumber} fieldName="accountNumber"/>
-          <RenderField label="IFSC Code" value={ifsc} fieldName="bankCode"/>
+          <RenderField label="SWIFT Code" value={SWIFT?.toUpperCase()} fieldName="bankCode"/>
         </div>
       </div>
     </motion.div>

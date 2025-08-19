@@ -31,7 +31,7 @@ return (
         <VendorContactDetails
             email={VendorData?.email}
             accountNumber={VendorData?.accountNumber}
-            ifsc={VendorData?.bankCode}
+            SWIFT={VendorData?.bankCode}
             address={VendorData?.businessAddress}
             phone={VendorData?.phone}
             vatNumber={VendorData?.vatNumber}

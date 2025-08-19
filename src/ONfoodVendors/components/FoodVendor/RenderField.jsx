@@ -15,7 +15,7 @@ export default function RenderField({ label, value, onSave, fieldName = "", addi
     const editableLabels = [
         "Phone Number",
         "Account Number",
-        "IFSC Code",
+        "SWIFT Code",
         "Additional Phone Number 1",
         "Additional Phone Number 2",
         "Additional Phone Number 3",
