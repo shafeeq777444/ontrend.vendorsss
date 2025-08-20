@@ -51,9 +51,10 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
         const trimmedKey = key.trim();
 
         if (!trimmedKey) return toast.error("Variant name is required");
-        if (isNaN(parseFloat(qty)) || parseFloat(qty) <= 0) return toast.error("Quantity > 0 required");
-        if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) return toast.error("Price > 0 required");
+        if (isNaN(parseFloat(qty)) || parseFloat(qty) <= 0) return toast.error("Quantity must be greater than 0");
+        if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) return toast.error("Price must be greater than 0");
 
+        if (variants[trimmedKey])  toast.success("Existing variant updated");
         const updated = { ...variants };
         delete updated[oldKey];
         updated[trimmedKey] = { qty: parseFloat(qty), price: parseFloat(price) };
@@ -119,7 +120,10 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                         />
                                         <X
                                             className="text-gray-500 cursor-pointer"
-                                            onClick={() => setEditKey(null)}
+                                             onClick={() => {
+                                            setEditKey(null);
+                                            setIsAdding(false);
+                                        }}
                                             title="Cancel"
                                         />
                                     </div>
@@ -132,7 +136,10 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                     <div className="flex gap-2 justify-end">
                                         <button
                                             type="button"
-                                            onClick={() => handleEdit(key)}
+                                            onClick={() => {
+                                                 setIsAdding(false);
+                                                handleEdit(key);
+                                            }}
                                             title="Edit variant"
                                             aria-label={`Edit variant ${key}`}
                                             className="inline-flex items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 transition h-8 w-8"
@@ -163,11 +170,15 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                         exit="exit"
                         variants={boxVariants}
                         transition={{ duration: 0.25 }}
-                        className="border-2 border-dashed border-gray-300 rounded-xl p-3 sm:p-4 flex items-center justify-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors h-40 min-h-[160px]"
-                        onClick={() => setIsAdding(true)}
+                        className={`${!isAdding ? 'border-2 border-dashed border-gray-300' : 'border border-gray-200 shadow-md'} rounded-xl p-3 sm:p-4 flex items-center justify-center  transition-colors h-40 min-h-[160px]`}
+                        
                     >
                         {!isAdding ? (
-                            <Plus className="w-8 h-8 text-blue-600" title="Add variant" />
+                            <Plus onClick={() => {
+                                setIsAdding(true);
+                                setEditKey(null);
+                                setEditVariant({ key: "", qty: "", price: "" });
+                            }} className="w-8 h-8 text-blue-600 hover:bg-blue-100  cursor-pointer rounded-full duration-300 ease-in-out transition-all" title="Add variant  " />
                         ) : (
                             <div className="flex flex-col justify-between h-full w-full">
                                 {/* Variant Name */}
@@ -213,6 +224,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             e.preventDefault();
+                                           
                                             handleSaveEdit(); // Trigger Save
                                         }
                                     }}
@@ -228,7 +240,10 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                     />
                                     <X
                                         className="text-gray-500 cursor-pointer"
-                                        onClick={() => setEditKey(null)}
+                                        onClick={() => {
+                                            setEditKey(null);
+                                            setIsAdding(false);
+                                        }}
                                         title="Cancel"
                                     />
                                 </div>

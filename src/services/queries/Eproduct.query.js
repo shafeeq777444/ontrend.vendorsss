@@ -20,15 +20,15 @@ export const useEProductgetDetails = (category, productId, options = {}) => {
 
 // -------------------------------------------------- create --------------------------------------------------
 export const useAddEproductMutation = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ category, productObj }) => addEProductItem(category, productObj),
         onSuccess: (_, { category, productObj }) => {
             queryClient.invalidateQueries(["vendorFoodsPaginated", category]);
-            queryClient.invalidateQueries(["eshopProductDetails", category,productObj.id]);
+            queryClient.invalidateQueries(["eshopProductDetails", category, productObj.id]);
 
-        navigate("/menu");
+            navigate("/menu");
         },
     });
 };
@@ -36,24 +36,22 @@ export const useAddEproductMutation = () => {
 // -------------------------------------------------- update --------------------------------------------------
 
 export const useUpdateEproducMutation = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ category, docId, updatedData }) =>
-      updateEProductItem(category, docId, updatedData),
-    onSuccess: (_, { category, docId }) => {
-      queryClient.invalidateQueries(["vendorFoodsPaginated", category]);
-      queryClient.invalidateQueries({
-        queryKey: ["eshopProductDetails", category, docId],
-        refetchType: "active", // refetch immediately
-      });
-    },
-  });
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ category, docId, updatedData }) => updateEProductItem(category, docId, updatedData),
+        onSuccess: (_, { category, docId }) => {
+            queryClient.invalidateQueries(["vendorFoodsPaginated", category]);
+            queryClient.invalidateQueries({
+                queryKey: ["eshopProductDetails", category, docId],
+                refetchType: "active", // refetch immediately
+            });
+        },
+    });
 };
-
-
 
 // -------------------------------------------------- delete --------------------------------------------------
 export const useDeleteEproductMutation = () => {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ category, docId }) => deleteEProductItem(category, docId),
@@ -63,20 +61,15 @@ export const useDeleteEproductMutation = () => {
                 queryKey: ["eshopProductDetails", category, docId],
                 refetchType: "active", // refetch immediately
             });
-
+            navigate("/menu");
         },
     });
 };
 
 // create category
 export const useCreateCategoryMutationInEshop = () => {
-
     return useMutation({
-      mutationFn: ( {categoryName, vendorId }) => createCategoryInEshop({categoryName, vendorId}),
-      onSuccess: () => {
-
-
-      },
+        mutationFn: ({ categoryName, vendorId }) => createCategoryInEshop({ categoryName, vendorId }),
+        onSuccess: () => {},
     });
-  };
-  
+};
