@@ -92,7 +92,7 @@ const SideBarLayout = () => {
             </div>
 
             {/* Right section */}
-            <div className="flex items-center gap-2 lg:gap-4">
+            <div className="flex items-start gap-3 lg:gap-4">
               <ShopOpenCLoseButton onClick={handleShopOpenClose} />
               <div className="hidden lg:block">
                 <LogoutButton onClick={() => setModalOpen(true)} />
@@ -101,7 +101,7 @@ const SideBarLayout = () => {
               {data && (
                 <div
                   onClick={() => navigate("/profile")}
-                  className="flex items-center gap-1 md:gap-2 cursor-pointer bg-[rgba(0,0,0,0.2)] px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-[rgba(0,0,0,0.3)] transition-colors duration-300"
+                  className=" hidden sm:flex items-center gap-1 md:gap-2 cursor-pointer bg-[rgba(0,0,0,0.2)] px-2 py-1 md:px-3 md:py-2 rounded-full hover:bg-[rgba(0,0,0,0.3)] transition-colors duration-300"
                 >
                   <img
                     src={data?.image}
@@ -119,9 +119,13 @@ const SideBarLayout = () => {
               <div className="lg:hidden">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="text-sky-200 hover:text-white transition-colors"
+                  className="text-sky-200 hover:text-white transition-colors "
                 >
-                  {menuOpen ? <X /> : <Menu />}
+                  {menuOpen ? <X /> :  <img
+                    src={data?.image}
+                    alt="profile"
+                    className="w-6 h-6 md:w-8 md:h-8 rounded-full ring-2 "
+                  />}
                 </button>
               </div>
             </div>
@@ -194,7 +198,10 @@ const SideBarLayout = () => {
                       alt="profile"
                       className="w-8 h-8 rounded-full ring-2 ring-white/40"
                     />
-                    <span className="text-sm font-medium text-white drop-shadow-sm">{data?.restaurantName}</span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-white drop-shadow-sm">{data?.restaurantName}</span>
+                      <span className="text-xs font-light pl-1 text-white/50 drop-shadow-sm">{data?.ownerName}</span>
+                    </div>
                     <ChevronDown size={4} className="text-white/80 hidden sm:inline" />
                   </div>
                 )}

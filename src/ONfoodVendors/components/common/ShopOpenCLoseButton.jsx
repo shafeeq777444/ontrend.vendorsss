@@ -138,10 +138,14 @@ const ToggleContainer = styled.div`
   gap: 12px;
 `;
 
-const Label = styled.span`f
-  font-size: 16px;
+const Label = styled.span`
+  font-size: 14px;
   font-weight: 600;
   color: white;
+  
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const SwitchButton = styled.button`
@@ -153,6 +157,11 @@ const SwitchButton = styled.button`
   position: relative;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  
+  @media (max-width: 768px) {
+    width: 48px;
+    height: 26px;
+  }
 `;
 
 const SwitchThumb = styled.div`
@@ -165,6 +174,13 @@ const SwitchThumb = styled.div`
   border-radius: 50%;
   transition: left 0.3s ease;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  
+  @media (max-width: 768px) {
+    top: 2px;
+    left: ${({ isOnline }) => (isOnline ? '24px' : '2px')};
+    width: 22px;
+    height: 22px;
+  }
 `;
 
 export default ShopOpenCloseButton;
