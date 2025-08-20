@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, X, ChevronDown, Zap } from "lucide-react";
+import { Menu, X, ChevronDown, Zap, ArrowLeft, ArrowRight } from "lucide-react";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../../services/hooks/profile/useCurrentUserLiveData";
 import { getAuth, signOut } from "firebase/auth";
@@ -12,21 +12,24 @@ import { useUpdateVendorProfile } from "../../services/queries/vendor.query";
 import { useLiveOrdersWithSound } from "../../services/hooks/orders/useLiveOrdersWithSound";
 import StopAlertButton from "../components/Orders/StopAlertButton";
 import useProcessingOrdersCount from "../../services/hooks/orders/useProcessingOrdersCountLive";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 
 import ReusableConfirmationModal from "../components/common/ReusableConfirmationModal";
 import ShopOpenCLoseButton from "../components/common/ShopOpenCLoseButton";
 import LogoutButton from "../components/common/LogoutButton";
+import LogoutButtonSIdeBar from "../components/common/LogoutButtonSIdeBar";
 
 const SideBarLayout = () => {
   // ------------------------ hooks ------------------------
-  const { data, isLoading } = useCurrentUser();
+  const { data } = useCurrentUser();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const authReady = useFirebaseAuthReady();
   const user = getAuth().currentUser;
   const dispatch = useDispatch();
   const { mutate } = useUpdateVendorProfile();
+  // eslint-disable-next-line no-unused-vars
   const { orders, stopAlertSequence, alertLoop } = useLiveOrdersWithSound(data?.id);
   useProcessingOrdersCount(data?.id);
 
@@ -91,7 +94,9 @@ const SideBarLayout = () => {
             {/* Right section */}
             <div className="flex items-center gap-2 lg:gap-4">
               <ShopOpenCLoseButton onClick={handleShopOpenClose} />
-              <LogoutButton onClick={() => setModalOpen(true)} />
+              <div className="hidden lg:block">
+                <LogoutButton onClick={() => setModalOpen(true)} />
+              </div>
 
               {data && (
                 <div
@@ -147,36 +152,41 @@ const SideBarLayout = () => {
             <div className="fixed inset-0 z-50 flex">
               {/* Overlay */}
               <div
-                className="flex-1 bg-black/30 bg-opacity-40"
+                // className="flex-1 bg-black/10 backdrop-blur-xs"
                 onClick={() => setMenuOpen(false)}
               />
               {/* Sidebar with Framer Motion */}
               <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "tween", duration: 0.35 }}
-                className="w-64 bg-white h-full shadow-lg flex flex-col fixed right-0 top-0 p-4 space-y-2"
+                initial={{ x: "100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "100%", opacity: 0 }}
+                transition={{ 
+                  type: "spring", 
+                  damping: 25, 
+                  stiffness: 200,
+                  opacity: { duration: 0.2 }
+                }}
+                className="w-64 bg-white/20 backdrop-blur-md border-l border-white/20 h-full shadow-2xl flex flex-col fixed right-0 top-0 p-4 space-y-2  rounded-l-lg"
               >
                 <button
-                  className="self-end text-black hover:text-gray-700"
+                  className="self-start text-white/60 bg-white/20 rounded-full p-2 hover:bg-white/30 hover:text-gray-100 transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <X size={24} />
+                  <ArrowRight size={18} />
                 </button>
 
                 {data && (
                   <div
                     onClick={() => navigate("/profile")}
-                    className="flex items-center gap-2 cursor-pointer bg-[rgba(0,0,0,0.2)] px-3 py-2 rounded-full hover:bg-[rgba(0,0,0,0.3)] transition-colors duration-300"
+                    className="flex items-center gap-2 cursor-pointer bg-white/20 px-3 py-2 rounded-full hover:bg-white/30 transition-colors duration-300"
                   >
                     <img
                       src={data?.image}
                       alt="profile"
-                      className="w-8 h-8 rounded-full ring-2"
+                      className="w-8 h-8 rounded-full ring-2 ring-white/40"
                     />
-                    <span className="text-sm font-medium">{data?.restaurantName}</span>
-                    <ChevronDown size={4} className="text-sky-200 hidden sm:inline" />
+                    <span className="text-sm font-medium text-white drop-shadow-sm">{data?.restaurantName}</span>
+                    <ChevronDown size={4} className="text-white/80 hidden sm:inline" />
                   </div>
                 )}
 
@@ -189,13 +199,18 @@ const SideBarLayout = () => {
                     }}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-md transition-colors ${
                       item.route === window.location.pathname
-                        ? "bg-sky-600 text-white shadow-md"
-                        : "hover:bg-slate-600/30 hover:text-gray-900 text-sky-600"
+                        ? "bg-white/30 text-white shadow-md drop-shadow-sm"
+                        : "hover:bg-white/20 hover:text-white text-white drop-shadow-sm"
                     }`}
                   >
                     {item.name}
                   </button>
                 ))}
+                
+                {/* Mobile Logout Button */}
+                <div className="mt-auto pt-4 border-t border-white/20">
+                  <LogoutButtonSIdeBar onClick={() => setModalOpen(true)} />
+                </div>
               </motion.div>
             </div>
           )}
