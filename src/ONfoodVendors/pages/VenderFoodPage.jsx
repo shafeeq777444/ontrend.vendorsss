@@ -109,7 +109,7 @@ const VenderFoodPage = () => {
   const handleClickView = (item) => setViewModalItem(item);
 
   return (
-    <div className="min-h-screen scrollbar-hide bg-gradient-to-br from-gray-50 to-gray-100" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="min-h-screen rounded-t-xl scrollbar-hide bg-gradient-to-br from-gray-50 to-gray-100" dir={isArabic ? "rtl" : "ltr"}>
       <div className="overflow-y-hidden bg-gradient-to-br from-white to-offwhite rounded-t-2xl z-30 -mt-4 scrollbar-hide">
         <div ref={productsRef} className="bg-gradient-to-br from-white to-offwhite shadow-sm sm:shadow-xl p-2 sm:p-4">
           <div className="mb-3 sm:mb-4">

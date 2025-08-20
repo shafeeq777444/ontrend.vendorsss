@@ -105,7 +105,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                             className="border border-gray-300 rounded-lg pl-10 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
                                             value={editVariant.qty}
                                             onChange={(e) =>
-                                                setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })
+                                                setEditVariant({ ...editVariant, qty: isNaN(e.target.value) || e.target.value==0 ?  "": Math.ceil(e.target.value) })
                                             }
                                             placeholder="0"
                                             type="number"
