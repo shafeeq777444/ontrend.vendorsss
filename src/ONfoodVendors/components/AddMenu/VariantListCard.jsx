@@ -54,7 +54,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
         if (isNaN(parseFloat(qty)) || parseFloat(qty) <= 0) return toast.error("Quantity must be greater than 0");
         if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) return toast.error("Price must be greater than 0");
 
-        if (variants[trimmedKey])  toast.success("Existing variant updated");
+        if (variants[trimmedKey]) toast.success("Existing variant updated");
         const updated = { ...variants };
         delete updated[oldKey];
         updated[trimmedKey] = { qty: parseFloat(qty), price: parseFloat(price) };
@@ -86,7 +86,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                             exit="exit"
                             variants={boxVariants}
                             transition={{ duration: 0.25 }}
-                            className="group border border-gray-200 rounded-xl p-3 sm:p-4 flex flex-col justify-between bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-indigo-300 focus-within:ring-offset-1 h-40 min-h-[160px]"
+                            className="group border border-gray-200 rounded-xl p-3 sm:p-4 flex flex-col justify-between bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-indigo-300 focus-within:ring-offset-1 h-44 min-h-[160px]"
                         >
                             {editKey === key ? (
                                 <>
@@ -96,36 +96,61 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                         onChange={(e) => setEditVariant({ ...editVariant, key: e.target.value })}
                                         placeholder="Variant Name"
                                     />
-                                    <input
-                                        className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                                        value={editVariant.qty}
-                                        onChange={(e) => setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })}
-                                        placeholder="Quantity"
-                                        type="number"
-                                        min={0}
-                                    />
-                                    <input
-                                        className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                                        value={editVariant.price}
-                                        onChange={(e) => setEditVariant({ ...editVariant, price: e.target.value })}
-                                        placeholder="Price"
-                                        type="number"
-                                        min={0}
-                                    />
-                                    <div className="flex gap-2 justify-end">
-                                        <Check
-                                            className="text-green-600 cursor-pointer"
+                                  {/* Quantity (Edit Mode) */}
+<div className="relative mb-1">
+  <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
+    Qty
+  </span>
+  <input
+    className="border border-gray-300 rounded-lg pl-10 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
+    value={editVariant.qty}
+    onChange={(e) =>
+      setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })
+    }
+    placeholder="0"
+    type="number"
+    min={0}
+  />
+</div>
+
+{/* Price (Edit Mode) */}
+<div className="relative mb-2">
+  <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
+    OMR
+  </span>
+  <input
+    className="border border-gray-300 rounded-lg pl-12 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
+    value={editVariant.price}
+    onChange={(e) =>
+      setEditVariant({ ...editVariant, price: e.target.value })
+    }
+    placeholder="0.000"
+    type="number"
+    min={0}
+  />
+</div>
+
+                                    <div className="flex gap-2 justify-end mt-1">
+                                        <button
+                                            type="button"
                                             onClick={handleSaveEdit}
+                                            className="inline-flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600  transition-all h-8 w-8 shadow-sm"
                                             title="Save"
-                                        />
-                                        <X
-                                            className="text-gray-500 cursor-pointer"
-                                             onClick={() => {
-                                            setEditKey(null);
-                                            setIsAdding(false);
-                                        }}
+                                        >
+                                            <Check className="w-4 h-4" />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditKey(null);
+                                                setIsAdding(false);
+                                            }}
+                                            className="inline-flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1 transition-all h-8 w-8 shadow-sm"
                                             title="Cancel"
-                                        />
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 </>
                             ) : (
@@ -137,7 +162,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                 setIsAdding(false);
+                                                setIsAdding(false);
                                                 handleEdit(key);
                                             }}
                                             title="Edit variant"
@@ -170,15 +195,20 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                         exit="exit"
                         variants={boxVariants}
                         transition={{ duration: 0.25 }}
-                        className={`${!isAdding ? 'border-2 border-dashed border-gray-300' : 'border border-gray-200 shadow-md'} rounded-xl p-3 sm:p-4 flex items-center justify-center  transition-colors h-40 min-h-[160px]`}
-                        
+                        className={`${
+                            !isAdding ? "border-2 border-dashed border-gray-300" : "border border-gray-200 shadow-md"
+                        } rounded-xl p-3 sm:p-4 flex items-center justify-center  transition-colors h-44 min-h-[160px]`}
                     >
                         {!isAdding ? (
-                            <Plus onClick={() => {
-                                setIsAdding(true);
-                                setEditKey(null);
-                                setEditVariant({ key: "", qty: "", price: "" });
-                            }} className="w-8 h-8 text-blue-600 hover:bg-blue-100  cursor-pointer rounded-full duration-300 ease-in-out transition-all" title="Add variant  " />
+                            <Plus
+                                onClick={() => {
+                                    setIsAdding(true);
+                                    setEditKey(null);
+                                    setEditVariant({ key: "", qty: "", price: "" });
+                                }}
+                                className="w-8 h-8 text-blue-600 hover:bg-blue-100  cursor-pointer rounded-full duration-300 ease-in-out transition-all"
+                                title="Add variant  "
+                            />
                         ) : (
                             <div className="flex flex-col justify-between h-full w-full">
                                 {/* Variant Name */}
@@ -196,56 +226,71 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                 />
 
                                 {/* Quantity */}
-                                <input
-                                    ref={qtyRef}
-                                    className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                                    value={editVariant.qty}
-                                    onChange={(e) => setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })}
-                                    placeholder="Quantity"
-                                    type="number"
-                                    min={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            e.preventDefault();
-                                            priceRef.current?.focus(); // Move to Price
-                                        }
-                                    }}
-                                />
+                                <div className="relative mb-1">
+                                    <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
+                                        Qty
+                                    </span>
+                                    <input
+                                        ref={qtyRef}
+                                        className="border border-gray-300 rounded-lg pl-10 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
+                                        value={editVariant.qty}
+                                        onChange={(e) => setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })}
+                                        placeholder="0"
+                                        type="number"
+                                        min={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                priceRef.current?.focus(); // Move to Price
+                                            }
+                                        }}
+                                    />
+                                </div>
 
                                 {/* Price */}
-                                <input
-                                    ref={priceRef}
-                                    className="border border-gray-300 rounded-lg px-2.5 py-1.5 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                                    value={editVariant.price}
-                                    onChange={(e) => setEditVariant({ ...editVariant, price: e.target.value })}
-                                    placeholder="Price"
-                                    type="number"
-                                    min={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            e.preventDefault();
-                                           
-                                            handleSaveEdit(); // Trigger Save
-                                        }
-                                    }}
-                                />
+                                <div className="relative mb-2">
+                                    <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
+                                        OMR
+                                    </span>
+                                    <input
+                                        ref={priceRef}
+                                        className="border border-gray-300 rounded-lg pl-12 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
+                                        value={editVariant.price}
+                                        onChange={(e) => setEditVariant({ ...editVariant, price: e.target.value })}
+                                        placeholder="0.000"
+                                        type="number"
+                                        min={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                handleSaveEdit(); // Trigger Save
+                                            }
+                                        }}
+                                    />
+                                </div>
 
                                 {/* Save & Cancel */}
-                                <div className="flex gap-2 justify-end">
-                                    <Check
-                                        ref={saveBtnRef}
-                                        className="text-green-600 cursor-pointer"
+                                <div className="flex gap-2 justify-end mt-1">
+                                    <button
+                                        type="button"
                                         onClick={handleSaveEdit}
+                                        className="inline-flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600  transition-all h-8 w-8 shadow-sm"
                                         title="Save"
-                                    />
-                                    <X
-                                        className="text-gray-500 cursor-pointer"
+                                    >
+                                        <Check className="w-4 h-4" />
+                                    </button>
+
+                                    <button
+                                        type="button"
                                         onClick={() => {
                                             setEditKey(null);
                                             setIsAdding(false);
                                         }}
+                                        className="inline-flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1 transition-all h-8 w-8 shadow-sm"
                                         title="Cancel"
-                                    />
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
                         )}
