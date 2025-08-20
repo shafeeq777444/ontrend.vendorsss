@@ -92,7 +92,7 @@ const SideBarLayout = () => {
             </div>
 
             {/* Right section */}
-            <div className="flex items-start gap-3 lg:gap-4">
+            <div className="flex items-center gap-3 lg:gap-4">
               <ShopOpenCLoseButton onClick={handleShopOpenClose} />
               <div className="hidden lg:block">
                 <LogoutButton onClick={() => setModalOpen(true)} />
@@ -124,7 +124,7 @@ const SideBarLayout = () => {
                   {menuOpen ? <X /> :  <img
                     src={data?.image}
                     alt="profile"
-                    className="w-6 h-6 md:w-8 md:h-8 rounded-full ring-2 "
+                    className="w-6 h-6 md:w-10 md:h-10 rounded-full ring-2 mt-1"
                   />}
                 </button>
               </div>
