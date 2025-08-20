@@ -149,10 +149,16 @@ const SideBarLayout = () => {
         {/* Mobile Menu */}
         <AnimatePresence>
           {menuOpen && (
-            <div className="fixed inset-0 z-50 flex">
+            <motion.div 
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-50 flex bg-black/20"
+            >
               {/* Overlay */}
               <div
-                // className="flex-1 bg-black/10 backdrop-blur-xs"
+                className="flex-1"
                 onClick={() => setMenuOpen(false)}
               />
               {/* Sidebar with Framer Motion */}
@@ -177,7 +183,10 @@ const SideBarLayout = () => {
 
                 {data && (
                   <div
-                    onClick={() => navigate("/profile")}
+                    onClick={() => {
+                      navigate("/profile");
+                      setMenuOpen(false);
+                    }}
                     className="flex items-center gap-2 cursor-pointer bg-white/20 px-3 py-2 rounded-full hover:bg-white/30 transition-colors duration-300"
                   >
                     <img
@@ -197,10 +206,10 @@ const SideBarLayout = () => {
                       navigate(item.route);
                       setMenuOpen(false);
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-md transition-colors ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-md transition-colors font-medium ${
                       item.route === window.location.pathname
-                        ? "bg-white/30 text-white shadow-md drop-shadow-sm"
-                        : "hover:bg-white/20 hover:text-white text-white drop-shadow-sm"
+                        ? "bg-white/40 text-white shadow-lg border border-white/30"
+                        : "hover:bg-white/25 hover:text-white text-white/90 hover:shadow-md"
                     }`}
                   >
                     {item.name}
@@ -212,7 +221,7 @@ const SideBarLayout = () => {
                   <LogoutButtonSIdeBar onClick={() => setModalOpen(true)} />
                 </div>
               </motion.div>
-            </div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
