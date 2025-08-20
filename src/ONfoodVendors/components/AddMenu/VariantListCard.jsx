@@ -51,8 +51,8 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
         const trimmedKey = key.trim();
 
         if (!trimmedKey) return toast.error("Variant name is required");
-        if (isNaN(parseFloat(qty)) || parseFloat(qty) <= 0) return toast.error("Quantity must be greater than 0");
-        if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) return toast.error("Price must be greater than 0");
+        if (isNaN(parseFloat(qty)) || parseFloat(qty) < 0) return toast.error("Quantity must be positive");
+        if (isNaN(parseFloat(price)) || parseFloat(price) < 0) return toast.error("Price must be positive");
 
         if (variants[trimmedKey]) toast.success("Existing variant updated");
         const updated = { ...variants };
@@ -77,7 +77,7 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Variants</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
                 <AnimatePresence>
-                    {Object.entries(variants).map(([key, value]) => (
+                    {Object.entries(variants)?.map(([key, value]) => (
                         <motion.div
                             key={key}
                             layout
@@ -96,39 +96,37 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                                         onChange={(e) => setEditVariant({ ...editVariant, key: e.target.value })}
                                         placeholder="Variant Name"
                                     />
-                                  {/* Quantity (Edit Mode) */}
-<div className="relative mb-1">
-  <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
-    Qty
-  </span>
-  <input
-    className="border border-gray-300 rounded-lg pl-10 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
-    value={editVariant.qty}
-    onChange={(e) =>
-      setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })
-    }
-    placeholder="0"
-    type="number"
-    min={0}
-  />
-</div>
+                                    {/* Quantity (Edit Mode) */}
+                                    <div className="relative mb-1">
+                                        <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
+                                            Qty
+                                        </span>
+                                        <input
+                                            className="border border-gray-300 rounded-lg pl-10 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
+                                            value={editVariant.qty}
+                                            onChange={(e) =>
+                                                setEditVariant({ ...editVariant, qty: Math.ceil(e.target.value) })
+                                            }
+                                            placeholder="0"
+                                            type="number"
+                                            min={0}
+                                        />
+                                    </div>
 
-{/* Price (Edit Mode) */}
-<div className="relative mb-2">
-  <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
-    OMR
-  </span>
-  <input
-    className="border border-gray-300 rounded-lg pl-12 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
-    value={editVariant.price}
-    onChange={(e) =>
-      setEditVariant({ ...editVariant, price: e.target.value })
-    }
-    placeholder="0.000"
-    type="number"
-    min={0}
-  />
-</div>
+                                    {/* Price (Edit Mode) */}
+                                    <div className="relative mb-2">
+                                        <span className="absolute inset-y-0 left-3 flex items-center text-gray-500 text-sm">
+                                            OMR
+                                        </span>
+                                        <input
+                                            className="border border-gray-300 rounded-lg pl-12 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 w-full"
+                                            value={editVariant.price}
+                                            onChange={(e) => setEditVariant({ ...editVariant, price: e.target.value })}
+                                            placeholder="0.000"
+                                            type="number"
+                                            min={0}
+                                        />
+                                    </div>
 
                                     <div className="flex gap-2 justify-end mt-1">
                                         <button
@@ -156,8 +154,12 @@ const VariantListCard = ({ initialvariants = {}, onChange }) => {
                             ) : (
                                 <>
                                     <div className="font-semibold text-gray-800 mb-1 truncate">{key}</div>
-                                    <div className="text-gray-600 text-sm">Qty: {value.qty}</div>
-                                    <div className="text-gray-600 text-sm mb-2">Price: OMR {value.price.toFixed(3)}</div>
+                                    <div className="text-gray-600 text-sm">Qty: {value?.qty}</div>
+                                    {/* <div className="text-gray-600 text-sm mb-2">Price: OMR {value?.price?.toFixed(3)}</div> */}
+                                    <div className="text-gray-600 text-sm mb-2">
+                                        Price: OMR {Number(value?.price)?.toFixed(3)}
+                                    </div>
+
                                     <div className="flex gap-2 justify-end">
                                         <button
                                             type="button"
